@@ -1,0 +1,877 @@
+<title>Korrutaja</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Korrutaja">
+<meta name="theme-color" content="#FBF7EE">
+<meta name="description" content="Korrutaja – korrutustabeli ja jagamise harjutamise mäng telefonile. Adaptiivne: küsib rohkem seda, mis on raske. Klassikood ja edetabel. Tasuta, ilma reklaamita.">
+<meta property="og:title" content="Korrutaja">
+<meta property="og:description" content="Korrutustabel pähe 3 minutit päevas. Adaptiivne harjutusmäng, klassi edetabel, ilma reklaami ja kontodeta.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="et_EE">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap"></noscript>
+<script>(function(){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap';document.head.appendChild(l);})();</script>
+<style>
+:root{
+  --bg:#FBF7EE; --grid:rgba(47,73,209,.09); --ink:#1E2140; --ink2:#5A5D78; --line:#E6E0D2; --card:#FFFFFF;
+  --acc:#2F49D1; --acc-soft:#E4E8FA;
+  --ok:#2E9E5B; --ok-soft:#DDF3E5; --ok-ink:#1F6B3E;
+  --bad:#E4572E; --bad-soft:#FBE3DB; --bad-ink:#9C3416;
+  --warn:#F2A93B; --warn-soft:#FDEFD6; --warn-ink:#8A5A0D;
+  --grey:#D9D5CC;
+  --fd:'Fredoka',system-ui,sans-serif; --fb:'Nunito',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;color:var(--ink);font-family:var(--fb);font-size:16px;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;overscroll-behavior:none;touch-action:manipulation}
+.app{max-width:440px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding:max(12px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom))}
+.screen{display:none;flex:1;flex-direction:column}
+.screen.on{display:flex}
+button{font-family:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;padding:4px 0 12px;min-height:44px}
+.brand{font-family:var(--fd);font-weight:700;font-size:22px;color:var(--acc);letter-spacing:.2px}
+.icon{width:44px;height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center}
+.icon svg{width:22px;height:22px;stroke:var(--ink2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.back{background:none;border:0;padding:8px 0;font:800 15px var(--fb);color:var(--acc);display:flex;align-items:center;gap:6px}
+.back svg{width:18px;height:18px;stroke:var(--acc);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap:balance}
+
+/* home */
+.hello{font-family:var(--fd);font-size:34px;font-weight:600;line-height:1.1;margin:6px 0 4px;text-wrap:balance}
+.sub{color:var(--ink2);font-size:15px;margin:0 0 18px;font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center}
+.tile b{display:block;font-family:var(--fd);font-size:26px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.tile b em{font-style:normal;font-size:15px;color:var(--ink2);font-weight:500}
+.tile small{display:block;color:var(--ink2);font-size:11px;text-transform:uppercase;letter-spacing:.07em;margin-top:4px;font-weight:700}
+.label{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);font-weight:800;margin:0 0 8px}
+.chips{display:flex;gap:8px;margin-bottom:20px}
+.chip{flex:1;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:11px 0;font:800 15px var(--fb);color:var(--ink2)}
+.chip.on{border-color:var(--acc);background:var(--acc-soft);color:var(--acc)}
+.menu{display:flex;flex-direction:column;gap:12px;margin-top:auto}
+.btn{border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;font:800 19px var(--fb);display:flex;justify-content:space-between;align-items:center;background:var(--card);color:var(--ink);text-align:left}
+.btn small{font-weight:700;color:var(--ink2);font-size:14px}
+.btn.primary{background:var(--acc);color:#fff;border-color:var(--acc)}
+.btn.primary small{color:rgba(255,255,255,.78)}
+.btn:active{transform:translateY(1px)}
+
+/* game */
+.gtop{display:flex;flex-direction:column;gap:8px;padding-top:4px}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--acc);border-radius:4px;transition:width .25s linear}
+.gmeta{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--ink2);font-weight:800}
+.gmeta b{color:var(--ink);font-family:var(--fd);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.quit{background:none;border:0;color:var(--ink2);font:800 14px var(--fb);padding:6px 0;text-decoration:underline}
+.stage{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:260px}
+.ring{position:absolute;width:252px;height:252px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:9;stroke-linecap:round}
+.ring-bg{stroke:var(--line)}
+.ring-fg{stroke:var(--acc);stroke-dasharray:339.3;stroke-dashoffset:0}
+.stage.calm .ring-fg{stroke:var(--acc-soft)}
+.stage.ok .ring-fg{stroke:var(--ok)}
+.stage.bad .ring-fg{stroke:var(--bad)}
+.qbox{position:relative;text-align:center;width:220px}
+.q{font-family:var(--fd);font-weight:600;font-size:46px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.a{font-family:var(--fd);font-weight:600;font-size:46px;line-height:1;margin-top:10px;font-variant-numeric:tabular-nums;min-height:46px;color:var(--acc)}
+.a.empty{color:var(--grey)}
+.stage.ok .a{color:var(--ok)}
+.stage.bad .a{color:var(--ok)}
+.fbmsg{height:26px;text-align:center;font-weight:800;font-size:16px;color:var(--ink2);margin-bottom:10px}
+.stage.bad + .fbmsg{color:var(--bad-ink)}
+.stage.ok + .fbmsg{color:var(--ok-ink)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.key{height:60px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);font:600 28px var(--fd);color:var(--ink)}
+.key:active{background:var(--acc-soft);border-color:var(--acc)}
+.key svg{width:28px;height:28px;stroke:var(--ink);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle}
+.key.mute{visibility:hidden}
+
+/* results */
+.big{font-family:var(--fd);font-size:68px;font-weight:700;line-height:1;text-align:center;color:var(--acc);margin:14px 0 2px;font-variant-numeric:tabular-nums}
+.bigcap{text-align:center;color:var(--ink2);font-weight:800;margin-bottom:16px}
+.rows{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 14px;margin-bottom:16px}
+.row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line);font-size:16px;font-weight:600}
+.row:last-child{border-bottom:0}
+.row b{font-family:var(--fd);font-weight:600;font-size:18px;font-variant-numeric:tabular-nums}
+.sect{margin-bottom:16px}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{padding:8px 12px;border-radius:10px;font:600 17px var(--fd);background:var(--warn-soft);color:var(--warn-ink);font-variant-numeric:tabular-nums}
+.tag.ok{background:var(--ok-soft);color:var(--ok-ink)}
+.muted{color:var(--ink2);font-weight:600;font-size:15px}
+
+/* heatmap */
+.hmwrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:12px}
+.hm{display:grid;grid-template-columns:24px repeat(10,1fr);gap:3px}
+.hl{font:700 12px var(--fb);color:var(--ink2);display:flex;align-items:center;justify-content:center;aspect-ratio:1}
+.hl.corner{font-family:var(--fd);font-size:16px;color:var(--acc)}
+.hc{aspect-ratio:1;border-radius:6px;border:0;padding:0;display:flex;align-items:center;justify-content:center;font:600 11px var(--fd);color:rgba(30,33,64,.55);background:var(--grey);font-variant-numeric:tabular-nums}
+.hc.green{background:var(--ok);color:#fff}
+.hc.amber{background:var(--warn);color:#fff}
+.hc.red{background:var(--bad);color:#fff}
+.hc.sel{outline:3px solid var(--ink);outline-offset:-1px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--ink2);font-weight:700;margin-bottom:12px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+.detail{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;min-height:70px;font-weight:600}
+.detail b{font-family:var(--fd);font-size:22px;font-weight:600;display:block;margin-bottom:4px}
+
+/* settings */
+.field{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.field label{font-weight:800;font-size:16px}
+.field small{display:block;color:var(--ink2);font-weight:600;font-size:13px;margin-top:2px}
+.field input[type=text]{width:150px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;font:700 16px var(--fb);color:var(--ink);background:var(--card)}
+.seg{display:flex;gap:4px;background:var(--line);padding:3px;border-radius:10px}
+.seg button{border:0;background:transparent;border-radius:8px;padding:8px 12px;font:800 14px var(--fb);color:var(--ink2);min-width:42px}
+.seg button.on{background:var(--card);color:var(--acc)}
+.danger{margin-top:24px;border:1.5px solid var(--bad);color:var(--bad-ink);background:var(--bad-soft);border-radius:12px;padding:14px;font:800 15px var(--fb);width:100%}
+.hint{color:var(--ink2);font-size:14px;font-weight:600;line-height:1.5;margin-top:20px}
+
+/* class + leaderboard */
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.card h3{font-family:var(--fd);font-weight:600;font-size:20px;margin:0 0 10px}
+.card p{margin:0 0 10px}
+.in{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font:700 17px var(--fb);color:var(--ink);background:var(--card);margin-bottom:10px;-webkit-user-select:text;user-select:text}
+.in.code{font-family:var(--fd);letter-spacing:.18em;text-transform:uppercase;font-size:24px;text-align:center;font-weight:600}
+.btn.small{padding:14px 16px;font-size:17px;width:100%}
+.err{color:var(--bad-ink);font-weight:700;font-size:14px;min-height:20px;margin:0 0 8px}
+.codebig{font-family:var(--fd);font-size:44px;letter-spacing:.2em;text-align:center;color:var(--acc);margin:12px 0 6px;font-weight:600}
+.link{background:none;border:0;color:var(--acc);font:800 15px var(--fb);padding:10px 0 2px;text-decoration:underline}
+.tabs{display:flex;gap:6px;margin-bottom:10px}
+.tab{flex:1;border:0;background:var(--line);border-radius:10px;padding:10px 0;font:800 14px var(--fb);color:var(--ink2)}
+.tab.on{background:var(--acc);color:#fff}
+.lb{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:2px 14px;margin-bottom:10px}
+.lrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-weight:700;font-size:16px}
+.lrow:last-child{border-bottom:0}
+.lrow .rk{width:26px;font-family:var(--fd);font-size:18px;color:var(--ink2);font-variant-numeric:tabular-nums;font-weight:600;flex:none}
+.lrow .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lrow .nm small{display:block;color:var(--ink2);font-size:12px;font-weight:700}
+.lrow .vl{font-family:var(--fd);font-size:19px;font-variant-numeric:tabular-nums;font-weight:600;flex:none}
+.lrow.me{background:var(--acc-soft);margin:0 -14px;padding:10px 14px}
+.lrow.me .rk{color:var(--acc)}
+.lrow.gap{justify-content:center;color:var(--ink2);padding:4px 0}
+.classline{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
+.classline b{font-family:var(--fd);font-weight:600;font-size:20px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.classline span{font-family:var(--fd);color:var(--acc);letter-spacing:.12em;font-weight:600;flex:none}
+.goal .bar{height:10px}
+.goal small{display:flex;justify-content:space-between;color:var(--ink2);font-weight:700;font-size:12px;margin-top:6px}
+.sync{font-size:13px;color:var(--ink2);font-weight:700;text-align:center;margin:8px 0 0;min-height:18px}
+.empty{padding:16px 0;text-align:center}
+
+/* home extras, table, info */
+.hbtns{display:flex;gap:8px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row2 .btn{flex-direction:column;align-items:flex-start;gap:2px;padding:14px 16px}
+.foot{margin-top:14px;text-align:center;font-size:12px;color:var(--ink2);font-weight:700;line-height:1.6}
+.foot a,.info a{color:var(--acc);text-decoration:none;font-weight:800}
+.tg{display:grid;grid-template-columns:24px repeat(10,1fr);gap:3px}
+.tg .tc{aspect-ratio:1;border-radius:6px;border:1px solid var(--line);background:var(--card);padding:0;display:flex;align-items:center;justify-content:center;font:600 11px var(--fd);color:var(--ink);font-variant-numeric:tabular-nums}
+.tg .tc.hi{background:var(--acc-soft);border-color:var(--acc)}
+.tg .tc.sel{background:var(--acc);color:#fff;border-color:var(--acc)}
+.tg .tc.easy{color:var(--ink2)}
+.tlist{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 14px;margin-top:12px;display:grid;grid-template-columns:1fr 1fr;column-gap:16px}
+.tlist div{padding:7px 0;border-bottom:1px solid var(--line);font:600 18px var(--fd);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tlist div:nth-last-child(-n+2){border-bottom:0}
+.tlist div.hi{color:var(--acc)}
+.info{padding-bottom:12px}
+.info h3{font-family:var(--fd);font-weight:600;font-size:20px;margin:20px 0 6px;text-wrap:balance}
+.info p{margin:0 0 10px;line-height:1.55;font-size:15px;font-weight:600;color:var(--ink)}
+.info ul{margin:0 0 10px 18px;padding:0;line-height:1.55;font-size:15px;font-weight:600}
+.info li{margin-bottom:4px}
+.info .lead{font-size:16px;color:var(--ink2);margin-top:4px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:4px}
+
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+@media (max-height:640px){.ring{width:210px;height:210px}.q,.a{font-size:40px}.key{height:52px}.stage{min-height:220px}}
+</style>
+
+<div class="app">
+
+<!-- HOME -->
+<section class="screen on" id="s-home">
+  <header class="top">
+    <div class="brand">Korrutaja</div>
+    <div class="hbtns">
+    <button class="icon" id="btnInfo" aria-label="Kuidas see töötab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg></button>
+    <button class="icon" id="btnSettings" aria-label="Seaded"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    </div>
+  </header>
+  <h1 class="hello" id="hello">Tere!</h1>
+  <p class="sub" id="subline">Täna 0 vastust</p>
+  <div class="tiles">
+    <div class="tile"><b id="tGreenMul">0<em>/45</em></b><small>Rohelised ×</small></div>
+    <div class="tile"><b id="tGreenDiv">0<em>/45</em></b><small>Rohelised :</small></div>
+    <div class="tile"><b id="tStreak">0</b><small>Päeva järjest</small></div>
+  </div>
+  <p class="label">Mida harjutad</p>
+  <div class="chips" id="opChips">
+    <button class="chip" data-op="mul">Korrutamine</button>
+    <button class="chip" data-op="div">Jagamine</button>
+    <button class="chip" data-op="mix">Segamini</button>
+  </div>
+  <div class="menu">
+    <button class="btn primary" id="btnTrain">Treening <small id="trainMeta">3 min</small></button>
+    <button class="btn" id="btnTest">Kontroll <small>25 küsimust · 6 s</small></button>
+    <div class="row2">
+      <button class="btn" id="btnTable">Tabel <small>vaata ja korda</small></button>
+      <button class="btn" id="btnHeat">Soojuskaart <small>nõrgad kohad</small></button>
+    </div>
+    <button class="btn" id="btnBoard" hidden>Edetabel <small id="boardMeta"></small></button>
+    <button class="btn" id="btnJoin" hidden>Liitu klassiga <small>võistle klassikaaslastega</small></button>
+  </div>
+  <p class="foot">Tegi <a href="https://silverjaanus.com" target="_blank" rel="noopener">Silver Jaanus</a> · <a href="https://github.com/silverjaanus/korrutaja" target="_blank" rel="noopener">kood GitHubis</a> · <a href="#" id="footInfo">kuidas see töötab</a></p>
+</section>
+
+<!-- TABLE -->
+<section class="screen" id="s-table">
+  <header class="top"><button class="back" id="tBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Korrutustabel</h2><span style="width:60px"></span></header>
+  <div class="chips" id="tableChips">
+    <button class="chip on" data-op="mul">Korrutamine</button>
+    <button class="chip" data-op="div">Jagamine</button>
+  </div>
+  <div class="hmwrap"><div class="tg" id="tg"></div></div>
+  <p class="muted" id="tHint" style="margin:0 0 4px;font-size:13px">Puuduta ruutu: näed terve rea. Vaata, siis mine treeningusse – peas kinnistub see, mida ise meenutad.</p>
+  <div class="tlist" id="tlist" hidden></div>
+</section>
+
+<!-- INFO -->
+<section class="screen" id="s-info">
+  <header class="top"><button class="back" id="iBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Kuidas see töötab</h2><span style="width:60px"></span></header>
+  <div class="info">
+    <p class="lead">Korrutaja on korrutustabeli ja jagamise harjutamise mäng: 3 minutit päevas, telefonis, ilma reklaami ja kontodeta.</p>
+
+    <h3>Miks just nii</h3>
+    <p>Uuringud on ühes asjas selged: fakt jääb pähe siis, kui seda ise meenutad, mitte siis, kui seda vaatad või kooris loed. Sellepärast küsib mäng kogu aeg ja näitab tabelit ainult kõrvale vaatamiseks. Lühikesed harjutused iga päev töötavad paremini kui pikad harvad.</p>
+
+    <h3>Kuidas mäng küsimusi valib</h3>
+    <p>Iga fakti kohta peab mäng meeles, kui tihti see õigesti läks ja kui kiiresti. Mida rohkem vigu ja aeglust, seda sagedamini see fakt tuleb. Vale või aeglane vastus tuleb samas ringis 3–6 küsimuse pärast uuesti. Tabelid 6–9 on eos sagedasemad, 1, 2, 5 ja 10 harvemad – need on lihtsad. Kui fakt on peas, jääb ta harva kordamisse, et ära ei ununeks.</p>
+
+    <h3>Mida värvid tähendavad</h3>
+    <ul>
+      <li><span class="sw" style="background:var(--ok)"></span><b>Peas</b> – viimasest 10 vastusest vähemalt 9 õiged ja tavaliselt alla 3 sekundi.</li>
+      <li><span class="sw" style="background:var(--warn)"></span><b>Peaaegu</b> – enamasti õige, aga veel aeglane.</li>
+      <li><span class="sw" style="background:var(--bad)"></span><b>Raske</b> – vigu või väga aeglane.</li>
+      <li><span class="sw" style="background:var(--grey)"></span><b>Pole veel selge</b> – alla 3 vastuse.</li>
+    </ul>
+    <p>Roheliste loendur on 45-st: tabel 1 ei lähe arvesse. Roheliseks saamise lävi (3 s) on kõigil sama, sõltumata taimeri seadest.</p>
+
+    <h3>Taimer</h3>
+    <p>Vaikimisi 6 sekundit küsimuse kohta; seadetes 4–10 s või rahulik režiim ilma taimerita. Taimer on tempo, mitte hinne: kui aeg saab otsa, näidatakse õiget vastust ja küsitakse varsti uuesti. Kui laps läheb taimerist närvi, pane rahulik režiim – aeg mõõdetakse ikka ja rohelised tulevad samamoodi.</p>
+
+    <h3>Kontroll</h3>
+    <p>25 küsimust, 6 sekundit igaüks, tabelid 2–10 võrdselt. Seaded seda ei mõjuta, seega on see aus mõõt sellest, kus laps päriselt on. Sama formaat, mida Inglismaa koolid kasutavad riiklikus korrutustabeli testis.</p>
+
+    <h3>Klass ja edetabelid</h3>
+    <p>Keegi (õpetaja, lapsevanem) loob klassi ja saab 6-märgilise koodi. Laps liitub koodi ja hüüdnimega – konto, e-posti ega parooli pole. Edetabelid:</p>
+    <ul>
+      <li><b>Nädal</b> – õigeid vastuseid alates esmaspäevast. Loeb harjutamine, mitte anne; igaüks võib võita.</li>
+      <li><b>Meistrid</b> – peas olevate faktide arv (× ja : kokku).</li>
+      <li><b>Kontroll</b> – parim tulemus 25-st.</li>
+      <li><b>Klassid</b> – klassid omavahel: õigeid vastuseid ühe aktiivse õpilase kohta nädalas.</li>
+    </ul>
+    <p>Näidatakse esiseitset ja sinu enda rida. Klassi ühine nädalaeesmärk kasvab astmeliselt.</p>
+
+    <h3>Mida hoitakse ja kus</h3>
+    <ul>
+      <li><b>Telefonis</b> – kogu edenemine, seaded ja klassi salakood. Kustutamine: Seaded → Kustuta kõik andmed.</li>
+      <li><b>Serveris</b> (Euroopa Liidus, Frankfurt) – ainult klassiga liitunutel: hüüdnimi, ringide vastuste arvud ja edenemise koopia telefoni vahetuseks. Ei nime, e-posti, asukohta ega seadme andmeid.</li>
+      <li><b>Ei ole</b> – reklaami, analüütikat, jälgimisküpsiseid, kolmandaid osapooli. Kirjatüübid laetakse Google Fontsist.</li>
+    </ul>
+    <p>Klassist lahkumine: Seaded → Klass → Lahku. Serverist kustutamiseks kirjuta tegijale.</p>
+
+    <h3>Lapsevanemale ja õpetajale</h3>
+    <ul>
+      <li>Üks 3-minutiline ring päevas on rohkem väärt kui pool tundi laupäeval.</li>
+      <li>Vaata koos soojuskaarti: punased ruudud on need, mida tasub üle rääkida (nt 6 × 8 = 48, „viiskümmend miinus kaks“).</li>
+      <li>Ära kasuta mängu karistusena ja ära võrdle lapsi omavahel häälega – edetabel teeb seda niigi, ja Nädal-tabelis võidab see, kes harjutab.</li>
+      <li>Kui laps saab Kontrollis stabiilselt 23+, on korrutustabel peas. Jagamine tuleb pärast.</li>
+    </ul>
+
+    <h3>Kes tegi</h3>
+    <p>Mängu tegi <a href="https://silverjaanus.com" target="_blank" rel="noopener">Silver Jaanus</a> oma tütrele. Kood on avalik: <a href="https://github.com/silverjaanus/korrutaja" target="_blank" rel="noopener">github.com/silverjaanus/korrutaja</a> (MIT-litsents) – igaüks võib vaadata, mida see teeb, või teha oma versiooni. Vead ja soovid: GitHubi „Issues“ või silverjaanus.com.</p>
+  </div>
+</section>
+
+<!-- GAME -->
+<section class="screen" id="s-game">
+  <div class="gtop">
+    <div class="bar"><i id="roundBar"></i></div>
+    <div class="gmeta"><span>Punkte <b id="gScore">0</b></span><span>Seeria <b id="gStreak">0</b></span><button class="quit" id="gQuit">Lõpeta</button></div>
+  </div>
+  <div class="stage" id="stage">
+    <svg class="ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-bg" cx="60" cy="60" r="54"/><circle class="ring-fg" id="ringFg" cx="60" cy="60" r="54"/></svg>
+    <div class="qbox"><div class="q" id="qText">7 × 8</div><div class="a empty" id="aText">= ?</div></div>
+  </div>
+  <div class="fbmsg" id="fbmsg"></div>
+  <div class="pad" id="pad">
+    <button class="key" data-k="1">1</button><button class="key" data-k="2">2</button><button class="key" data-k="3">3</button>
+    <button class="key" data-k="4">4</button><button class="key" data-k="5">5</button><button class="key" data-k="6">6</button>
+    <button class="key" data-k="7">7</button><button class="key" data-k="8">8</button><button class="key" data-k="9">9</button>
+    <button class="key mute" tabindex="-1" aria-hidden="true"></button><button class="key" data-k="0">0</button><button class="key" data-k="bs" aria-label="Kustuta"><svg viewBox="0 0 24 24"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="m18 9-6 6M12 9l6 6"/></svg></button>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section class="screen" id="s-result">
+  <header class="top"><h2 class="title" id="rTitle">Ring läbi!</h2></header>
+  <div class="big" id="rBig">0</div>
+  <div class="bigcap" id="rCap">punkti</div>
+  <div class="rows">
+    <div class="row"><span>Õigeid vastuseid</span><b id="rOk">0 / 0</b></div>
+    <div class="row"><span>Keskmine aeg</span><b id="rAvg">0 s</b></div>
+    <div class="row"><span>Pikim seeria</span><b id="rBest">0</b></div>
+  </div>
+  <div class="sect" id="rGreensWrap"><p class="label">Uued rohelised</p><div class="tags" id="rGreens"></div></div>
+  <div class="sect" id="rHardWrap"><p class="label">Harjuta veel</p><div class="tags" id="rHard"></div></div>
+  <div class="menu">
+    <button class="btn primary" id="rAgain">Veel üks ring</button>
+    <button class="btn" id="rHome">Koju</button>
+  </div>
+  <p class="sync" id="rSync"></p>
+</section>
+
+<!-- CLASS: join / create -->
+<section class="screen" id="s-class">
+  <header class="top"><button class="back" id="cBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Klass</h2><span style="width:60px"></span></header>
+  <div class="card">
+    <h3>Liitu klassiga</h3>
+    <input class="in code" id="jCode" maxlength="6" placeholder="KOOD" autocapitalize="characters" autocomplete="off" spellcheck="false" inputmode="text">
+    <input class="in" id="jNick" maxlength="16" placeholder="Sinu nimi või hüüdnimi" autocomplete="off">
+    <p class="err" id="jErr"></p>
+    <button class="btn primary small" id="jGo">Liitu</button>
+    <button class="link" id="jRestoreToggle">Mul on juba konto teises telefonis</button>
+    <div id="jRestore" hidden>
+      <p class="muted">Sisesta ülal klassikood ja hüüdnimi ning siia vana telefoni seadetes olev taastekood.</p>
+      <input class="in code" id="jSecret" maxlength="8" placeholder="TAASTEKOOD" autocapitalize="characters" autocomplete="off" spellcheck="false">
+      <button class="btn small" id="jRestoreGo">Taasta konto</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Loo uus klass</h3>
+    <p class="muted">Õpetajale või lapsevanemale. Saad koodi, mille jagad klassile.</p>
+    <input class="in" id="cName" maxlength="40" placeholder="nt 3B Kesklinna kool" autocomplete="off">
+    <p class="err" id="cErr"></p>
+    <button class="btn small" id="cGo">Loo klass</button>
+    <div id="cDone" hidden><div class="codebig" id="cCode"></div><p class="muted" style="text-align:center">Jaga see kood klassile. Kood on nüüd ka ülal liitumise lahtris.</p></div>
+  </div>
+  <p class="hint">Edetabelisse läheb ainult hüüdnimi ja harjutamise arv. Päris nime, e-posti ega parooli ei küsita.</p>
+</section>
+
+<!-- LEADERBOARD -->
+<section class="screen" id="s-board">
+  <header class="top"><button class="back" id="bBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Edetabel</h2><button class="icon" id="bRefresh" aria-label="Uuenda"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg></button></header>
+  <div class="card">
+    <div class="classline"><b id="bClass">—</b><span id="bCode"></span></div>
+    <div class="goal"><div class="bar"><i id="bGoalBar"></i></div><small><span id="bWeek">Sel nädalal 0 vastust</span><span id="bGoal"></span></small></div>
+  </div>
+  <div class="tabs" id="bTabs"><button class="tab on" data-t="week">Nädal</button><button class="tab" data-t="greens">Meistrid</button><button class="tab" data-t="test">Kontroll</button><button class="tab" data-t="classes">Klassid</button></div>
+  <p class="muted" id="bCap" style="margin:0 0 8px;font-size:13px"></p>
+  <div class="lb" id="bList"></div>
+  <p class="sync" id="bStatus"></p>
+</section>
+
+<!-- HEATMAP -->
+<section class="screen" id="s-heat">
+  <header class="top"><button class="back" id="hBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Soojuskaart</h2><span style="width:60px"></span></header>
+  <div class="chips" id="heatChips">
+    <button class="chip on" data-op="mul">Korrutamine</button>
+    <button class="chip" data-op="div">Jagamine</button>
+  </div>
+  <div class="hmwrap"><div class="hm" id="hm"></div></div>
+  <div class="legend"><span><i style="background:var(--grey)"></i>pole veel</span><span><i style="background:var(--bad)"></i>raske</span><span><i style="background:var(--warn)"></i>peaaegu</span><span><i style="background:var(--ok)"></i>peas</span></div>
+  <div class="detail" id="hDetail"><span class="muted">Puuduta ruutu, et näha täpsemalt.</span></div>
+</section>
+
+<!-- SETTINGS -->
+<section class="screen" id="s-settings">
+  <header class="top"><button class="back" id="setBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Seaded</h2><span style="width:60px"></span></header>
+  <div class="field"><div><label for="inName">Nimi</label></div><input type="text" id="inName" maxlength="16" placeholder="Mia" autocomplete="off"></div>
+  <div class="field"><div><label>Aega küsimusele</label><small>sekundit; roheline = alla 3 s</small></div><div class="seg" id="segLimit"><button data-v="4">4</button><button data-v="6">6</button><button data-v="8">8</button><button data-v="10">10</button></div></div>
+  <div class="field"><div><label>Ringi pikkus</label><small>minutit</small></div><div class="seg" id="segRound"><button data-v="2">2</button><button data-v="3">3</button><button data-v="5">5</button></div></div>
+  <div class="field"><div><label>Rahulik režiim</label><small>ilma taimerita, aeg mõõdetakse siiski</small></div><div class="seg" id="segCalm"><button data-v="0">Väljas</button><button data-v="1">Sees</button></div></div>
+  <div class="field" id="setClass" hidden><div><label>Klass</label><small id="setClassInfo"></small></div><button class="link" id="btnLeave">Lahku</button></div>
+  <button class="danger" id="btnReset">Kustuta kõik andmed</button>
+  <p class="hint">Telefonis: ava see leht Safaris või Chrome'is, vali „Jaga“ → „Lisa avakuvale“. Edenemine salvestub selles telefonis.</p>
+</section>
+
+</div>
+
+<script>
+(function(){
+'use strict';
+/* ===== Klassi edetabel (faas 2): Supabase projekti URL ja anon (public) key. Tühjad = ainult kohalik režiim. ===== */
+var SB={url:'',key:''};
+/* ================================================================================================================ */
+var LS='korrutaja_v1';
+var TARGET=3;
+var TW={1:.15,2:.2,3:.9,4:1.1,5:.45,6:1.4,7:1.5,8:1.5,9:1.3,10:.35};
+var HARD={'6x8':1,'6x9':1,'7x8':1,'6x7':1,'4x8':1,'4x9':1,'7x9':1,'7x7':1,'4x7':1,'3x8':1,'3x7':1,'4x6':1,'8x9':1,'8x8':1};
+var FACTS=[];
+for(var a=1;a<=10;a++)for(var b=a;b<=10;b++)FACTS.push({a:a,b:b,key:a+'x'+b});
+var FMAP={}; FACTS.forEach(function(f){FMAP[f.key]=f;});
+var SYM={mul:'×',div:':'};
+var DEF={name:'',op:'mul',limit:6,round:3,calm:false};
+
+var D=load();
+function fresh(){return {v:1,settings:clone(DEF),q:0,stats:{mul:{},div:{}},days:{},tests:[],total:{n:0,ok:0},cls:null,outbox:[],board:null};}
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function load(){
+  try{var r=localStorage.getItem(LS);if(r){var d=JSON.parse(r);
+    d.settings=Object.assign(clone(DEF),d.settings||{});d.stats=d.stats||{mul:{},div:{}};d.stats.mul=d.stats.mul||{};d.stats.div=d.stats.div||{};
+    d.days=d.days||{};d.tests=d.tests||[];d.total=d.total||{n:0,ok:0};d.q=d.q||0;d.cls=d.cls||null;d.outbox=d.outbox||[];d.board=d.board||null;return d;}}catch(e){}
+  return fresh();
+}
+function save(){try{localStorage.setItem(LS,JSON.stringify(D));}catch(e){}}
+function gs(op,key){return D.stats[op][key]||null;}
+function fs(op,key){var s=D.stats[op];if(!s[key])s[key]={n:0,rt:4,acc:.6,last:-99,miss:-99,h:[]};return s[key];}
+function clamp(x,lo,hi){return Math.max(lo,Math.min(hi,x));}
+function rnd(n){return Math.floor(Math.random()*n);}
+function fmt(t){return (Math.round(t*10)/10).toFixed(1).replace('.',',');}
+function today(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+
+/* ---------- mastery status ---------- */
+function status(st){
+  if(!st||st.n<3)return 'grey';
+  var h=st.h,ok=0,ts=[];
+  for(var i=0;i<h.length;i++){if(h[i].ok){ok++;ts.push(h[i].t);}}
+  var okr=ok/h.length;ts.sort(function(x,y){return x-y;});
+  var med=ts.length?ts[Math.floor(ts.length/2)]:99;
+  if(st.n>=8&&okr>=.9&&med<=TARGET)return 'green';
+  if(okr>=.8&&med<=5)return 'amber';
+  return 'red';
+}
+function greenCount(op){var n=0;for(var i=0;i<FACTS.length;i++){if(FACTS[i].a>=2&&status(gs(op,FACTS[i].key))==='green')n++;}return n;}
+
+/* ---------- adaptive selection ---------- */
+function prior(f){var p=TW[f.a]*TW[f.b];if(HARD[f.key])p*=1.3;return p;}
+function weight(f,op,now){
+  var st=gs(op,f.key)||{n:0,rt:4,acc:.6,last:-99,miss:-99,h:[]};
+  if(now-st.last<=3)return 0;
+  var w=prior(f);
+  w*=(0.3+2*(1-st.acc));
+  w*=clamp(st.rt/TARGET,.5,3);
+  if(st.n<3)w*=1.5;
+  if(status(st)==='green')w*=.25;
+  if(now-st.miss<=12)w*=1.8;
+  return w;
+}
+function pickAdaptive(op){
+  var tot=0,ws=[];
+  for(var i=0;i<FACTS.length;i++){var w=weight(FACTS[i],op,D.q);ws.push(w);tot+=w;}
+  if(tot<=0)return FACTS[rnd(FACTS.length)];
+  var r=Math.random()*tot;
+  for(i=0;i<FACTS.length;i++){r-=ws[i];if(r<=0)return FACTS[i];}
+  return FACTS[FACTS.length-1];
+}
+function record(op,f,ok,t){
+  var st=fs(op,f.key),A=.3;
+  st.n++;st.h.push({ok:ok,t:Math.round(t*100)/100});if(st.h.length>10)st.h.shift();
+  var tt=ok?t:Math.min(10,Math.max(t,curLimit()));
+  st.rt=st.rt+A*(tt-st.rt);
+  st.acc=st.acc+A*((ok?1:0)-st.acc);
+  st.last=D.q;if(!ok)st.miss=D.q;
+  D.q++;D.total.n++;if(ok)D.total.ok++;
+  var dk=today();D.days[dk]=(D.days[dk]||0)+1;
+}
+function streakDays(){
+  var n=0,d=new Date();
+  if((D.days[today(d)]||0)<20)d.setDate(d.getDate()-1);
+  while((D.days[today(d)]||0)>=20){n++;d.setDate(d.getDate()-1);if(n>999)break;}
+  return n;
+}
+
+/* ---------- screens ---------- */
+var $=function(id){return document.getElementById(id);};
+function show(id){var s=document.querySelectorAll('.screen');for(var i=0;i<s.length;i++)s[i].classList.toggle('on',s[i].id===id);window.scrollTo(0,0);}
+
+function renderHome(){
+  var nm=D.settings.name.trim();
+  $('hello').textContent=nm?'Tere, '+nm+'!':'Tere!';
+  var td=D.days[today()]||0;
+  $('subline').textContent=td?('Täna '+td+' vastust'+(td>=20?' · tänane päev on kirjas':' · veel '+(20-td)+' ja päev läheb kirja')):'Täna pole veel harjutanud';
+  $('tGreenMul').innerHTML=greenCount('mul')+'<em>/45</em>';
+  $('tGreenDiv').innerHTML=greenCount('div')+'<em>/45</em>';
+  $('tStreak').textContent=streakDays();
+  var ch=$('opChips').children;for(var i=0;i<ch.length;i++)ch[i].classList.toggle('on',ch[i].dataset.op===D.settings.op);
+  $('trainMeta').textContent=D.settings.round+' min'+(D.settings.calm?' · rahulik':'');
+  $('btnBoard').hidden=!(sbOn()&&D.cls);
+  $('btnJoin').hidden=!(sbOn()&&!D.cls);
+  if(D.cls)$('boardMeta').textContent=D.cls.class_name+(D.outbox.length?' · saatmata '+D.outbox.length:'');
+}
+$('opChips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;D.settings.op=b.dataset.op;save();renderHome();});
+$('btnSettings').onclick=function(){renderSettings();show('s-settings');};
+$('btnHeat').onclick=function(){heatOp=D.settings.op==='div'?'div':'mul';renderHeat();show('s-heat');};
+$('btnTrain').onclick=function(){startGame('train');};
+$('btnTest').onclick=function(){startGame('test');};
+
+/* ---------- game ---------- */
+var G=null,raf=null;
+function curLimit(){return G&&G.mode==='test'?6:D.settings.limit;}
+function isCalm(){return G&&G.mode==='train'&&D.settings.calm;}
+function sessionOp(){if(D.settings.op==='mix')return Math.random()<.5?'mul':'div';return D.settings.op;}
+
+function startGame(mode){
+  G={mode:mode,qi:0,score:0,streak:0,best:0,n:0,ok:0,tsum:0,queue:[],recent:[],greens:[],hard:{},cur:null,lock:false,start:performance.now(),testList:null};
+  if(mode==='test'){
+    var pool=FACTS.filter(function(f){return f.a>=2;});
+    for(var i=pool.length-1;i>0;i--){var j=rnd(i+1);var t=pool[i];pool[i]=pool[j];pool[j]=t;}
+    G.testList=pool.slice(0,25);
+  }
+  $('gScore').textContent='0';$('gStreak').textContent='0';$('roundBar').style.width='0%';
+  $('stage').classList.toggle('calm',isCalm());
+  show('s-game');
+  nextQuestion();
+}
+function makeQuestion(f,op){
+  var q,ans;
+  if(op==='mul'){var flip=Math.random()<.5;q=(flip?f.b:f.a)+' × '+(flip?f.a:f.b);ans=f.a*f.b;}
+  else{var p=f.a*f.b,d=Math.random()<.5?f.a:f.b;q=p+' : '+d;ans=p/d;}
+  return {f:f,op:op,q:q,ans:ans,typed:'',t0:0};
+}
+function nextQuestion(){
+  if(!G)return;
+  var f,op;
+  if(G.mode==='test'){
+    if(G.qi>=25){return endGame();}
+    f=G.testList[G.qi];op=sessionOp();
+  }else{
+    if((performance.now()-G.start)/1000>=D.settings.round*60){return endGame();}
+    op=sessionOp();
+    var due=null;
+    for(var i=0;i<G.queue.length;i++){var it=G.queue[i];if(it.due<=G.qi&&G.recent.indexOf(it.key)<0){due=it;G.queue.splice(i,1);break;}}
+    if(due){f=FMAP[due.key];op=due.op;}else{f=pickAdaptive(op);}
+  }
+  G.cur=makeQuestion(f,op);
+  G.recent.push(f.key);if(G.recent.length>2)G.recent.shift();
+  var st=$('stage');st.classList.remove('ok','bad');
+  $('qText').textContent=G.cur.q;
+  $('aText').textContent='= ?';$('aText').classList.add('empty');
+  $('fbmsg').textContent='';
+  G.lock=false;
+  G.cur.t0=performance.now();
+  $('ringFg').style.strokeDashoffset='0';
+  if(raf)cancelAnimationFrame(raf);
+  raf=requestAnimationFrame(tick);
+}
+function tick(){
+  if(!G||!G.cur||G.lock)return;
+  var el=(performance.now()-G.cur.t0)/1000,lim=curLimit();
+  if(!isCalm()){
+    $('ringFg').style.strokeDashoffset=String(339.3*clamp(el/lim,0,1));
+    if(el>=lim){return answer(null,lim);}
+  }
+  if(G.mode==='train'){$('roundBar').style.width=clamp((performance.now()-G.start)/1000/(D.settings.round*60)*100,0,100)+'%';}
+  raf=requestAnimationFrame(tick);
+}
+function typeKey(k){
+  if(!G||!G.cur||G.lock)return;
+  var c=G.cur;
+  if(k==='bs'){c.typed=c.typed.slice(0,-1);}
+  else{if(c.typed.length>=3)return;if(c.typed==='0')c.typed='';c.typed+=k;}
+  $('aText').textContent='= '+(c.typed||'?');$('aText').classList.toggle('empty',!c.typed);
+  if(c.typed.length===String(c.ans).length){answer(parseInt(c.typed,10),(performance.now()-c.t0)/1000);}
+}
+function answer(val,t){
+  if(!G||!G.cur||G.lock)return;
+  G.lock=true;if(raf)cancelAnimationFrame(raf);
+  var c=G.cur,ok=val===c.ans,before=status(gs(c.op,c.f.key));
+  record(c.op,c.f,ok,t);
+  var after=status(gs(c.op,c.f.key));
+  if(before!=='green'&&after==='green')G.greens.push({f:c.f,op:c.op});
+  G.n++;G.tsum+=Math.min(t,curLimit());
+  var st=$('stage');
+  if(ok){
+    G.ok++;G.streak++;G.best=Math.max(G.best,G.streak);
+    var pts=(t<=TARGET?10:5)+Math.min(G.streak-1,5);G.score+=pts;
+    st.classList.add('ok');
+    $('fbmsg').textContent=t<=TARGET?'Kiire! +'+pts:'Õige +'+pts;
+    if(G.mode==='train'&&t>4){G.hard[c.f.key]=(G.hard[c.f.key]||0)+1;G.queue.push({key:c.f.key,op:c.op,due:G.qi+3+rnd(4)});}
+  }else{
+    G.streak=0;st.classList.add('bad');
+    $('aText').textContent='= '+c.ans;$('aText').classList.remove('empty');
+    $('fbmsg').textContent=val===null?'Aeg sai otsa':'Õige on '+c.ans;
+    G.hard[c.f.key]=(G.hard[c.f.key]||0)+2;
+    if(G.mode==='train')G.queue.push({key:c.f.key,op:c.op,due:G.qi+3+rnd(4)});
+    if(navigator.vibrate)try{navigator.vibrate(60);}catch(e){}
+  }
+  $('gScore').textContent=G.score;$('gStreak').textContent=G.streak;
+  if(G.mode==='test')$('roundBar').style.width=((G.qi+1)/25*100)+'%';
+  G.qi++;save();
+  setTimeout(nextQuestion,ok?380:(isCalm()?2200:1600));
+}
+$('pad').addEventListener('click',function(e){var b=e.target.closest('.key');if(!b||!b.dataset.k)return;typeKey(b.dataset.k);});
+document.addEventListener('keydown',function(e){
+  if(!G||!$('s-game').classList.contains('on'))return;
+  if(e.key>='0'&&e.key<='9')typeKey(e.key);
+  else if(e.key==='Backspace')typeKey('bs');
+  else if(e.key==='Escape')quitGame();
+});
+function quitGame(){if(raf)cancelAnimationFrame(raf);if(G&&G.n>0){endGame();}else{G=null;renderHome();show('s-home');}}
+$('gQuit').onclick=quitGame;
+document.addEventListener('visibilitychange',function(){
+  if(!G||!$('s-game').classList.contains('on'))return;
+  if(document.hidden){if(raf)cancelAnimationFrame(raf);G.paused=true;}
+  else if(G.paused){G.paused=false;if(!G.lock)nextQuestion();}
+});
+
+function factLabel(f,op){return op==='div'?(f.a*f.b)+' : '+f.a:f.a+' × '+f.b;}
+function endGame(){
+  if(raf)cancelAnimationFrame(raf);
+  var R=G;G=null;
+  if(R.mode==='test'){D.tests.push({d:today(),ok:R.ok,n:R.n,avg:R.n?R.tsum/R.n:0});if(D.tests.length>50)D.tests.shift();}
+  save();
+  var best=0;for(var i=0;i<D.tests.length;i++)best=Math.max(best,D.tests[i].ok);
+  $('rTitle').textContent=R.mode==='test'?'Kontroll tehtud':'Ring läbi!';
+  $('rBig').textContent=R.mode==='test'?R.ok+' / '+R.n:R.score;
+  $('rCap').textContent=R.mode==='test'?('õiget · parim '+best+' / 25'):'punkti';
+  $('rOk').textContent=R.ok+' / '+R.n;
+  $('rAvg').textContent=(R.n?fmt(R.tsum/R.n):'0')+' s';
+  $('rBest').textContent=R.best;
+  var g=$('rGreens');g.innerHTML='';
+  if(R.greens.length){R.greens.forEach(function(x){var s=document.createElement('span');s.className='tag ok';s.textContent=factLabel(x.f,x.op);g.appendChild(s);});}
+  else{g.innerHTML='<span class="muted">Seekord uusi ei tulnud. Rohelised tulevad, kui fakt on 10 korda järjest kiiresti õige.</span>';}
+  var hk=Object.keys(R.hard).sort(function(x,y){return R.hard[y]-R.hard[x];}).slice(0,4);
+  var h=$('rHard');h.innerHTML='';
+  if(hk.length){hk.forEach(function(k){var f=FMAP[k];var s=document.createElement('span');s.className='tag';s.textContent=f.a+' × '+f.b+' = '+(f.a*f.b);h.appendChild(s);});}
+  else{h.innerHTML='<span class="muted">Kõik läks kiiresti ja õigesti. Tubli!</span>';}
+  $('rAgain').textContent=R.mode==='test'?'Uus kontroll':'Veel üks ring';
+  $('rAgain').onclick=function(){startGame(R.mode);};
+  $('rSync').textContent='';
+  show('s-result');
+  if(sbOn()&&D.cls&&R.n>0){
+    D.outbox.push({mode:R.mode,op:D.settings.op,n:R.n,ok:R.ok,score:R.score,avg:Math.round((R.n?R.tsum/R.n:0)*100)/100});
+    if(D.outbox.length>200)D.outbox.shift();
+    save();flush();
+  }
+}
+$('rHome').onclick=function(){renderHome();show('s-home');};
+
+/* ---------- heatmap ---------- */
+var heatOp='mul',heatSel=null;
+$('heatChips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;heatOp=b.dataset.op;heatSel=null;renderHeat();});
+function renderHeat(){
+  var ch=$('heatChips').children;for(var i=0;i<ch.length;i++)ch[i].classList.toggle('on',ch[i].dataset.op===heatOp);
+  var hm=$('hm');hm.innerHTML='';
+  var corner=document.createElement('div');corner.className='hl corner';corner.textContent=SYM[heatOp];hm.appendChild(corner);
+  for(var b=1;b<=10;b++){var l=document.createElement('div');l.className='hl';l.textContent=b;hm.appendChild(l);}
+  for(var a=1;a<=10;a++){
+    var rl=document.createElement('div');rl.className='hl';rl.textContent=a;hm.appendChild(rl);
+    for(b=1;b<=10;b++){
+      var key=Math.min(a,b)+'x'+Math.max(a,b);
+      var c=document.createElement('button');c.className='hc '+status(gs(heatOp,key));c.dataset.key=key;c.dataset.a=a;c.dataset.b=b;
+      c.textContent=a*b;c.setAttribute('aria-label',a+' '+SYM[heatOp]+' '+b);
+      if(heatSel===key)c.classList.add('sel');
+      hm.appendChild(c);
+    }
+  }
+  renderDetail();
+}
+$('hm').addEventListener('click',function(e){var c=e.target.closest('.hc');if(!c)return;heatSel=c.dataset.key;heatSelA=+c.dataset.a;heatSelB=+c.dataset.b;renderHeat();});
+var heatSelA=1,heatSelB=1;
+function renderDetail(){
+  var d=$('hDetail');
+  if(!heatSel){d.innerHTML='<span class="muted">Puuduta ruutu, et näha täpsemalt.</span>';return;}
+  var f=FMAP[heatSel],st=gs(heatOp,heatSel),p=f.a*f.b;
+  var title=heatOp==='mul'?(heatSelA+' × '+heatSelB+' = '+p):(p+' : '+heatSelA+' = '+heatSelB);
+  if(!st||st.n===0){d.innerHTML='<b>'+title+'</b><span class="muted">Pole veel küsitud.</span>';return;}
+  var ok=0,ts=[];for(var i=0;i<st.h.length;i++){if(st.h[i].ok){ok++;ts.push(st.h[i].t);}}
+  var avg=ts.length?ts.reduce(function(x,y){return x+y;},0)/ts.length:0;
+  var names={grey:'pole veel selge',red:'raske',amber:'peaaegu peas',green:'peas'};
+  d.innerHTML='<b>'+title+'</b>'+st.n+' vastust · viimased '+st.h.length+': '+Math.round(ok/st.h.length*100)+'% õiged · õige vastus keskmiselt '+fmt(avg)+' s<br><span class="muted">Seis: '+names[status(st)]+'</span>';
+}
+$('hBack').onclick=function(){renderHome();show('s-home');};
+
+/* ---------- table (review) ---------- */
+var tOp='mul',tSel=null;
+$('btnTable').onclick=function(){tOp=D.settings.op==='div'?'div':'mul';tSel=null;renderTable();show('s-table');};
+$('tBack').onclick=function(){renderHome();show('s-home');};
+$('tableChips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;tOp=b.dataset.op;renderTable();});
+function renderTable(){
+  var ch=$('tableChips').children;for(var i=0;i<ch.length;i++)ch[i].classList.toggle('on',ch[i].dataset.op===tOp);
+  var g=$('tg');g.innerHTML='';
+  var corner=document.createElement('div');corner.className='hl corner';corner.textContent=SYM[tOp];g.appendChild(corner);
+  for(var b=1;b<=10;b++){var l=document.createElement('div');l.className='hl';l.textContent=b;g.appendChild(l);}
+  for(var a=1;a<=10;a++){
+    var rl=document.createElement('div');rl.className='hl';rl.textContent=a;g.appendChild(rl);
+    for(b=1;b<=10;b++){
+      var c=document.createElement('button');c.className='tc'+((a<=2||b<=2||a===10||b===10)?' easy':'');
+      c.dataset.a=a;c.dataset.b=b;c.textContent=a*b;
+      if(tSel){if(tSel.a===a&&tSel.b===b)c.classList.add('sel');else if(tSel.a===a||tSel.b===b)c.classList.add('hi');}
+      g.appendChild(c);
+    }
+  }
+  var L=$('tlist');
+  if(!tSel){L.hidden=true;return;}
+  L.hidden=false;L.innerHTML='';
+  for(b=1;b<=10;b++){
+    var d=document.createElement('div');if(b===tSel.b)d.className='hi';
+    d.textContent=tOp==='mul'?(tSel.a+' × '+b+' = '+(tSel.a*b)):((tSel.a*b)+' : '+tSel.a+' = '+b);
+    L.appendChild(d);
+  }
+}
+$('tg').addEventListener('click',function(e){var c=e.target.closest('.tc');if(!c)return;tSel={a:+c.dataset.a,b:+c.dataset.b};renderTable();});
+
+/* ---------- info ---------- */
+$('btnInfo').onclick=function(){show('s-info');};
+$('footInfo').onclick=function(e){e.preventDefault();show('s-info');};
+$('iBack').onclick=function(){renderHome();show('s-home');};
+
+/* ---------- settings ---------- */
+function seg(id,val){var ch=$(id).children;for(var i=0;i<ch.length;i++)ch[i].classList.toggle('on',ch[i].dataset.v===String(val));}
+function renderSettings(){
+  $('inName').value=D.settings.name;
+  seg('segLimit',D.settings.limit);seg('segRound',D.settings.round);seg('segCalm',D.settings.calm?1:0);
+  $('btnReset').textContent='Kustuta kõik andmed';resetArmed=false;
+  $('setClass').hidden=!(sbOn()&&D.cls);
+  if(D.cls)$('setClassInfo').textContent=D.cls.class_name+' · kood '+D.cls.code+' · '+D.cls.nick+' · taastekood '+D.cls.secret;
+  $('btnLeave').textContent='Lahku';leaveArmed=false;
+}
+var leaveArmed=false;
+$('btnLeave').onclick=function(){
+  if(!leaveArmed){leaveArmed=true;this.textContent='Kindel? Vajuta veel kord';return;}
+  D.cls=null;D.outbox=[];D.board=null;save();renderSettings();
+};
+$('inName').addEventListener('input',function(){D.settings.name=this.value;save();});
+$('segLimit').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;D.settings.limit=+b.dataset.v;save();seg('segLimit',D.settings.limit);});
+$('segRound').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;D.settings.round=+b.dataset.v;save();seg('segRound',D.settings.round);});
+$('segCalm').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;D.settings.calm=b.dataset.v==='1';save();seg('segCalm',D.settings.calm?1:0);});
+var resetArmed=false;
+$('btnReset').onclick=function(){
+  if(!resetArmed){resetArmed=true;this.textContent='Kindel? Vajuta veel kord, et kustutada';return;}
+  var nm=D.settings.name,cls=D.cls;D=fresh();D.settings.name=nm;D.cls=cls;save();renderSettings();
+};
+$('setBack').onclick=function(){renderHome();show('s-home');};
+
+/* ---------- class + leaderboard (needs SB config) ---------- */
+function sbOn(){return !!(SB.url&&SB.key);}
+function rpc(fn,params){
+  return fetch(SB.url.replace(/\/$/,'')+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'apikey':SB.key,'Authorization':'Bearer '+SB.key,'Content-Type':'application/json'},body:JSON.stringify(params||{})})
+    .then(function(r){if(!r.ok)throw new Error('http '+r.status);return r.json();});
+}
+function bestTest(){var b=0;for(var i=0;i<D.tests.length;i++)b=Math.max(b,D.tests[i].ok);return b;}
+function statePayload(){return {stats:D.stats,days:D.days,tests:D.tests,total:D.total,q:D.q};}
+function applyState(s){if(!s||!s.stats)return;D.stats={mul:s.stats.mul||{},div:s.stats.div||{}};D.days=s.days||{};D.tests=s.tests||[];D.total=s.total||{n:0,ok:0};D.q=s.q||0;}
+function setSync(msg){$('rSync').textContent=msg;$('bStatus').textContent=msg;}
+var flushing=false;
+function flush(cb){
+  if(!sbOn()||!D.cls||!D.outbox.length||flushing){if(cb)cb();return;}
+  flushing=true;var it=D.outbox[0];
+  rpc('report_session',{p_player_id:D.cls.player_id,p_secret:D.cls.secret,p_mode:it.mode,p_op:it.op,p_n:it.n,p_ok:it.ok,p_score:it.score,p_avg:it.avg,
+    p_greens_mul:greenCount('mul'),p_greens_div:greenCount('div'),p_best_test:bestTest(),p_state:D.outbox.length===1?statePayload():null})
+  .then(function(r){
+    flushing=false;
+    if(r&&r.error==='auth'){D.outbox=[];D.cls=null;D.board=null;save();setSync('Klassi konto ei kehti enam. Liitu uuesti.');renderHome();if(cb)cb();return;}
+    D.outbox.shift();save();
+    setSync(D.outbox.length?'':'Edetabel uuendatud');
+    flush(cb);
+  })
+  .catch(function(){flushing=false;setSync('Võrku pole – saadan hiljem, kui võrk on tagasi.');renderHome();if(cb)cb();});
+}
+var ERR={code:'Sellist koodi pole.',nick:'Nimi peab olema 2–16 märki.',taken:'See nimi on juba võetud. Vali teine.',name:'Klassi nimi peab olema vähemalt 2 märki.',auth:'Kood, nimi või taastekood ei klapi.',net:'Võrku pole või server ei vasta.'};
+$('btnJoin').onclick=function(){$('jErr').textContent='';$('cErr').textContent='';show('s-class');};
+$('cBack').onclick=function(){renderHome();show('s-home');};
+$('jRestoreToggle').onclick=function(){$('jRestore').hidden=!$('jRestore').hidden;};
+function setCls(r){
+  D.cls={player_id:r.player_id,secret:r.secret,class_id:r.class_id,class_name:r.class_name,code:r.code,nick:r.nick};
+  if(!D.settings.name)D.settings.name=r.nick;
+  D.board=null;save();
+}
+$('jGo').onclick=function(){
+  var code=$('jCode').value.trim().toUpperCase(),nick=$('jNick').value.trim(),b=this;
+  $('jErr').textContent='';
+  if(code.length!==6){$('jErr').textContent='Kood on 6 märki.';return;}
+  if(nick.length<2){$('jErr').textContent=ERR.nick;return;}
+  b.disabled=true;
+  rpc('join_class',{p_code:code,p_nick:nick}).then(function(r){
+    b.disabled=false;
+    if(r.error){$('jErr').textContent=ERR[r.error]||'Ei õnnestunud.';return;}
+    setCls(r);openBoard();
+  }).catch(function(){b.disabled=false;$('jErr').textContent=ERR.net;});
+};
+$('jRestoreGo').onclick=function(){
+  var code=$('jCode').value.trim().toUpperCase(),nick=$('jNick').value.trim(),sec=$('jSecret').value.trim().toUpperCase(),b=this;
+  $('jErr').textContent='';
+  if(code.length!==6||nick.length<2||sec.length!==8){$('jErr').textContent='Täida klassikood, hüüdnimi ja 8-märgiline taastekood.';return;}
+  b.disabled=true;
+  rpc('restore_player',{p_code:code,p_nick:nick,p_secret:sec}).then(function(r){
+    b.disabled=false;
+    if(r.error){$('jErr').textContent=ERR[r.error]||'Ei õnnestunud.';return;}
+    setCls(r);
+    if(r.state&&r.state.total&&(r.state.total.n||0)>(D.total.n||0)){applyState(r.state);save();}
+    openBoard();
+  }).catch(function(){b.disabled=false;$('jErr').textContent=ERR.net;});
+};
+$('cGo').onclick=function(){
+  var name=$('cName').value.trim(),b=this;
+  $('cErr').textContent='';
+  if(name.length<2){$('cErr').textContent=ERR.name;return;}
+  b.disabled=true;
+  rpc('create_class',{p_name:name}).then(function(r){
+    b.disabled=false;
+    if(r.error){$('cErr').textContent=ERR[r.error]||'Ei õnnestunud.';return;}
+    $('cCode').textContent=r.code;$('cDone').hidden=false;$('jCode').value=r.code;
+  }).catch(function(){b.disabled=false;$('cErr').textContent=ERR.net;});
+};
+
+var boardTab='week';
+function openBoard(){renderHome();show('s-board');renderBoard();flush(loadBoard);}
+function loadBoard(){
+  if(!D.cls)return;
+  $('bStatus').textContent='Laen…';
+  rpc('class_board',{p_player_id:D.cls.player_id,p_secret:D.cls.secret}).then(function(r){
+    if(r.error==='auth'){D.cls=null;D.board=null;D.outbox=[];save();renderHome();show('s-home');return;}
+    if(r.error){$('bStatus').textContent='Ei õnnestunud.';return;}
+    D.board=r;save();renderBoard();$('bStatus').textContent='';
+  }).catch(function(){renderBoard();$('bStatus').textContent=D.board?'Võrku pole. Näitan viimast seisu.':'Võrku pole.';});
+}
+$('btnBoard').onclick=openBoard;
+$('bBack').onclick=function(){renderHome();show('s-home');};
+$('bRefresh').onclick=function(){flush(loadBoard);};
+$('bTabs').addEventListener('click',function(e){var b=e.target.closest('.tab');if(!b)return;boardTab=b.dataset.t;renderBoard();});
+var GOALS=[500,1000,2500,5000,10000,25000,50000,100000,250000];
+function num(n){return String(Math.round(n||0)).replace(/\B(?=(\d{3})+(?!\d))/g,' ');}
+function lrow(rank,name,sub,val,me){
+  var r=document.createElement('div');r.className='lrow'+(me?' me':'');
+  var rk=document.createElement('span');rk.className='rk';rk.textContent=rank;
+  var nm=document.createElement('span');nm.className='nm';nm.textContent=name;
+  if(sub){var s=document.createElement('small');s.textContent=sub;nm.appendChild(s);}
+  var vl=document.createElement('span');vl.className='vl';vl.textContent=val;
+  r.appendChild(rk);r.appendChild(nm);r.appendChild(vl);return r;
+}
+function renderBoard(){
+  var tabs=$('bTabs').children;for(var i=0;i<tabs.length;i++)tabs[i].classList.toggle('on',tabs[i].dataset.t===boardTab);
+  var list=$('bList');list.innerHTML='';
+  var B=D.board;
+  $('bClass').textContent=D.cls?D.cls.class_name:'—';$('bCode').textContent=D.cls?D.cls.code:'';
+  if(!B){$('bWeek').textContent='Sel nädalal — vastust';$('bGoal').textContent='';$('bGoalBar').style.width='0%';list.innerHTML='<p class="muted empty">Edetabel laeb, kui võrk on olemas.</p>';return;}
+  var wk=+B['class'].week_n||0,goal=GOALS[GOALS.length-1];
+  for(i=0;i<GOALS.length;i++){if(wk<GOALS[i]){goal=GOALS[i];break;}}
+  $('bWeek').textContent='Klass sel nädalal: '+num(wk)+' õiget · '+(B['class'].active_week||0)+' harjutajat';
+  $('bGoal').textContent='eesmärk '+num(goal);
+  $('bGoalBar').style.width=clamp(wk/goal*100,0,100)+'%';
+  var caps={week:'Õigeid vastuseid sel nädalal (alates esmaspäevast). Igaüks võib võita – loeb harjutamine.',greens:'Peas olevaid fakte, korrutamine ja jagamine kokku (max 90).',test:'Parim Kontroll 25-st.',classes:'Klassid: õigeid vastuseid ühe aktiivse õpilase kohta sel nädalal.'};
+  $('bCap').textContent=caps[boardTab];
+  if(boardTab==='classes'){
+    var cs=B.classes||[];
+    if(!cs.length){list.innerHTML='<p class="muted empty">Sel nädalal pole veel ükski klass harjutanud.</p>';return;}
+    cs.forEach(function(c,idx){list.appendChild(lrow(idx+1,c.name,c.active+' harjutajat · kokku '+num(c.week_n)+' õiget',num(c.per_player),D.cls&&c.id===D.cls.class_id));});
+    return;
+  }
+  var ps=(B.players||[]).slice();
+  var key={week:'week_n',greens:'greens',test:'best_test'}[boardTab];
+  var sec={week:'greens',greens:'week_n',test:'week_n'}[boardTab];
+  ps.sort(function(a,b){return (+b[key]-+a[key])||(+b[sec]-+a[sec])||a.nick.localeCompare(b.nick);});
+  if(!ps.length){list.innerHTML='<p class="muted empty">Klassis pole veel kedagi.</p>';return;}
+  var meIdx=-1;for(i=0;i<ps.length;i++){if(ps[i].id===B.me){meIdx=i;break;}}
+  var TOP=7;
+  function subFor(p){return boardTab==='greens'?('× '+p.greens_mul+' · : '+p.greens_div):boardTab==='test'?(p.week_n+' õiget sel nädalal'):(p.greens+' fakti peas');}
+  for(i=0;i<Math.min(TOP,ps.length);i++){list.appendChild(lrow(i+1,ps[i].nick,subFor(ps[i]),num(ps[i][key]),i===meIdx));}
+  if(meIdx>=TOP){var g=document.createElement('div');g.className='lrow gap';g.textContent='···';list.appendChild(g);list.appendChild(lrow(meIdx+1,ps[meIdx].nick,subFor(ps[meIdx]),num(ps[meIdx][key]),true));}
+}
+
+renderHome();
+if(sbOn()&&D.cls&&D.outbox.length)flush();
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&sbOn()&&D.cls&&D.outbox.length)flush();});
+})();
+</script>
