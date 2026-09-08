@@ -242,7 +242,7 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
     <button class="chip" data-op="div">Jagamine</button>
   </div>
   <div class="hmwrap"><div class="tg" id="tg"></div></div>
-  <p class="muted" id="tHint" style="margin:0 0 4px;font-size:13px">Puuduta ruutu: näed terve rea. Vaata, siis mine treeningusse – peas kinnistub see, mida ise meenutad.</p>
+  <p class="muted" id="tHint" style="margin:0 0 4px;font-size:13px">Puuduta üht ruutu – näed kogu rea korraga. Vaata rida üle ja mine siis treeningusse: pähe jääb see, mida ise meenutad.</p>
   <div class="tlist" id="tlist" hidden></div>
 </section>
 
@@ -253,43 +253,46 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
     <p class="lead">Korrutaja on korrutustabeli ja jagamise harjutamise mäng: 3 minutit päevas, telefonis, ilma reklaami ja kontodeta.</p>
 
     <h3>Miks just nii</h3>
-    <p>Uuringud on ühes asjas selged: fakt jääb pähe siis, kui seda ise meenutad, mitte siis, kui seda vaatad või kooris loed. Sellepärast küsib mäng kogu aeg ja näitab tabelit ainult kõrvale vaatamiseks. Lühikesed harjutused iga päev töötavad paremini kui pikad harvad.</p>
+    <p>Uuringud on ühes asjas selged: tehe jääb pähe siis, kui seda ise meenutad, mitte siis, kui seda vaatad või kooris loed. Sellepärast küsib mäng kogu aeg ja näitab tabelit ainult kõrvale vaatamiseks. Lühikesed harjutused iga päev töötavad paremini kui pikad harvad.</p>
 
     <h3>Kuidas mäng küsimusi valib</h3>
-    <p>Iga fakti kohta peab mäng meeles, kui tihti see õigesti läks ja kui kiiresti. Mida rohkem vigu ja aeglust, seda sagedamini see fakt tuleb. Vale või aeglane vastus tuleb samas ringis 3–6 küsimuse pärast uuesti. Tabelid 6–9 on eos sagedasemad, 1, 2, 5 ja 10 harvemad – need on lihtsad. Kui fakt on peas, jääb ta harva kordamisse, et ära ei ununeks.</p>
+    <p>Iga tehte kohta peab mäng meeles, kui tihti see õigesti läks ja kui kiiresti. Mida rohkem vigu ja aeglust, seda sagedamini see tehe tuleb. Vale või aeglane vastus küsitakse samas ringis 3–6 küsimuse pärast uuesti. Tabelid 6–9 tulevad alguses sagedamini, tabelid 1, 2, 5 ja 10 harvemini – need on lihtsad. Kui tehe on peas, tuleb see ikka aeg-ajalt üle, et ununema ei hakkaks.</p>
 
     <h3>Mida värvid tähendavad</h3>
     <ul>
-      <li><span class="sw" style="background:var(--ok)"></span><b>Peas</b> – viimasest 10 vastusest vähemalt 9 õiged ja tavaliselt alla 3 sekundi.</li>
-      <li><span class="sw" style="background:var(--warn)"></span><b>Peaaegu</b> – enamasti õige, aga veel aeglane.</li>
-      <li><span class="sw" style="background:var(--bad)"></span><b>Raske</b> – vigu või väga aeglane.</li>
-      <li><span class="sw" style="background:var(--grey)"></span><b>Pole veel selge</b> – alla 3 vastuse.</li>
+      <li><span class="sw" style="background:var(--ok)"></span><b>Peas</b> (roheline) – tehet on küsitud vähemalt 8 korda, viimastest vastustest on üheksa kümnest õiged ja pooled tulid alla 3 sekundi.</li>
+      <li><span class="sw" style="background:var(--warn)"></span><b>Peaaegu peas</b> (kollane) – enamasti õige, aga vastus tuleb veel aeglaselt.</li>
+      <li><span class="sw" style="background:var(--bad)"></span><b>Raske</b> (punane) – tuleb vigu või läheb väga kaua.</li>
+      <li><span class="sw" style="background:var(--grey)"></span><b>Pole veel selge</b> (hall) – vastuseid on alla kolme, mäng ei tea veel, kuidas läheb.</li>
     </ul>
-    <p>Roheliste loendur on 45-st: tabel 1 ei lähe arvesse. Roheliseks saamise lävi (3 s) on kõigil sama, sõltumata taimeri seadest.</p>
+    <p>Avalehel olevad loendurid „Rohelised ×“ ja „Rohelised :“ näitavad, mitu tehet on peas. Kokku on tehteid 45: tabelid 2–10, kusjuures 6 × 7 ja 7 × 6 on üks ja sama tehe. Tabel 1 on nii lihtne, et seda kokku ei loeta. Roheliseks saamise piir on alati 3 sekundit, ka siis, kui taimer on seatud pikemaks.</p>
+
+    <h3>Päevad järjest</h3>
+    <p>Avalehe loendur „Päeva järjest“ liigub edasi siis, kui päevas on antud vähemalt 20 vastust. Üks lühike ring päevas hoiab seeria käimas; vahelejäänud päev alustab loenduri nullist.</p>
 
     <h3>Taimer</h3>
     <p>Vaikimisi 6 sekundit küsimuse kohta; seadetes 4–10 s või rahulik režiim ilma taimerita. Taimer on tempo, mitte hinne: kui aeg saab otsa, näidatakse õiget vastust ja küsitakse varsti uuesti. Kui laps läheb taimerist närvi, pane rahulik režiim – aeg mõõdetakse ikka ja rohelised tulevad samamoodi.</p>
 
     <h3>Kontroll</h3>
-    <p>25 küsimust, 6 sekundit igaüks, tabelid 2–10 võrdselt. Seaded seda ei mõjuta, seega on see aus mõõt sellest, kus laps päriselt on. Sama formaat, mida Inglismaa koolid kasutavad riiklikus korrutustabeli testis.</p>
+    <p>25 küsimust, 6 sekundit igaüks, tabelid 2–10 võrdselt. Seaded seda ei mõjuta, seega on see aus mõõt sellest, kus laps päriselt on. Sama pikkus ja tempo nagu Inglismaa riiklikus korrutustabeli testis (seal käivad tabelid 2–12).</p>
 
     <h3>Klass ja edetabelid</h3>
     <p>Keegi (õpetaja, lapsevanem) loob klassi ja saab 6-märgilise koodi. Laps liitub koodi ja hüüdnimega – konto, e-posti ega parooli pole. Edetabelid:</p>
     <ul>
       <li><b>Nädal</b> – õigeid vastuseid alates esmaspäevast. Loeb harjutamine, mitte anne; igaüks võib võita.</li>
-      <li><b>Meistrid</b> – peas olevate faktide arv (× ja : kokku).</li>
-      <li><b>Kontroll</b> – parim tulemus 25-st.</li>
-      <li><b>Klassid</b> – klassid omavahel: õigeid vastuseid ühe aktiivse õpilase kohta nädalas.</li>
+      <li><b>Meistrid</b> – peas olevate tehete arv: korrutamine ja jagamine kokku, kõige rohkem 90.</li>
+      <li><b>Kontroll</b> – parim Kontrolli tulemus, 25 küsimusest.</li>
+      <li><b>Klassid</b> – klassid omavahel: õigeid vastuseid ühe harjutanud õpilase kohta. Nii ei võida suurem klass ainult suuruse tõttu.</li>
     </ul>
-    <p>Näidatakse esiseitset ja sinu enda rida. Klassi ühine nädalaeesmärk kasvab astmeliselt.</p>
+    <p>Näidatakse seitset paremat ja sinu enda rida. Klassil on ühine nädalaeesmärk: kui see saab täis, tuleb järgmine, suurem eesmärk.</p>
 
     <h3>Mida hoitakse ja kus</h3>
     <ul>
-      <li><b>Telefonis</b> – kogu edenemine, seaded ja klassi salakood. Kustutamine: Seaded → Kustuta kõik andmed.</li>
+      <li><b>Telefonis</b> – kogu edenemine, seaded ja klassi taastekood. Kustutamine: Seaded → Kustuta kõik andmed.</li>
       <li><b>Serveris</b> (Euroopa Liidus, Frankfurt) – ainult klassiga liitunutel: hüüdnimi, ringide vastuste arvud ja edenemise koopia telefoni vahetuseks. Ei nime, e-posti, asukohta ega seadme andmeid.</li>
       <li><b>Ei ole</b> – reklaami, analüütikat, jälgimisküpsiseid, kolmandaid osapooli. Kirjatüübid laetakse Google Fontsist.</li>
     </ul>
-    <p>Klassist lahkumine: Seaded → Klass → Lahku. Serverist kustutamiseks kirjuta tegijale.</p>
+    <p>Klassist lahkumine: Seaded → Klass → Lahku. Serverist kustutamiseks kirjuta tegijale, kontakt on all.</p>
 
     <h3>Lapsevanemale ja õpetajale</h3>
     <ul>
@@ -353,7 +356,7 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
     <button class="btn primary small" id="jGo">Liitu</button>
     <button class="link" id="jRestoreToggle">Mul on juba konto teises telefonis</button>
     <div id="jRestore" hidden>
-      <p class="muted">Sisesta ülal klassikood ja hüüdnimi ning siia vana telefoni seadetes olev taastekood.</p>
+      <p class="muted">Sisesta ülale sama klassikood ja hüüdnimi mis enne ning siia 8-märgiline taastekood. Taastekoodi leiad vanast telefonist: Seaded → Klass.</p>
       <input class="in code" id="jSecret" maxlength="8" placeholder="TAASTEKOOD" autocapitalize="characters" autocomplete="off" spellcheck="false">
       <button class="btn small" id="jRestoreGo">Taasta konto</button>
     </div>
@@ -366,7 +369,7 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
     <button class="btn small" id="cGo">Loo klass</button>
     <div id="cDone" hidden><div class="codebig" id="cCode"></div><p class="muted" style="text-align:center">Jaga see kood klassile. Kood on nüüd ka ülal liitumise lahtris.</p></div>
   </div>
-  <p class="hint">Edetabelisse läheb ainult hüüdnimi ja harjutamise arv. Päris nime, e-posti ega parooli ei küsita.</p>
+  <p class="hint">Edetabelisse läheb ainult hüüdnimi ja tulemused. Päris nime, e-posti ega parooli ei küsita.</p>
 </section>
 
 <!-- LEADERBOARD -->
@@ -398,9 +401,9 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
 <section class="screen" id="s-settings">
   <header class="top"><button class="back" id="setBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Seaded</h2><span style="width:60px"></span></header>
   <div class="field"><div><label for="inName">Nimi</label></div><input type="text" id="inName" maxlength="16" placeholder="Mia" autocomplete="off"></div>
-  <div class="field"><div><label>Aega küsimusele</label><small>sekundit; roheline = alla 3 s</small></div><div class="seg" id="segLimit"><button data-v="4">4</button><button data-v="6">6</button><button data-v="8">8</button><button data-v="10">10</button></div></div>
+  <div class="field"><div><label>Aega küsimusele</label><small>sekundit ühe küsimuse peale; roheliseks saab ikka alla 3 s</small></div><div class="seg" id="segLimit"><button data-v="4">4</button><button data-v="6">6</button><button data-v="8">8</button><button data-v="10">10</button></div></div>
   <div class="field"><div><label>Ringi pikkus</label><small>minutit</small></div><div class="seg" id="segRound"><button data-v="2">2</button><button data-v="3">3</button><button data-v="5">5</button></div></div>
-  <div class="field"><div><label>Rahulik režiim</label><small>ilma taimerita, aeg mõõdetakse siiski</small></div><div class="seg" id="segCalm"><button data-v="0">Väljas</button><button data-v="1">Sees</button></div></div>
+  <div class="field"><div><label>Rahulik režiim</label><small>ilma taimerita; aega mõõdetakse ikka</small></div><div class="seg" id="segCalm"><button data-v="0">Väljas</button><button data-v="1">Sees</button></div></div>
   <div class="field" id="setClass" hidden><div><label>Klass</label><small id="setClassInfo"></small></div><button class="link" id="btnLeave">Lahku</button></div>
   <button class="danger" id="btnReset">Kustuta kõik andmed</button>
   <p class="hint">Telefonis: ava see leht Safaris või Chrome'is, vali „Jaga“ → „Lisa avakuvale“. Edenemine salvestub selles telefonis.</p>
@@ -641,7 +644,7 @@ function endGame(){
   $('rBest').textContent=R.best;
   var g=$('rGreens');g.innerHTML='';
   if(R.greens.length){R.greens.forEach(function(x){var s=document.createElement('span');s.className='tag ok';s.textContent=factLabel(x.f,x.op);g.appendChild(s);});}
-  else{g.innerHTML='<span class="muted">Seekord uusi ei tulnud. Rohelised tulevad, kui fakt on 10 korda järjest kiiresti õige.</span>';}
+  else{g.innerHTML='<span class="muted">Seekord uusi ei tulnud. Roheliseks läheb tehe siis, kui see on mitu korda järjest õige ja alla 3 sekundi.</span>';}
   var hk=Object.keys(R.hard).sort(function(x,y){return R.hard[y]-R.hard[x];}).slice(0,4);
   var h=$('rHard');h.innerHTML='';
   if(hk.length){hk.forEach(function(k){var f=FMAP[k];var s=document.createElement('span');s.className='tag';s.textContent=f.a+' × '+f.b+' = '+(f.a*f.b);h.appendChild(s);});}
@@ -855,13 +858,13 @@ function renderBoard(){
   var list=$('bList');list.innerHTML='';
   var B=D.board;
   $('bClass').textContent=D.cls?D.cls.class_name:'—';$('bCode').textContent=D.cls?D.cls.code:'';
-  if(!B){$('bWeek').textContent='Sel nädalal — vastust';$('bGoal').textContent='';$('bGoalBar').style.width='0%';list.innerHTML='<p class="muted empty">Edetabel laeb, kui võrk on olemas.</p>';return;}
+  if(!B){$('bWeek').textContent='Klassi tulemused laevad…';$('bGoal').textContent='';$('bGoalBar').style.width='0%';list.innerHTML='<p class="muted empty">Edetabel laeb, kui võrk on olemas.</p>';return;}
   var wk=+B['class'].week_n||0,goal=GOALS[GOALS.length-1];
   for(i=0;i<GOALS.length;i++){if(wk<GOALS[i]){goal=GOALS[i];break;}}
   $('bWeek').textContent='Klass sel nädalal: '+num(wk)+' õiget · '+(B['class'].active_week||0)+' harjutajat';
   $('bGoal').textContent='eesmärk '+num(goal);
   $('bGoalBar').style.width=clamp(wk/goal*100,0,100)+'%';
-  var caps={week:'Õigeid vastuseid sel nädalal (alates esmaspäevast). Igaüks võib võita – loeb harjutamine.',greens:'Peas olevaid fakte, korrutamine ja jagamine kokku (max 90).',test:'Parim Kontroll 25-st.',classes:'Klassid: õigeid vastuseid ühe aktiivse õpilase kohta sel nädalal.'};
+  var caps={week:'Õigeid vastuseid sel nädalal (alates esmaspäevast). Igalühel on võimalus – loeb harjutamine.',greens:'Peas olevaid tehteid: korrutamine ja jagamine kokku, kõige rohkem 90.',test:'Parim Kontrolli tulemus, 25 küsimusest.',classes:'Klassid omavahel: õigeid vastuseid ühe harjutanud õpilase kohta sel nädalal.'};
   $('bCap').textContent=caps[boardTab];
   if(boardTab==='classes'){
     var cs=B.classes||[];
@@ -876,7 +879,7 @@ function renderBoard(){
   if(!ps.length){list.innerHTML='<p class="muted empty">Klassis pole veel kedagi.</p>';return;}
   var meIdx=-1;for(i=0;i<ps.length;i++){if(ps[i].id===B.me){meIdx=i;break;}}
   var TOP=7;
-  function subFor(p){return boardTab==='greens'?('× '+p.greens_mul+' · : '+p.greens_div):boardTab==='test'?(p.week_n+' õiget sel nädalal'):(p.greens+' fakti peas');}
+  function subFor(p){return boardTab==='greens'?('× '+p.greens_mul+' · : '+p.greens_div):boardTab==='test'?(p.week_n+' õiget sel nädalal'):(p.greens+' tehet peas');}
   for(i=0;i<Math.min(TOP,ps.length);i++){list.appendChild(lrow(i+1,ps[i].nick,subFor(ps[i]),num(ps[i][key]),i===meIdx));}
   if(meIdx>=TOP){var g=document.createElement('div');g.className='lrow gap';g.textContent='···';list.appendChild(g);list.appendChild(lrow(meIdx+1,ps[meIdx].nick,subFor(ps[meIdx]),num(ps[meIdx][key]),true));}
 }
