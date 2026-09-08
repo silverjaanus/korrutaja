@@ -1,0 +1,10 @@
+# Vercel: ainult mäng ise läheb üles
+korrutaja.src.html
+build.py
+config.json
+supabase.sql
+README.md
+SETUP.md
+PRIVACY.md
+LICENSE
+.github
