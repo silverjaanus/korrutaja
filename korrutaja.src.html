@@ -38,7 +38,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .icon svg{width:22px;height:22px;stroke:var(--ink2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .back{background:none;border:0;padding:8px 0;font:800 15px var(--fb);color:var(--acc);display:flex;align-items:center;gap:6px}
 .back svg{width:18px;height:18px;stroke:var(--acc);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap:balance}
+h2.title{font-family:var(--fd);font-weight:600;font-size:clamp(18px,5.8vw,26px);margin:0;text-wrap:balance;flex:1;text-align:center;min-width:0}
 
 /* home */
 .hello{font-family:var(--fd);font-size:34px;font-weight:600;line-height:1.1;margin:6px 0 4px;text-wrap:balance}
@@ -182,6 +182,30 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
 .info .lead{font-size:16px;color:var(--ink2);margin-top:4px}
 .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:4px}
 
+.card.invite{background:var(--acc-soft);border-color:var(--acc)}
+.card.invite h3{color:var(--acc);margin-bottom:6px}
+.card .note{background:var(--warn-soft);color:var(--warn-ink);border-radius:12px;padding:12px 14px;font-weight:700;font-size:14px;line-height:1.5;margin:0 0 12px}
+.card .note b{font-weight:800}
+.in.shbox{font-family:var(--fb);font-size:13px;font-weight:600;letter-spacing:0;text-align:left;color:var(--ink2)}
+.row2 .btn{font-size:16px;padding:14px 12px}
+.row2 .btn>span{white-space:nowrap}
+.gradeRow{display:grid;grid-template-columns:1fr 90px;gap:10px}
+.gradeRow select.in,.gradeRow input.in{margin-bottom:0}
+select.in{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235A5D78' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:18px;padding-right:36px}
+.suggest{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 10px}
+.suggest button{border:1.5px solid var(--acc);background:var(--acc-soft);color:var(--acc);border-radius:999px;padding:7px 12px;font:700 14px var(--fb);text-align:left}
+.preview{color:var(--ink2);font-weight:700;font-size:14px;margin:0 0 10px;min-height:20px}
+.preview b{color:var(--acc);font-family:var(--fd);font-weight:600;font-size:16px}
+.btn.done{opacity:.55}
+.lead2{color:var(--ink2);font-weight:600;font-size:14px;line-height:1.5;margin:0 0 12px}
+.quick{padding-bottom:12px}
+.quick h3{font-family:var(--fd);font-weight:600;font-size:21px;margin:18px 0 6px}
+.quick p{margin:0 0 10px;line-height:1.55;font-size:16px;font-weight:600}
+.quick ul{margin:0 0 10px 18px;padding:0;line-height:1.6;font-size:16px;font-weight:600}
+.quick li{margin-bottom:6px}
+.btn.share{margin-top:12px;justify-content:center;gap:8px}
+.btn.share svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
 @media (max-height:640px){.ring{width:210px;height:210px}.q,.a{font-size:40px}.key{height:52px}.stage{min-height:220px}}
 </style>
@@ -211,11 +235,11 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
     <button class="chip" data-op="mix">Segamini</button>
   </div>
   <div class="menu">
-    <button class="btn primary" id="btnTrain">Treening <small id="trainMeta">3 min</small></button>
-    <button class="btn" id="btnTest">Kontroll <small>25 küsimust · 6 s</small></button>
+    <button class="btn primary" id="btnTrain">Harjuta <small id="trainMeta">3 min</small></button>
+    <button class="btn" id="btnTest">Võistle <small id="testMeta">25 tehet · korra päevas</small></button>
     <div class="row2">
-      <button class="btn" id="btnTable">Tabel <small>vaata ja korda</small></button>
-      <button class="btn" id="btnHeat">Soojuskaart <small>nõrgad kohad</small></button>
+      <button class="btn" id="btnTable">Korrutustabel <small>vaata ja korda</small></button>
+      <button class="btn" id="btnHeat">Vaata tulemusi <small>mis on peas</small></button>
     </div>
     <button class="btn" id="btnBoard" hidden>Edetabel <small id="boardMeta"></small></button>
     <button class="btn" id="btnJoin" hidden>Liitu klassiga <small>võistle klassikaaslastega</small></button>
@@ -225,7 +249,7 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
 
 <!-- TABLE -->
 <section class="screen" id="s-table">
-  <header class="top"><button class="back" id="tBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Korrutustabel</h2><span style="width:60px"></span></header>
+  <header class="top"><button class="back" id="tBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title" id="tTitle">Korrutustabel</h2><span style="width:60px"></span></header>
   <div class="chips" id="tableChips">
     <button class="chip on" data-op="mul">Korrutamine</button>
     <button class="chip" data-op="div">Jagamine</button>
@@ -235,11 +259,54 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
   <div class="tlist" id="tlist" hidden></div>
 </section>
 
+<!-- KIIRJUHEND -->
+<section class="screen" id="s-quick">
+  <header class="top"><button class="back" id="qBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Kuidas mängida</h2><span style="width:60px"></span></header>
+  <div class="quick">
+    <h3>Harjuta</h3>
+    <p>Mäng küsib tehteid ja sina vastad. Ta jätab meelde, mis läks valesti, ja küsib seda varsti uuesti. Harjutada võid nii palju kui tahad.</p>
+
+    <h3>Võistle</h3>
+    <p>25 tehet, igaüks 6 sekundit. Kõik lapsed saavad ühesuguse võistluse, nii et tulemusi saab võrrelda. Võistelda saab üks kord päevas ja tulemus läheb klassi edetabelisse.</p>
+    <p>Nädalasse lähevad arvesse viie parima päeva tulemused. Nädalavahetusel ei pea mängima.</p>
+
+    <h3>Värvid</h3>
+    <ul>
+      <li><span class="sw" style="background:var(--ok)"></span><b>Roheline</b> – see tehe on peas.</li>
+      <li><span class="sw" style="background:var(--warn)"></span><b>Kollane</b> – õige, aga veel aeglane.</li>
+      <li><span class="sw" style="background:var(--bad)"></span><b>Punane</b> – seda tasub veel harjutada.</li>
+    </ul>
+    <p>Oma värve näed „Vaata tulemusi“ all.</p>
+
+    <h3>Aeg</h3>
+    <p>Ring ümber tehte näitab, palju aega on. Kui aeg saab otsa, näidatakse õiget vastust ja tehe tuleb varsti uuesti. See ei ole hinne, vaid tempo.</p>
+
+    <button class="btn small" id="qLong" style="margin-top:18px">Pikem seletus</button>
+  </div>
+</section>
+
 <!-- INFO -->
 <section class="screen" id="s-info">
   <header class="top"><button class="back" id="iBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Kuidas see töötab</h2><span style="width:60px"></span></header>
   <div class="info">
     <p class="lead">Korrutaja on korrutustabeli ja jagamise harjutamise mäng: 3 minutit päevas, telefonis, ilma reklaami ja kontodeta.</p>
+    <p class="lead">Lühike juhend lapsele on avaekraani (i) nupu all. Siin on pikem lugu sellest, kuidas mäng käib ja miks ta nii tehtud on.</p>
+
+    <h3>Kaks nuppu: õppimine ja võistlemine</h3>
+    <p>Mängul on kaks poolt. Ühega õpid, teisega mõõdad, kui kaugel oled. Vahe ei ole pikkuses ega küsimuste arvus – vahe on selles, <b>kumb pool valib küsimused</b>.</p>
+    <p><b>Harjuta</b> – mäng valib. Ta peab meeles, et 7 × 8 läks sul eile untsu, ja küsib seda täna kolm korda; kergeid tehteid ta peaaegu ei küsi. Eesmärk on midagi selgeks õpetada. Just sellepärast ei ole harjutamise punktid võrreldavad – sina ja su pinginaaber saite täiesti erinevad küsimused. Harjutada võib nii palju kui tahad, iga päev, mitu korda päevas.</p>
+    <p><b>Võistle</b> – juhus valib. 25 tehet kogu tabelist 2–10 võrdse tõenäosusega, igaüks 6 sekundit, sinu seaded ei mõjuta midagi. Just see ühetaolisus teebki tulemuse võrreldavaks: „23 / 25“ tähendab sama asja igal lapsel ja igal päeval. See on sama formaat, mida Inglismaa koolid kasutavad riiklikus korrutustabeli testis.</p>
+    <p>Ühe puhul on kallutatus mõte, teise puhul on kallutatus viga.</p>
+
+    <h3>Võistelda saab üks kord päevas</h3>
+    <p>See on tahtlik piirang ja sellel on kaks põhjust. Esiteks: kui võistelda saaks piiramatult, võidaks alati see, kes kõige kauem klõpsib, mitte see, kes kõige paremini oskab. Üks tulemus päevas paneb kõik võrdsesse olukorda. Teiseks: nii tekib põhjus iga päev korraks tagasi tulla.</p>
+    <p>Piirangut kontrollib server, mitte telefon – telefoni kella keeramine lisakatseid ei anna. Tulemus läheb kirja ka siis, kui halvasti läheb, ja mäng ütleb seda enne alustamist.</p>
+    <p>Harjutamist see ei puuduta. Harjutada saab ka pärast seda, kui päeva võistlus on tehtud – ja tavaliselt tasubki, sest homme läheb paremini.</p>
+    <p>Kui lapsel on rahulik režiim sees, ei tuleta mäng võistlemist meelde. Nupp jääb alles, aga 6-sekundiline võistlus ei ole selle lapse jaoks kohustuslik.</p>
+
+    <h3>Nädalasse lähevad viis parimat päeva</h3>
+    <p>Klassi edetabelis liidetakse kokku selle nädala viie parima võistluspäeva tulemused. Maksimum on seega 125 punkti nädalas.</p>
+    <p>Viis, mitte seitse, sest nädalavahetusel ei pea mängima. Kes mängib esmaspäevast reedeni, saab kõik viis päeva kirja. Kes jääb kolmapäeval haigeks ja teeb selle laupäeval tasa, saab samuti viis. Ja kes mängib kõik seitse päeva, ei saa sellest eelist – nii ei teki survet pühapäeva õhtul telefoni haarata.</p>
 
     <h3>Miks just nii</h3>
     <p>Uuringud on ühes asjas selged: fakt jääb pähe siis, kui seda ise meenutad, mitte siis, kui seda vaatad või kooris loed. Sellepärast küsib mäng kogu aeg ja näitab tabelit ainult kõrvale vaatamiseks. Lühikesed harjutused iga päev töötavad paremini kui pikad harvad.</p>
@@ -258,19 +325,28 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
 
     <h3>Taimer</h3>
     <p>Vaikimisi 6 sekundit küsimuse kohta; seadetes 4–10 s või rahulik režiim ilma taimerita. Taimer on tempo, mitte hinne: kui aeg saab otsa, näidatakse õiget vastust ja küsitakse varsti uuesti. Kui laps läheb taimerist närvi, pane rahulik režiim – aeg mõõdetakse ikka ja rohelised tulevad samamoodi.</p>
-
-    <h3>Kontroll</h3>
-    <p>25 küsimust, 6 sekundit igaüks, tabelid 2–10 võrdselt. Seaded seda ei mõjuta, seega on see aus mõõt sellest, kus laps päriselt on. Sama formaat, mida Inglismaa koolid kasutavad riiklikus korrutustabeli testis.</p>
+    <p>Need seaded kehtivad ainult harjutamisel. Võistlus on kõigil ühesugune: alati 6 sekundit. Muidu ei saaks tulemusi kõrvuti panna.</p>
 
     <h3>Klass ja edetabelid</h3>
-    <p>Keegi (õpetaja, lapsevanem) loob klassi ja saab 6-märgilise koodi. Laps liitub koodi ja hüüdnimega – konto, e-posti ega parooli pole. Edetabelid:</p>
+    <p>Keegi (õpetaja, lapsevanem) loob klassi ja saab 6-märgilise koodi. Laps liitub koodi ja hüüdnimega – konto, e-posti ega parooli pole.</p>
+    <p>Luua saab kaht sorti gruppi. <b>Kooliklass</b> küsib kooli nime ja klassiastet ning saab nimeks näiteks „Õismäe Gümnaasium 3B“ – ainult nii saab klasse omavahel võrrelda. Koolinimede nimekirja pole kuskilt sisse loetud: esimene, kes kooli kirja paneb, loobki kirje, ja järgmised valivad selle valmis pakutud nimede seast. Nii ei teki „Õismäe Gümnaasium“, „Õismäe gümn“ ja „ÕG“ kolme eri koolina.</p>
+    <p><b>Tiim</b> on lihtsalt nimi, näiteks „Mia sõbrad“. Kooli ei küsita ja tiim jääb omaette – see on mõeldud sõpruskonnale, kes tahab omavahel võistelda. Edetabelid:</p>
     <ul>
-      <li><b>Nädal</b> – õigeid vastuseid alates esmaspäevast. Loeb harjutamine, mitte anne; igaüks võib võita.</li>
-      <li><b>Meistrid</b> – peas olevate faktide arv (× ja : kokku).</li>
-      <li><b>Kontroll</b> – parim tulemus 25-st.</li>
-      <li><b>Klassid</b> – klassid omavahel: õigeid vastuseid ühe aktiivse õpilase kohta nädalas.</li>
+      <li><b>Nädal</b> – selle nädala võistluspunktid, viie parima päeva summa. Maksimum 125.</li>
+      <li><b>Meistrid</b> – peas olevate tehete arv (× ja : kokku, max 90). Seda kasvatab harjutamine.</li>
+      <li><b>Rekord</b> – parim üksik võistlustulemus 25-st.</li>
+      <li><b>Kool</b> – sama kooli sama astme klassid omavahel: 3A vs 3B vs 3C.</li>
+      <li><b>Eesti</b> – sama klassiaste üle Eesti.</li>
     </ul>
+    <p>Kool ja Eesti võrdlevad punkte ühe võistleja kohta, mitte klassi kogusummat – muidu võidaks alati suurem klass. Iga rea kõrval on kirjas, mitu last selles klassis sel nädalal võistles, et oleks näha, kui väikese seltskonna tulemusega on tegu.</p>
+    <p>Miks ainult sama aste? Sest korrutustabelis ei ütle 3. klassi ja 8. klassi võrdlus midagi – vanem laps vastab kiiremini ka siis, kui ta vähem harjutab. Sama põhjusega ei ole koolide üldist pingerida: koolis on eri vanuses lapsed ja võrdlus mõõdaks siis vanust, mitte harjutamist.</p>
+    <p>Tiim ei osale kooli- ega astmevõrdluses. Tiimil on ainult oma edetabel.</p>
     <p>Näidatakse esiseitset ja sinu enda rida. Klassi ühine nädalaeesmärk kasvab astmeliselt.</p>
+
+    <h3>Klassi jagamine</h3>
+    <p>Edetabelis on nupp „Kutsu sõber klassi“. See saadab lingi, mis avab mängu nii, et klassikood on juba täidetud – sõbral jääb üle ainult oma nimi kirjutada. Koodi saab enne liitumist üle kirjutada, kui link läks valesse klassi.</p>
+    <p>Link ei ole salajane: igaüks, kelleni see jõuab, saab klassiga liituda. Jaga seda ainult oma klassi jutuajamises.</p>
+    <p>Korraga saab olla ühes klassis või tiimis. Kui liitud uuega, jäävad vana grupi nädalapunktid sinna paika ja uues alustad nullist – peas olevad tehted ja rekord tulevad kaasa. Vanasse gruppi pääsed tagasi taastekoodiga (Seaded → Klass).</p>
 
     <h3>Mida hoitakse ja kus</h3>
     <ul>
@@ -285,7 +361,8 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
       <li>Üks 3-minutiline ring päevas on rohkem väärt kui pool tundi laupäeval.</li>
       <li>Vaata koos soojuskaarti: punased ruudud on need, mida tasub üle rääkida (nt 6 × 8 = 48, „viiskümmend miinus kaks“).</li>
       <li>Ära kasuta mängu karistusena ja ära võrdle lapsi omavahel häälega – edetabel teeb seda niigi, ja Nädal-tabelis võidab see, kes harjutab.</li>
-      <li>Kui laps saab Kontrollis stabiilselt 23+, on korrutustabel peas. Jagamine tuleb pärast.</li>
+      <li>Kui laps saab võistlusel stabiilselt 23+, on korrutustabel peas. Jagamine tuleb pärast.</li>
+      <li>Kui laps tahab päevas mitu korda võistelda, ütle talle, et võistlus ongi üks kord päevas – aga harjutada tohib nii palju kui süda lustib. Just harjutamine viibki homse tulemuse üles.</li>
     </ul>
 
     <h3>Kes tegi</h3>
@@ -334,8 +411,13 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
 <!-- CLASS: join / create -->
 <section class="screen" id="s-class">
   <header class="top"><button class="back" id="cBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Klass</h2><span style="width:60px"></span></header>
+  <div class="card invite" id="jInvite" hidden>
+    <h3 id="jInviteName">Kutse klassiga liituma</h3>
+    <p class="muted" style="margin:0">Kood on all juba täidetud. Kirjuta oma nimi ja vajuta „Liitu“. Vale klass? Kirjuta kood lihtsalt üle.</p>
+  </div>
   <div class="card">
     <h3>Liitu klassiga</h3>
+    <p class="note" id="jWarn" hidden></p>
     <input class="in code" id="jCode" maxlength="6" placeholder="KOOD" autocapitalize="characters" autocomplete="off" spellcheck="false" inputmode="text">
     <input class="in" id="jNick" maxlength="16" placeholder="Sinu nimi või hüüdnimi" autocomplete="off">
     <p class="err" id="jErr"></p>
@@ -348,12 +430,31 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
     </div>
   </div>
   <div class="card">
-    <h3>Loo uus klass</h3>
-    <p class="muted">Õpetajale või lapsevanemale. Saad koodi, mille jagad klassile.</p>
-    <input class="in" id="cName" maxlength="40" placeholder="nt 3B Kesklinna kool" autocomplete="off">
+    <h3>Loo uus</h3>
+    <p class="muted">Õpetajale või lapsevanemale. Saad koodi, mille jagad teistele.</p>
+    <div class="chips" id="cKind" style="margin-bottom:14px">
+      <button class="chip on" data-kind="class">Kooliklass</button>
+      <button class="chip" data-kind="team">Tiim</button>
+    </div>
+    <div id="cClassFields">
+      <input class="in" id="cSchool" maxlength="60" placeholder="Kooli nimi" autocomplete="off">
+      <div class="suggest" id="cSuggest" hidden></div>
+      <div class="gradeRow">
+        <select class="in" id="cGrade"></select>
+        <input class="in" id="cLetter" maxlength="1" placeholder="A" autocapitalize="characters" autocomplete="off" spellcheck="false" style="text-align:center">
+      </div>
+    </div>
+    <div id="cTeamFields" hidden>
+      <input class="in" id="cName" maxlength="40" placeholder="nt Mia sõbrad" autocomplete="off">
+      <p class="muted" style="font-size:14px">Tiim võistleb ainult omavahel. Kooli- ja klassivõrdlusse ta ei lähe.</p>
+    </div>
+    <p class="preview" id="cPreview"></p>
     <p class="err" id="cErr"></p>
-    <button class="btn small" id="cGo">Loo klass</button>
-    <div id="cDone" hidden><div class="codebig" id="cCode"></div><p class="muted" style="text-align:center">Jaga see kood klassile. Kood on nüüd ka ülal liitumise lahtris.</p></div>
+    <button class="btn small" id="cGo">Loo</button>
+    <div id="cDone" hidden><div class="codebig" id="cCode"></div><p class="muted" style="text-align:center">Jaga see kood klassile. Kood on nüüd ka ülal liitumise lahtris.</p>
+      <button class="btn small share" id="cShare"><svg viewBox="0 0 24 24"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M12 3v13M8 7l4-4 4 4"/></svg>Jaga kutset</button>
+      <input class="in shbox" id="cShareBox" readonly hidden style="margin-top:8px">
+    </div>
   </div>
   <p class="hint">Edetabelisse läheb ainult hüüdnimi ja harjutamise arv. Päris nime, e-posti ega parooli ei küsita.</p>
 </section>
@@ -364,8 +465,10 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
   <div class="card">
     <div class="classline"><b id="bClass">—</b><span id="bCode"></span></div>
     <div class="goal"><div class="bar"><i id="bGoalBar"></i></div><small><span id="bWeek">Sel nädalal 0 vastust</span><span id="bGoal"></span></small></div>
+    <button class="btn small share" id="bShare"><svg viewBox="0 0 24 24"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M12 3v13M8 7l4-4 4 4"/></svg>Kutsu sõber klassi</button>
+    <input class="in shbox" id="bShareBox" readonly hidden style="margin-top:8px;margin-bottom:0">
   </div>
-  <div class="tabs" id="bTabs"><button class="tab on" data-t="week">Nädal</button><button class="tab" data-t="greens">Meistrid</button><button class="tab" data-t="test">Kontroll</button><button class="tab" data-t="classes">Klassid</button></div>
+  <div class="tabs" id="bTabs"><button class="tab on" data-t="week">Nädal</button><button class="tab" data-t="greens">Meistrid</button><button class="tab" data-t="test">Rekord</button><button class="tab" data-t="school" hidden>Kool</button><button class="tab" data-t="grade" hidden>Eesti</button></div>
   <p class="muted" id="bCap" style="margin:0 0 8px;font-size:13px"></p>
   <div class="lb" id="bList"></div>
   <p class="sync" id="bStatus"></p>
@@ -373,7 +476,8 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:26px;margin:0;text-wrap
 
 <!-- HEATMAP -->
 <section class="screen" id="s-heat">
-  <header class="top"><button class="back" id="hBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Soojuskaart</h2><span style="width:60px"></span></header>
+  <header class="top"><button class="back" id="hBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Vaata tulemusi</h2><span style="width:60px"></span></header>
+  <p class="lead2">Siit näed, millised tehted on sul juba peas ja mida tasub veel harjutada. Puuduta ruutu, et näha ühe tehte kohta täpsemalt.</p>
   <div class="chips" id="heatChips">
     <button class="chip on" data-op="mul">Korrutamine</button>
     <button class="chip" data-op="div">Jagamine</button>
@@ -414,12 +518,12 @@ var SYM={mul:'×',div:':'};
 var DEF={name:'',op:'mul',limit:6,round:3,calm:false};
 
 var D=load();
-function fresh(){return {v:1,settings:clone(DEF),q:0,stats:{mul:{},div:{}},days:{},tests:[],total:{n:0,ok:0},cls:null,outbox:[],board:null};}
+function fresh(){return {v:1,settings:clone(DEF),q:0,stats:{mul:{},div:{}},days:{},tests:[],total:{n:0,ok:0},cls:null,outbox:[],board:null,lastCompete:''};}
 function clone(o){return JSON.parse(JSON.stringify(o));}
 function load(){
   try{var r=localStorage.getItem(LS);if(r){var d=JSON.parse(r);
     d.settings=Object.assign(clone(DEF),d.settings||{});d.stats=d.stats||{mul:{},div:{}};d.stats.mul=d.stats.mul||{};d.stats.div=d.stats.div||{};
-    d.days=d.days||{};d.tests=d.tests||[];d.total=d.total||{n:0,ok:0};d.q=d.q||0;d.cls=d.cls||null;d.outbox=d.outbox||[];d.board=d.board||null;return d;}}catch(e){}
+    d.days=d.days||{};d.tests=d.tests||[];d.total=d.total||{n:0,ok:0};d.q=d.q||0;d.cls=d.cls||null;d.outbox=d.outbox||[];d.board=d.board||null;d.lastCompete=d.lastCompete||'';return d;}}catch(e){}
   return fresh();
 }
 function save(){try{localStorage.setItem(LS,JSON.stringify(D));}catch(e){}}
@@ -495,6 +599,10 @@ function renderHome(){
   $('tStreak').textContent=streakDays();
   var ch=$('opChips').children;for(var i=0;i<ch.length;i++)ch[i].classList.toggle('on',ch[i].dataset.op===D.settings.op);
   $('trainMeta').textContent=D.settings.round+' min'+(D.settings.calm?' · rahulik':'');
+  var done=competedToday();
+  $('btnTest').classList.toggle('done',done);
+  $('testMeta').textContent=done?'tehtud · homme uuesti':'25 tehet · korra päevas';
+  testArmed=false;
   $('btnBoard').hidden=!(sbOn()&&D.cls);
   $('btnJoin').hidden=!(sbOn()&&!D.cls);
   if(D.cls)$('boardMeta').textContent=D.cls.class_name+(D.outbox.length?' · saatmata '+D.outbox.length:'');
@@ -503,7 +611,20 @@ $('opChips').addEventListener('click',function(e){var b=e.target.closest('.chip'
 $('btnSettings').onclick=function(){renderSettings();show('s-settings');};
 $('btnHeat').onclick=function(){heatOp=D.settings.op==='div'?'div':'mul';renderHeat();show('s-heat');};
 $('btnTrain').onclick=function(){startGame('train');};
-$('btnTest').onclick=function(){startGame('test');};
+function competedToday(){return D.lastCompete===today();}
+var testArmed=false;
+$('btnTest').onclick=function(){
+  if(competedToday()){
+    $('testMeta').textContent='Tänane võistlus on tehtud. Homme saad uuesti.';
+    return;
+  }
+  if(!testArmed){
+    testArmed=true;
+    $('testMeta').textContent='Tulemus läheb kirja. Vajuta veel kord';
+    return;
+  }
+  testArmed=false;startGame('test');
+};
 
 /* ---------- game ---------- */
 var G=null,raf=null;
@@ -619,12 +740,12 @@ function factLabel(f,op){return op==='div'?(f.a*f.b)+' : '+f.a:f.a+' × '+f.b;}
 function endGame(){
   if(raf)cancelAnimationFrame(raf);
   var R=G;G=null;
-  if(R.mode==='test'){D.tests.push({d:today(),ok:R.ok,n:R.n,avg:R.n?R.tsum/R.n:0});if(D.tests.length>50)D.tests.shift();}
+  if(R.mode==='test'){D.tests.push({d:today(),ok:R.ok,n:R.n,avg:R.n?R.tsum/R.n:0});if(D.tests.length>50)D.tests.shift();D.lastCompete=today();}
   save();
   var best=0;for(var i=0;i<D.tests.length;i++)best=Math.max(best,D.tests[i].ok);
-  $('rTitle').textContent=R.mode==='test'?'Kontroll tehtud':'Ring läbi!';
+  $('rTitle').textContent=R.mode==='test'?'Võistlus tehtud':'Ring läbi!';
   $('rBig').textContent=R.mode==='test'?R.ok+' / '+R.n:R.score;
-  $('rCap').textContent=R.mode==='test'?('õiget · parim '+best+' / 25'):'punkti';
+  $('rCap').textContent=R.mode==='test'?('õiget · sinu rekord '+best+' / 25'):'punkti';
   $('rOk').textContent=R.ok+' / '+R.n;
   $('rAvg').textContent=(R.n?fmt(R.tsum/R.n):'0')+' s';
   $('rBest').textContent=R.best;
@@ -635,8 +756,8 @@ function endGame(){
   var h=$('rHard');h.innerHTML='';
   if(hk.length){hk.forEach(function(k){var f=FMAP[k];var s=document.createElement('span');s.className='tag';s.textContent=f.a+' × '+f.b+' = '+(f.a*f.b);h.appendChild(s);});}
   else{h.innerHTML='<span class="muted">Kõik läks kiiresti ja õigesti. Tubli!</span>';}
-  $('rAgain').textContent=R.mode==='test'?'Uus kontroll':'Veel üks ring';
-  $('rAgain').onclick=function(){startGame(R.mode);};
+  $('rAgain').textContent=R.mode==='test'?'Harjuta veel':'Veel üks ring';
+  $('rAgain').onclick=function(){startGame(R.mode==='test'?'train':R.mode);};
   $('rSync').textContent='';
   show('s-result');
   if(sbOn()&&D.cls&&R.n>0){
@@ -689,6 +810,7 @@ $('tBack').onclick=function(){renderHome();show('s-home');};
 $('tableChips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;tOp=b.dataset.op;renderTable();});
 function renderTable(){
   var ch=$('tableChips').children;for(var i=0;i<ch.length;i++)ch[i].classList.toggle('on',ch[i].dataset.op===tOp);
+  $('tTitle').textContent=tOp==='div'?'Jagamistabel':'Korrutustabel';
   var g=$('tg');g.innerHTML='';
   var corner=document.createElement('div');corner.className='hl corner';corner.textContent=SYM[tOp];g.appendChild(corner);
   for(var b=1;b<=10;b++){var l=document.createElement('div');l.className='hl';l.textContent=b;g.appendChild(l);}
@@ -713,7 +835,9 @@ function renderTable(){
 $('tg').addEventListener('click',function(e){var c=e.target.closest('.tc');if(!c)return;tSel={a:+c.dataset.a,b:+c.dataset.b};renderTable();});
 
 /* ---------- info ---------- */
-$('btnInfo').onclick=function(){show('s-info');};
+$('btnInfo').onclick=function(){show('s-quick');};
+$('qBack').onclick=function(){renderHome();show('s-home');};
+$('qLong').onclick=function(){show('s-info');};
 $('footInfo').onclick=function(e){e.preventDefault();show('s-info');};
 $('iBack').onclick=function(){renderHome();show('s-home');};
 
@@ -750,6 +874,7 @@ function rpc(fn,params){
     .then(function(r){if(!r.ok)throw new Error('http '+r.status);return r.json();});
 }
 function bestTest(){var b=0;for(var i=0;i<D.tests.length;i++)b=Math.max(b,D.tests[i].ok);return b;}
+function esc(x){return String(x==null?'':x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 function statePayload(){return {stats:D.stats,days:D.days,tests:D.tests,total:D.total,q:D.q};}
 function applyState(s){if(!s||!s.stats)return;D.stats={mul:s.stats.mul||{},div:s.stats.div||{}};D.days=s.days||{};D.tests=s.tests||[];D.total=s.total||{n:0,ok:0};D.q=s.q||0;}
 function setSync(msg){$('rSync').textContent=msg;$('bStatus').textContent=msg;}
@@ -762,17 +887,19 @@ function flush(cb){
   .then(function(r){
     flushing=false;
     if(r&&r.error==='auth'){D.outbox=[];D.cls=null;D.board=null;save();setSync('Klassi konto ei kehti enam. Liitu uuesti.');renderHome();if(cb)cb();return;}
+    if(r&&r.error==='done_today'){D.lastCompete=today();}
     D.outbox.shift();save();
     setSync(D.outbox.length?'':'Edetabel uuendatud');
     flush(cb);
   })
   .catch(function(){flushing=false;setSync('Võrku pole – saadan hiljem, kui võrk on tagasi.');renderHome();if(cb)cb();});
 }
-var ERR={code:'Sellist koodi pole.',nick:'Nimi peab olema 2–16 märki.',taken:'See nimi on juba võetud. Vali teine.',name:'Klassi nimi peab olema vähemalt 2 märki.',auth:'Kood, nimi või taastekood ei klapi.',net:'Võrku pole või server ei vasta.'};
-$('btnJoin').onclick=function(){$('jErr').textContent='';$('cErr').textContent='';show('s-class');};
+var ERR={code:'Sellist koodi pole.',nick:'Nimi peab olema 2–16 märki.',taken:'See nimi on juba võetud. Vali teine.',name:'Nimi peab olema vähemalt 2 märki.',school:'Kooli nimi peab olema vähemalt 2 märki.',grade:'Vali klassiaste.',letter:'Klassi täht peab olema üks täht, näiteks A.',auth:'Kood, nimi või taastekood ei klapi.',done_today:'Tänane võistlus on juba tehtud.',net:'Võrku pole või server ei vasta.'};
+$('btnJoin').onclick=function(){openClass(null);};
 $('cBack').onclick=function(){renderHome();show('s-home');};
 $('jRestoreToggle').onclick=function(){$('jRestore').hidden=!$('jRestore').hidden;};
 function setCls(r){
+  $('jInvite').hidden=true;$('jWarn').hidden=true;$('jNick').value='';
   D.cls={player_id:r.player_id,secret:r.secret,class_id:r.class_id,class_name:r.class_name,code:r.code,nick:r.nick};
   if(!D.settings.name)D.settings.name=r.nick;
   D.board=null;save();
@@ -802,17 +929,113 @@ $('jRestoreGo').onclick=function(){
     openBoard();
   }).catch(function(){b.disabled=false;$('jErr').textContent=ERR.net;});
 };
+var cKind='class';
+(function(){
+  var g=$('cGrade');
+  for(var i=1;i<=12;i++){var o=document.createElement('option');o.value=i;o.textContent=i+'. klass';g.appendChild(o);}
+  g.value=3;
+})();
+$('cKind').addEventListener('click',function(e){
+  var b=e.target.closest('.chip');if(!b)return;
+  cKind=b.dataset.kind;
+  var ch=this.children;for(var i=0;i<ch.length;i++)ch[i].classList.toggle('on',ch[i].dataset.kind===cKind);
+  $('cClassFields').hidden=cKind!=='class';
+  $('cTeamFields').hidden=cKind==='class';
+  $('cErr').textContent='';cPreview();
+});
+function cPreview(){
+  var p=$('cPreview');
+  if(cKind==='team'){var n=$('cName').value.trim();p.innerHTML=n?'Nimeks tuleb <b>'+esc(n)+'</b>':'';return;}
+  var sc=$('cSchool').value.trim().replace(/\s+/g,' '),gr=$('cGrade').value,lt=$('cLetter').value.trim().toUpperCase();
+  p.innerHTML=sc.length>=2?('Nimeks tuleb <b>'+esc(sc+' '+gr+lt)+'</b>'):'';
+}
+['cSchool','cLetter','cName'].forEach(function(id){$(id).addEventListener('input',cPreview);});
+$('cGrade').addEventListener('change',cPreview);
+$('cLetter').addEventListener('input',function(){this.value=this.value.toUpperCase();});
+
+var sugT=null;
+$('cSchool').addEventListener('input',function(){
+  var q=this.value.trim();
+  if(sugT)clearTimeout(sugT);
+  if(q.length<2||!sbOn()){$('cSuggest').hidden=true;return;}
+  sugT=setTimeout(function(){
+    rpc('school_suggest',{p_q:q}).then(function(list){
+      var box=$('cSuggest');box.innerHTML='';
+      if(!list||!list.length){box.hidden=true;return;}
+      list.forEach(function(nm){
+        var b=document.createElement('button');b.type='button';b.textContent=nm;
+        b.onclick=function(){$('cSchool').value=nm;box.hidden=true;cPreview();};
+        box.appendChild(b);
+      });
+      box.hidden=false;
+    }).catch(function(){$('cSuggest').hidden=true;});
+  },300);
+});
+
 $('cGo').onclick=function(){
-  var name=$('cName').value.trim(),b=this;
-  $('cErr').textContent='';
-  if(name.length<2){$('cErr').textContent=ERR.name;return;}
+  var b=this;$('cErr').textContent='';
+  var args;
+  if(cKind==='team'){
+    var name=$('cName').value.trim();
+    if(name.length<2){$('cErr').textContent=ERR.name;return;}
+    args={p_kind:'team',p_school:null,p_grade:null,p_letter:null,p_name:name};
+  }else{
+    var sc=$('cSchool').value.trim();
+    if(sc.length<2){$('cErr').textContent=ERR.school;return;}
+    args={p_kind:'class',p_school:sc,p_grade:parseInt($('cGrade').value,10),p_letter:$('cLetter').value.trim(),p_name:null};
+  }
   b.disabled=true;
-  rpc('create_class',{p_name:name}).then(function(r){
+  rpc('create_group',args).then(function(r){
     b.disabled=false;
     if(r.error){$('cErr').textContent=ERR[r.error]||'Ei õnnestunud.';return;}
-    $('cCode').textContent=r.code;$('cDone').hidden=false;$('jCode').value=r.code;
+    $('cCode').textContent=r.code;$('cDone').hidden=false;$('jCode').value=r.code;$('cSuggest').hidden=true;
+    $('cShare').dataset.gname=r.name;
   }).catch(function(){b.disabled=false;$('cErr').textContent=ERR.net;});
 };
+
+/* ---------- jagamine: kutselink ---------- */
+function inviteUrl(code,name){return location.origin+location.pathname+'#k='+encodeURIComponent(code)+(name?'&n='+encodeURIComponent(name):'');}
+function inviteText(code,name){return 'Tule harjuta minuga korrutustabelit Korrutajas!'+(name?'\nKlass: '+name:'')+'\nKlassikood: '+code;}
+function doShare(btn,boxId,code,name){
+  if(!code)return;
+  var url=inviteUrl(code,name),txt=inviteText(code,name),box=$(boxId);
+  if(!btn.dataset.lbl)btn.dataset.lbl=btn.textContent;
+  function flash(m){btn.textContent=m;setTimeout(function(){btn.innerHTML=btn.dataset.icon+btn.dataset.lbl;},2400);}
+  function manual(){box.hidden=false;box.value=url;try{box.focus();box.setSelectionRange(0,url.length);}catch(e){}flash('Kopeeri link all');}
+  if(navigator.share){navigator.share({title:'Korrutaja',text:txt,url:url}).catch(function(){});return;}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt+'\n'+url).then(function(){flash('Link kopeeritud');},manual);return;}
+  manual();
+}
+function armShare(id,boxId,get){
+  var b=$(id);b.dataset.icon=b.innerHTML.replace(/[^>]*$/,'');b.dataset.lbl=b.textContent;
+  b.onclick=function(){var v=get();doShare(b,boxId,v.code,v.name);};
+}
+armShare('bShare','bShareBox',function(){return D.cls?{code:D.cls.code,name:D.cls.class_name}:{code:'',name:''};});
+armShare('cShare','cShareBox',function(){return {code:$('cCode').textContent.trim(),name:$('cShare').dataset.gname||''};});
+
+function readInvite(){
+  var h=location.hash||'';var m=h.match(/[#&]k=([A-Za-z0-9]{4,8})/);
+  if(!m)return null;
+  var n=h.match(/[#&]n=([^&]*)/),name='';
+  if(n){try{name=decodeURIComponent(n[1].replace(/\+/g,' '));}catch(e){name='';}}
+  return {code:m[1].toUpperCase(),name:name.slice(0,40)};
+}
+function openClass(inv){
+  $('jErr').textContent='';$('cErr').textContent='';
+  $('bShareBox').hidden=true;$('cShareBox').hidden=true;
+  $('jInvite').hidden=!inv;
+  if(inv){
+    $('jCode').value=inv.code;
+    $('jInviteName').textContent=inv.name?('Kutse klassi „'+inv.name+'“'):'Kutse klassiga liituma';
+  }
+  var w=$('jWarn');
+  if(D.cls){
+    w.hidden=false;
+    w.innerHTML='Oled juba grupis <b>'+esc(D.cls.class_name)+'</b>. Uuega liitumine alustab seal nullist ja siinsed nädalapunktid jäävad vanasse. Peas olevad tehted ja rekord tulevad kaasa. Tagasi pääsed taastekoodiga <b>'+esc(D.cls.secret)+'</b> – kirjuta see üles.';
+  }else{w.hidden=true;w.innerHTML='';}
+  show('s-class');
+  if(inv)setTimeout(function(){try{$('jNick').focus();}catch(e){}},250);
+}
 
 var boardTab='week';
 function openBoard(){renderHome();show('s-board');renderBoard();flush(loadBoard);}
@@ -822,14 +1045,14 @@ function loadBoard(){
   rpc('class_board',{p_player_id:D.cls.player_id,p_secret:D.cls.secret}).then(function(r){
     if(r.error==='auth'){D.cls=null;D.board=null;D.outbox=[];save();renderHome();show('s-home');return;}
     if(r.error){$('bStatus').textContent='Ei õnnestunud.';return;}
-    D.board=r;save();renderBoard();$('bStatus').textContent='';
+    D.board=r;if(r.competed_today)D.lastCompete=today();save();renderBoard();$('bStatus').textContent='';
   }).catch(function(){renderBoard();$('bStatus').textContent=D.board?'Võrku pole. Näitan viimast seisu.':'Võrku pole.';});
 }
 $('btnBoard').onclick=openBoard;
 $('bBack').onclick=function(){renderHome();show('s-home');};
 $('bRefresh').onclick=function(){flush(loadBoard);};
 $('bTabs').addEventListener('click',function(e){var b=e.target.closest('.tab');if(!b)return;boardTab=b.dataset.t;renderBoard();});
-var GOALS=[500,1000,2500,5000,10000,25000,50000,100000,250000];
+var GOALS=[50,100,250,500,1000,2000,4000,8000,16000];
 function num(n){return String(Math.round(n||0)).replace(/\B(?=(\d{3})+(?!\d))/g,' ');}
 function lrow(rank,name,sub,val,me){
   var r=document.createElement('div');r.className='lrow'+(me?' me':'');
@@ -847,15 +1070,24 @@ function renderBoard(){
   if(!B){$('bWeek').textContent='Sel nädalal — vastust';$('bGoal').textContent='';$('bGoalBar').style.width='0%';list.innerHTML='<p class="muted empty">Edetabel laeb, kui võrk on olemas.</p>';return;}
   var wk=+B['class'].week_n||0,goal=GOALS[GOALS.length-1];
   for(i=0;i<GOALS.length;i++){if(wk<GOALS[i]){goal=GOALS[i];break;}}
-  $('bWeek').textContent='Klass sel nädalal: '+num(wk)+' õiget · '+(B['class'].active_week||0)+' harjutajat';
+  $('bWeek').textContent='Klass sel nädalal: '+num(wk)+' punkti · '+(B['class'].active_week||0)+' võistlejat';
   $('bGoal').textContent='eesmärk '+num(goal);
   $('bGoalBar').style.width=clamp(wk/goal*100,0,100)+'%';
-  var caps={week:'Õigeid vastuseid sel nädalal (alates esmaspäevast). Igaüks võib võita – loeb harjutamine.',greens:'Peas olevaid fakte, korrutamine ja jagamine kokku (max 90).',test:'Parim Kontroll 25-st.',classes:'Klassid: õigeid vastuseid ühe aktiivse õpilase kohta sel nädalal.'};
+  var isTeam=B['class'].kind==='team';
+  $('bTabs').querySelector('[data-t=school]').hidden=isTeam;
+  $('bTabs').querySelector('[data-t=grade]').hidden=isTeam;
+  if(isTeam&&(boardTab==='school'||boardTab==='grade'))boardTab='week';
+  var caps={
+    week:'Selle nädala võistluspunktid. Arvesse lähevad viie parima päeva tulemused.',
+    greens:'Peas olevaid tehteid, korrutamine ja jagamine kokku (max 90).',
+    test:'Parim üksik võistlustulemus 25-st.',
+    school:'Sama kooli sama astme klassid: punkte ühe võistleja kohta sel nädalal.',
+    grade:'Kõik '+((B['class'].grade||'')+'. klassid Eestis')+': punkte ühe võistleja kohta sel nädalal.'};
   $('bCap').textContent=caps[boardTab];
-  if(boardTab==='classes'){
-    var cs=B.classes||[];
-    if(!cs.length){list.innerHTML='<p class="muted empty">Sel nädalal pole veel ükski klass harjutanud.</p>';return;}
-    cs.forEach(function(c,idx){list.appendChild(lrow(idx+1,c.name,c.active+' harjutajat · kokku '+num(c.week_n)+' õiget',num(c.per_player),D.cls&&c.id===D.cls.class_id));});
+  if(boardTab==='school'||boardTab==='grade'){
+    var cs=(boardTab==='school'?B.siblings:B.peers)||[];
+    if(!cs.length){list.innerHTML='<p class="muted empty">Sel nädalal pole veel keegi võistelnud.</p>';return;}
+    cs.forEach(function(c,idx){list.appendChild(lrow(idx+1,c.name,c.active+(c.active===1?' võistleja':' võistlejat')+' · kokku '+num(c.week_n),num(c.per_player),D.cls&&c.id===D.cls.class_id));});
     return;
   }
   var ps=(B.players||[]).slice();
@@ -865,12 +1097,15 @@ function renderBoard(){
   if(!ps.length){list.innerHTML='<p class="muted empty">Klassis pole veel kedagi.</p>';return;}
   var meIdx=-1;for(i=0;i<ps.length;i++){if(ps[i].id===B.me){meIdx=i;break;}}
   var TOP=7;
-  function subFor(p){return boardTab==='greens'?('× '+p.greens_mul+' · : '+p.greens_div):boardTab==='test'?(p.week_n+' õiget sel nädalal'):(p.greens+' fakti peas');}
+  function subFor(p){return boardTab==='greens'?('× '+p.greens_mul+' · : '+p.greens_div):boardTab==='test'?(p.week_n+' punkti sel nädalal'):((p.days||0)+(p.days===1?' võistluspäev':' võistluspäeva'));}
   for(i=0;i<Math.min(TOP,ps.length);i++){list.appendChild(lrow(i+1,ps[i].nick,subFor(ps[i]),num(ps[i][key]),i===meIdx));}
   if(meIdx>=TOP){var g=document.createElement('div');g.className='lrow gap';g.textContent='···';list.appendChild(g);list.appendChild(lrow(meIdx+1,ps[meIdx].nick,subFor(ps[meIdx]),num(ps[meIdx][key]),true));}
 }
 
+var invite=readInvite();
+if(invite){try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}
 renderHome();
+if(invite&&sbOn()&&!(D.cls&&D.cls.code===invite.code))openClass(invite);
 if(sbOn()&&D.cls&&D.outbox.length)flush();
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&sbOn()&&D.cls&&D.outbox.length)flush();});
 })();
