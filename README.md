@@ -32,7 +32,7 @@ Meenutamine (retrieval practice) kinnistab paremini kui vaatamine või kooris ko
 | `config.json` | Supabase'i URL ja avalik võti. |
 | `.github/workflows/keepalive.yml` | Pingib andmebaasi kord päevas, et tasuta projekt vaheajal pausi ei läheks. |
 | `supabase.sql` | Andmebaasi algskeem, RLS ja funktsioonid. |
-| `supabase-migration-2…4.sql` | Hilisemad DB-muudatused järjekorras: kool/tiim ja astmevõrdlused (2), päevalukk ja viie parima päeva nädal (3), rekord serverist ja turvalisem koodigeneraator (4). |
+| `supabase-migration-2…5.sql` | Hilisemad DB-muudatused järjekorras: kool/tiim ja astmevõrdlused (2), päevalukk ja viie parima päeva nädal (3), rekord serverist ja turvalisem koodigeneraator (4), edetabeli set-põhine ümberkirjutus skaleerimiseks (5). |
 | `SETUP.md` | Kuidas oma koopia üles panna (Supabase + Vercel). |
 | `PRIVACY.md` | Mida hoitakse ja kus. |
 

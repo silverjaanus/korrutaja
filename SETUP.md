@@ -5,7 +5,7 @@ Failid:
 - `index.html` – kogu mäng (üks fail).
 - `sw.js` – offline-tugi (service worker). Peab olema `index.html`-iga samas kaustas.
 - `supabase.sql` – andmebaasi algskeem ja funktsioonid edetabeli jaoks.
-- `supabase-migration-2…4.sql` – hilisemad DB-muudatused; jooksuta järjekorras pärast `supabase.sql`-i.
+- `supabase-migration-2…5.sql` – hilisemad DB-muudatused; jooksuta järjekorras pärast `supabase.sql`-i.
 - `korrutaja.src.html` + `build.py` – lähtekood ja ehitusskript (`python3 build.py` teeb `index.html` ja `sw.js` uuesti; Supabase'i võtmed loeb `config.json`-ist). Vaja ainult siis, kui mängu muudetakse.
 
 Ilma Supabase'ita töötab `index.html` ka: üks laps, edenemine telefonis, klassi liitumise nuppu ei näidata.
@@ -13,7 +13,7 @@ Ilma Supabase'ita töötab `index.html` ka: üks laps, edenemine telefonis, klas
 ## 1. Supabase (andmebaas, tasuta) – u 5 min
 
 1. supabase.com → New project. Region: **Frankfurt (eu-central-1)**. Andmebaasi parool pane kuhugi kirja, mängus seda vaja ei lähe.
-2. Vasakul **SQL Editor** → New query → kleebi kogu `supabase.sql` sisu → **Run**. Peab lõppema "Success". Seejärel jooksuta samamoodi järjekorras `supabase-migration-2.sql`, `-3.sql` ja `-4.sql` (kool/tiim, päevalukk, rekord serverist).
+2. Vasakul **SQL Editor** → New query → kleebi kogu `supabase.sql` sisu → **Run**. Peab lõppema "Success". Seejärel jooksuta samamoodi järjekorras `supabase-migration-2.sql`, `-3.sql`, `-4.sql` ja `-5.sql` (kool/tiim, päevalukk, rekord serverist, edetabeli skaleerimine).
 3. **Project Settings → API Keys**: kopeeri **Project URL** (`https://xxxx.supabase.co`) ja **publishable** võti (`sb_publishable_...`).
 
 Publishable-võti on mõeldud avalikuks – see on lehe koodis nähtav. Kaitse on andmebaasis: tabelitele otse ligi ei pääse, kõik käib funktsioonide kaudu, mis kontrollivad mängija salakoodi.
