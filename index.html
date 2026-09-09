@@ -1081,7 +1081,8 @@ function renderBoard(){
   if(!B){$('bWeek').textContent='Sel nädalal — vastust';$('bGoal').textContent='';$('bGoalBar').style.width='0%';list.innerHTML='<p class="muted empty">Edetabel laeb, kui võrk on olemas.</p>';return;}
   var wk=+B['class'].week_n||0,goal=GOALS[GOALS.length-1];
   for(i=0;i<GOALS.length;i++){if(wk<GOALS[i]){goal=GOALS[i];break;}}
-  $('bWeek').textContent='Klass sel nädalal: '+num(wk)+' punkti · '+(B['class'].active_week||0)+' võistlejat';
+  var aw=+B['class'].active_week||0;
+  $('bWeek').textContent='Klass sel nädalal: '+num(wk)+' punkti · '+aw+(aw===1?' võistleja':' võistlejat');
   $('bGoal').textContent='eesmärk '+num(goal);
   $('bGoalBar').style.width=clamp(wk/goal*100,0,100)+'%';
   var isTeam=B['class'].kind==='team';
