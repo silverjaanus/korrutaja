@@ -52,6 +52,9 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:clamp(18px,5.8vw,26px);
 .chips{display:flex;gap:8px;margin-bottom:20px}
 .chip{flex:1;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:11px 0;font:800 15px var(--fb);color:var(--ink2)}
 .chip.on{border-color:var(--acc);background:var(--acc-soft);color:var(--acc)}
+.numchips{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:6px}
+.numchips .chip{padding:10px 0;font-size:16px;font-family:var(--fd);font-weight:600}
+.numhint{font-size:13px;color:var(--ink2);font-weight:600;margin:0 0 18px}
 .menu{display:flex;flex-direction:column;gap:12px;margin-top:auto}
 .btn{border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;font:800 19px var(--fb);display:flex;justify-content:space-between;align-items:center;background:var(--card);color:var(--ink);text-align:left}
 .btn small{font-weight:700;color:var(--ink2);font-size:14px}
@@ -68,12 +71,19 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:clamp(18px,5.8vw,26px);
 .quit{background:none;border:0;color:var(--ink2);font:800 14px var(--fb);padding:6px 0;text-decoration:underline}
 .stage{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:260px}
 .ring{position:absolute;width:252px;height:252px;transform:rotate(-90deg)}
-.ring circle{fill:none;stroke-width:9;stroke-linecap:round}
-.ring-bg{stroke:var(--line)}
-.ring-fg{stroke:var(--acc);stroke-dasharray:339.3;stroke-dashoffset:0}
+.ring circle{fill:none;stroke-width:4;stroke-linecap:round}
+/* Taimeriring on mõtlemise ajal nähtamatu ja ilmub alles viimastel sekunditel:
+   liikuv ring kogu vastamise aja tekitab survet, mida siin vaja ei ole.
+   Vastuse järel toob .ok/.bad ringi tagasi – värviline ring on osa tagasisidest. */
+.ring-bg{stroke:var(--line);opacity:0;transition:opacity .35s}
+.ring-fg{stroke:var(--acc);stroke-dasharray:339.3;stroke-dashoffset:0;opacity:0;transition:opacity .35s}
+.stage.late .ring-bg,.stage.late .ring-fg{opacity:1}
 .stage.calm .ring-fg{stroke:var(--acc-soft)}
+.stage.ok .ring-fg,.stage.bad .ring-fg{opacity:1}
 .stage.ok .ring-fg{stroke:var(--ok)}
 .stage.bad .ring-fg{stroke:var(--bad)}
+.tipmsg{position:absolute;left:-8px;right:-8px;bottom:0;text-align:center;font:700 14px var(--fb);line-height:1.4;color:var(--acc);background:var(--acc-soft);border-radius:12px;padding:9px 12px;opacity:0;transition:opacity .2s;pointer-events:none}
+.tipmsg.on{opacity:1}
 .qbox{position:relative;text-align:center;width:220px}
 .q{font-family:var(--fd);font-weight:600;font-size:46px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
 .a{font-family:var(--fd);font-weight:600;font-size:46px;line-height:1;margin-top:10px;font-variant-numeric:tabular-nums;min-height:46px;color:var(--acc)}
@@ -116,6 +126,7 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:clamp(18px,5.8vw,26px);
 .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
 .detail{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;min-height:70px;font-weight:600}
 .detail b{font-family:var(--fd);font-size:22px;font-weight:600;display:block;margin-bottom:4px}
+.tiprow{display:block;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);color:var(--acc);font-weight:700;font-size:15px;line-height:1.45}
 
 /* settings */
 .field{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
@@ -234,6 +245,20 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
     <button class="chip" data-op="div">Jagamine</button>
     <button class="chip" data-op="mix">Segamini</button>
   </div>
+  <p class="label">Milliseid tabeleid</p>
+  <div class="numchips" id="numChips">
+    <button class="chip" data-n="all">Kõik</button>
+    <button class="chip" data-n="2">2</button>
+    <button class="chip" data-n="3">3</button>
+    <button class="chip" data-n="4">4</button>
+    <button class="chip" data-n="5">5</button>
+    <button class="chip" data-n="6">6</button>
+    <button class="chip" data-n="7">7</button>
+    <button class="chip" data-n="8">8</button>
+    <button class="chip" data-n="9">9</button>
+    <button class="chip" data-n="10">10</button>
+  </div>
+  <p class="numhint" id="numHint">Harjutamises küsitakse ainult neid tabeleid. Võistlus on alati kõigist.</p>
   <div class="menu">
     <button class="btn primary" id="btnTrain">Harjuta <small id="trainMeta">3 min</small></button>
     <button class="btn" id="btnTest">Võistle <small id="testMeta">25 korrutamist · korra päevas</small></button>
@@ -282,8 +307,14 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
     <h3>0/45 peas</h3>
     <p>Korrutustabelis on 45 erinevat tehet: 7 × 8 ja 8 × 7 on ju sama asi ja ühega korrutamine on liiga lihtne. Number avalehel näitab, mitu neist on sul juba peas – see tähendab, et sa mäletad vastust, mitte ei arvuta seda välja. Jagamisel on oma number.</p>
 
+    <h3>Milliseid tabeleid</h3>
+    <p>Avaekraanil saad valida, milliseid tabeleid harjutad – näiteks ainult 6 ja 7. Siis tulevad küsimused ainult nende arvudega ja korraga on vähem meelde jätta. „Kõik“ toob terve tabeli tagasi. Võistlus on alati kogu tabelist.</p>
+
     <h3>Aeg</h3>
-    <p>Ring ümber tehte näitab, palju aega on. Kui aeg saab otsa, näidatakse õiget vastust ja tehe tuleb varsti uuesti. See ei ole hinne, vaid tempo.</p>
+    <p>Ring ümber tehte ilmub alles siis, kui aeg hakkab otsa saama – enne seda saad rahulikult mõelda. Kui aeg saab otsa, näidatakse õiget vastust ja tehe tuleb varsti uuesti. See ei ole hinne, vaid tempo.</p>
+
+    <h3>Vihjed</h3>
+    <p>Kui tehe läheb harjutamises valesti, näitab mäng väikest nippi, kuidas seda meelde jätta. Sama nipi leiad „Vaata tulemusi“ all: puuduta ruutu ja loe kaardilt.</p>
 
     <button class="btn small" id="qLong" style="margin-top:18px">Pikem seletus</button>
   </div>
@@ -299,7 +330,7 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
     <h3>Kaks nuppu: õppimine ja võistlemine</h3>
     <p>Mängul on kaks poolt. Ühega õpid, teisega mõõdad, kui kaugel oled. Vahe ei ole pikkuses ega küsimuste arvus – vahe on selles, <b>kumb pool valib küsimused</b>.</p>
     <p><b>Harjuta</b> – mäng valib. Ta peab meeles, et 7 × 8 läks sul eile untsu, ja küsib seda täna kolm korda; kergeid tehteid ta peaaegu ei küsi. Eesmärk on midagi selgeks õpetada. Just sellepärast ei ole harjutamise punktid võrreldavad – sina ja su pinginaaber saite täiesti erinevad küsimused. Harjutada võib nii palju kui tahad, iga päev, mitu korda päevas.</p>
-    <p><b>Võistle</b> – juhus valib. 25 korrutamistehet kogu tabelist 2–10 võrdse tõenäosusega, igaüks 6 sekundit, sinu seaded (ka „Mida harjutad“) ei mõjuta midagi. Just see ühetaolisus teebki tulemuse võrreldavaks: „23 / 25“ tähendab sama asja igal lapsel ja igal päeval. Võistlus on alati korrutamine – sama formaat, mida Inglismaa koolid kasutavad riiklikus korrutustabeli testis. Jagamist harjuta „Harjuta“ all.</p>
+    <p><b>Võistle</b> – juhus valib. 25 korrutamistehet kogu tabelist 2–10 võrdse tõenäosusega, igaüks 6 sekundit, sinu seaded (ka „Mida harjutad“ ja valitud tabelid) ei mõjuta midagi. Just see ühetaolisus teebki tulemuse võrreldavaks: „23 / 25“ tähendab sama asja igal lapsel ja igal päeval. Võistlus on alati korrutamine – sama formaat, mida Inglismaa koolid kasutavad riiklikus korrutustabeli testis. Jagamist harjuta „Harjuta“ all.</p>
     <p>Ühe puhul on kallutatus mõte, teise puhul on kallutatus viga.</p>
 
     <h3>Võistelda saab üks kord päevas</h3>
@@ -329,7 +360,16 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
 
     <h3>Taimer</h3>
     <p>Vaikimisi 6 sekundit küsimuse kohta; seadetes 4–10 s või rahulik režiim ilma taimerita. Taimer on tempo, mitte hinne: kui aeg saab otsa, näidatakse õiget vastust ja küsitakse varsti uuesti. Kui laps läheb taimerist närvi, pane rahulik režiim – aeg mõõdetakse ikka ja rohelised tulevad samamoodi.</p>
+    <p>Ring ümber tehte on mõtlemise ajal nähtamatu ja ilmub alles lõpu poole – kõige rohkem viis viimast sekundit. Kogu aeg tiksuv ring ajab kiirustama ka siis, kui aega on veel küll. Vastuse järel tuleb ring korraks tagasi rohelise või punasena, sest see on osa tagasisidest.</p>
     <p>Need seaded kehtivad ainult harjutamisel. Võistlus on kõigil ühesugune: alati 6 sekundit. Muidu ei saaks tulemusi kõrvuti panna.</p>
+
+    <h3>Milliseid tabeleid harjutatakse</h3>
+    <p>Avaekraanil saab valida ühe või mitu tabelit – näiteks ainult 6 ja 7, või 2–5, kui alles alustatakse. Siis küsib mäng ainult neid tehteid, kus üks tegur on valitud arv. See on filter adaptiivse valiku peal, mitte selle asemel: valitud tabelite seest küsib mäng ikka rohkem seda, mis läheb valesti või aeglaselt.</p>
+    <p>Väiksem hulk korraga on algajale lihtsam: kümne fakti meeldejätmine on jõukohane, üheksakümne oma ei ole. Soojuskaart ja „peas“ loendur jäävad kogu tabeli peale – valik muudab seda, mida küsitakse, mitte seda, mida mõõdetakse. Võistlust valik ei puuduta, nii et kes harjutab ainult kuni viieni, saab võistluses ka suuremaid tehteid.</p>
+
+    <h3>Vihjed ja mälutehnikad</h3>
+    <p>Vale vastuse järel näitab mäng harjutamises ühe rea nippi: „Ütle järjest: 5, 6, 7, 8. Nii ongi 56 = 7 × 8.“ Raskematel tehetel on oma trikk, ülejäänutel üldreegel – üheksaga korrutades võta kümme korda ja üks kord maha, neljaga kahekordista kaks korda, ja nii edasi. Sama vihje on soojuskaardi kaardil, kui ruutu puudutada, nii et neid saab ka niisama lugeda.</p>
+    <p>Vihjeid näidatakse ainult harjutamises. Võistluses mõõdetakse, seal ei õpetata.</p>
 
     <h3>Klass ja edetabelid</h3>
     <p>Keegi (õpetaja, lapsevanem) loob klassi ja saab 6-märgilise koodi. Laps liitub koodi ja hüüdnimega – konto, e-posti ega parooli pole.</p>
@@ -383,6 +423,7 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
   <div class="stage" id="stage">
     <svg class="ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-bg" cx="60" cy="60" r="54"/><circle class="ring-fg" id="ringFg" cx="60" cy="60" r="54"/></svg>
     <div class="qbox"><div class="q" id="qText">7 × 8</div><div class="a empty" id="aText">= ?</div></div>
+    <div class="tipmsg" id="tipmsg"></div>
   </div>
   <div class="fbmsg" id="fbmsg"></div>
   <div class="pad" id="pad">
@@ -520,14 +561,17 @@ var FACTS=[];
 for(var a=1;a<=10;a++)for(var b=a;b<=10;b++)FACTS.push({a:a,b:b,key:a+'x'+b});
 var FMAP={}; FACTS.forEach(function(f){FMAP[f.key]=f;});
 var SYM={mul:'×',div:':'};
-var DEF={name:'',op:'mul',limit:6,round:3,calm:false};
+var DEF={name:'',op:'mul',limit:6,round:3,calm:false,tables:[]};
 
 var D=load();
 function fresh(){return {v:1,settings:clone(DEF),q:0,stats:{mul:{},div:{}},days:{},tests:[],total:{n:0,ok:0},cls:null,outbox:[],board:null,lastCompete:''};}
 function clone(o){return JSON.parse(JSON.stringify(o));}
 function load(){
   try{var r=localStorage.getItem(LS);if(r){var d=JSON.parse(r);
-    d.settings=Object.assign(clone(DEF),d.settings||{});d.stats=d.stats||{mul:{},div:{}};d.stats.mul=d.stats.mul||{};d.stats.div=d.stats.div||{};
+    d.settings=Object.assign(clone(DEF),d.settings||{});
+    if(!Array.isArray(d.settings.tables))d.settings.tables=[];
+    d.settings.tables=d.settings.tables.filter(function(n){return n>=2&&n<=10;});
+    d.stats=d.stats||{mul:{},div:{}};d.stats.mul=d.stats.mul||{};d.stats.div=d.stats.div||{};
     d.days=d.days||{};d.tests=d.tests||[];d.total=d.total||{n:0,ok:0};d.q=d.q||0;d.cls=d.cls||null;d.outbox=d.outbox||[];d.board=d.board||null;d.lastCompete=d.lastCompete||'';return d;}}catch(e){}
   return fresh();
 }
@@ -573,6 +617,15 @@ function masteryHint(st){
 }
 function greenCount(op){var n=0;for(var i=0;i<FACTS.length;i++){if(FACTS[i].a>=2&&status(gs(op,FACTS[i].key))==='green')n++;}return n;}
 
+/* ---------- valitud tabelid ---------- */
+/* Tühi valik = kõik tabelid. Valik on filter adaptiivse valiku PEAL, mitte selle
+   asemel: valitud tabelite seest küsib mäng ikka rohkem seda, mis on raske.
+   Võistlust see ei puuduta – seal on alati kogu tabel 2-10. */
+function selTables(){var t=D.settings.tables;return (t&&t.length)?t:null;}
+function inSel(f){var s=selTables();return !s||s.indexOf(f.a)>=0||s.indexOf(f.b)>=0;}
+function selFacts(){var out=[];for(var i=0;i<FACTS.length;i++)if(inSel(FACTS[i]))out.push(FACTS[i]);return out.length?out:FACTS;}
+function selLabel(){var s=selTables();return s?s.slice().sort(function(x,y){return x-y;}).join(', '):'';}
+
 /* ---------- adaptive selection ---------- */
 function prior(f){var p=TW[f.a]*TW[f.b];if(HARD[f.key])p*=1.3;return p;}
 function weight(f,op,now){
@@ -587,12 +640,12 @@ function weight(f,op,now){
   return w;
 }
 function pickAdaptive(op){
-  var tot=0,ws=[];
-  for(var i=0;i<FACTS.length;i++){var w=weight(FACTS[i],op,D.q);ws.push(w);tot+=w;}
-  if(tot<=0)return FACTS[rnd(FACTS.length)];
+  var pool=selFacts(),tot=0,ws=[];
+  for(var i=0;i<pool.length;i++){var w=weight(pool[i],op,D.q);ws.push(w);tot+=w;}
+  if(tot<=0)return pool[rnd(pool.length)];
   var r=Math.random()*tot;
-  for(i=0;i<FACTS.length;i++){r-=ws[i];if(r<=0)return FACTS[i];}
-  return FACTS[FACTS.length-1];
+  for(i=0;i<pool.length;i++){r-=ws[i];if(r<=0)return pool[i];}
+  return pool[pool.length-1];
 }
 function record(op,f,ok,t){
   var st=fs(op,f.key),A=.3;
@@ -611,6 +664,49 @@ function streakDays(){
   return n;
 }
 
+/* ---------- mälutehnikad ---------- */
+/* Vihje näidatakse ainult harjutamises ja ainult vale vastuse järel: võistluses
+   mõõdetakse, seal ei õpetata. Konkreetne trikk kaalub üldreegli üle – reegel on
+   tagavara, mis kehtib iga tehte kohta. Arvud arvutatakse, et need ei saaks
+   tekstiga lahku minna. */
+var MNEM={
+  '7x8':'Ütle järjest: 5, 6, 7, 8. Nii ongi 56 = 7 × 8.',
+  '6x8':'Kuus korda kaheksa – nelikümmend kaheksa. Vastuse lõpp on sama mis tehtel.',
+  '6x7':'6 × 6 = 36, pane üks kuus juurde: 42.',
+  '7x7':'Peaaegu viiskümmend, aga üks seitse vähem: 49.',
+  '8x8':'Malelaual on 64 ruutu: kaheksa rida ja kaheksa tulpa.',
+  '6x6':'Kuus korda kuus – kolmkümmend kuus. Mõlemas on kuus.',
+  '4x6':'Kuus kaks korda on 12, ja veel kaks korda: 24 – nagu tunde ööpäevas.',
+  '3x7':'7 + 7 + 7 = 21.',
+  '3x8':'8 + 8 + 8 = 24.',
+  '3x6':'6 + 6 + 6 = 18.'
+};
+function mnemRule(f){
+  var p=f.a*f.b,o;
+  function oth(n){return f.a===n?f.b:f.a;}
+  if(f.a===1||f.b===1)return 'Ühega korrutades jääb arv samaks.';
+  if(f.a===10||f.b===10){o=oth(10);return 'Kümnega: kirjuta arvule null lõppu. '+o+' → '+p+'.';}
+  if(f.a===9||f.b===9){o=oth(9);return 'Üheksaga: võta kümme korda ja üks kord maha. '+o+' × 10 = '+(o*10)+', miinus '+o+' = '+p+'.';}
+  if(f.a===5||f.b===5){o=oth(5);return 'Viiega: pool kümnekordsest. '+o+' × 10 = '+(o*10)+', pool sellest on '+p+'.';}
+  if(f.a===2||f.b===2){o=oth(2);return 'Kaks korda tähendab: liida arv iseendaga. '+o+' + '+o+' = '+p+'.';}
+  if(f.a===4||f.b===4){o=oth(4);return 'Neljaga: kahekordista kaks korda. '+o+' → '+(o*2)+' → '+p+'.';}
+  if(f.a===8||f.b===8){o=oth(8);return 'Kaheksaga: kahekordista kolm korda. '+o+' → '+(o*2)+' → '+(o*4)+' → '+p+'.';}
+  if(f.a===3||f.b===3){o=oth(3);return 'Kolmega: kaks korda ja veel üks kord. '+(o*2)+' + '+o+' = '+p+'.';}
+  if(f.a===6||f.b===6){o=oth(6);return 'Kuuega: viis korda ja veel üks kord. '+(o*5)+' + '+o+' = '+p+'.';}
+  if(f.a===7||f.b===7){o=oth(7);return 'Seitsmega: viis korda pluss kaks korda. '+(o*5)+' + '+(o*2)+' = '+p+'.';}
+  return '';
+}
+function tipFor(f,op){
+  var m=MNEM[f.key]||mnemRule(f);
+  if(!m)return '';
+  return (op==='div'?'Jagamine on korrutamine tagurpidi. ':'')+m;
+}
+function showTip(f,op){
+  var t=tipFor(f,op),el=$('tipmsg');
+  el.textContent=t;el.classList.toggle('on',!!t);
+  return !!t;
+}
+
 /* ---------- screens ---------- */
 var $=function(id){return document.getElementById(id);};
 function show(id){var s=document.querySelectorAll('.screen');for(var i=0;i<s.length;i++)s[i].classList.toggle('on',s[i].id===id);window.scrollTo(0,0);}
@@ -624,7 +720,8 @@ function renderHome(){
   $('tGreenDiv').innerHTML=greenCount('div')+'<em>/45 peas</em>';
   $('tStreak').textContent=streakDays();
   var ch=$('opChips').children;for(var i=0;i<ch.length;i++)ch[i].classList.toggle('on',ch[i].dataset.op===D.settings.op);
-  $('trainMeta').textContent=D.settings.round+' min'+(D.settings.calm?' · rahulik':'');
+  renderNumChips();
+  $('trainMeta').textContent=D.settings.round+' min'+(D.settings.calm?' · rahulik':'')+(selTables()?' · tabelid '+selLabel():'');
   var done=competedToday();
   $('btnTest').classList.toggle('done',done);
   $('testMeta').textContent=done?'tehtud · homme uuesti':'25 korrutamist · korra päevas';
@@ -634,6 +731,22 @@ function renderHome(){
   if(D.cls)$('boardMeta').textContent=D.cls.class_name+(D.outbox.length?' · saatmata '+D.outbox.length:'');
 }
 $('opChips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;D.settings.op=b.dataset.op;save();renderHome();});
+function renderNumChips(){
+  var s=selTables(),ch=$('numChips').children;
+  for(var i=0;i<ch.length;i++){
+    var v=ch[i].dataset.n;
+    ch[i].classList.toggle('on',v==='all'?!s:!!(s&&s.indexOf(+v)>=0));
+  }
+  $('numHint').textContent=s
+    ?'Harjutamises tulevad ainult tabelid '+selLabel()+'. Võistlus on alati kogu tabelist.'
+    :'Harjutamises tuleb kogu tabel. Vali üks või mitu arvu, kui tahad korraga vähem meelde jätta.';
+}
+$('numChips').addEventListener('click',function(e){
+  var b=e.target.closest('.chip');if(!b)return;
+  if(b.dataset.n==='all'){D.settings.tables=[];}
+  else{var t=D.settings.tables,n=+b.dataset.n,i=t.indexOf(n);if(i>=0)t.splice(i,1);else t.push(n);}
+  save();renderHome();
+});
 $('btnSettings').onclick=function(){renderSettings();show('s-settings');};
 $('btnHeat').onclick=function(){heatOp=D.settings.op==='div'?'div':'mul';renderHeat();show('s-heat');};
 $('btnTrain').onclick=function(){startGame('train');};
@@ -674,7 +787,14 @@ function startGame(mode){
 function makeQuestion(f,op){
   var q,ans;
   if(op==='mul'){var flip=Math.random()<.5;q=(flip?f.b:f.a)+' × '+(flip?f.a:f.b);ans=f.a*f.b;}
-  else{var p=f.a*f.b,d=Math.random()<.5?f.a:f.b;q=p+' : '+d;ans=p/d;}
+  else{
+    /* Kui tabelid on valitud, jagatakse valitud arvuga: 7 valides tuleb 56 : 7, mitte 56 : 8. */
+    var p=f.a*f.b,s=selTables(),d;
+    if(s&&s.indexOf(f.a)>=0&&s.indexOf(f.b)<0)d=f.a;
+    else if(s&&s.indexOf(f.b)>=0&&s.indexOf(f.a)<0)d=f.b;
+    else d=Math.random()<.5?f.a:f.b;
+    q=p+' : '+d;ans=p/d;
+  }
   return {f:f,op:op,q:q,ans:ans,typed:'',t0:0};
 }
 function nextQuestion(){
@@ -693,7 +813,8 @@ function nextQuestion(){
   G.cur=makeQuestion(f,op);
   G.recent.push(f.key);if(G.recent.length>2)G.recent.shift();
   if(quitArmed){quitArmed=false;$('gQuit').textContent='Lõpeta';}
-  var st=$('stage');st.classList.remove('ok','bad');
+  var st=$('stage');st.classList.remove('ok','bad','late');
+  $('tipmsg').classList.remove('on');
   $('qText').textContent=G.cur.q;
   $('aText').textContent='= ?';$('aText').classList.add('empty');
   $('fbmsg').textContent='';
@@ -708,6 +829,9 @@ function tick(){
   var el=(performance.now()-G.cur.t0)/1000,lim=curLimit();
   if(!isCalm()){
     $('ringFg').style.strokeDashoffset=String(339.3*clamp(el/lim,0,1));
+    /* Ring ilmub alles lõpu poole – kõige rohkem viis viimast sekundit, lühikese
+       piiri korral pool ajast. Enne seda ei liigu ekraanil midagi. */
+    $('stage').classList.toggle('late',el>=lim-Math.min(5,lim/2));
     if(el>=lim){return answer(null,lim);}
   }
   if(G.mode==='train'){$('roundBar').style.width=clamp((performance.now()-G.start)/1000/(D.settings.round*60)*100,0,100)+'%';}
@@ -729,7 +853,10 @@ function answer(val,t){
   var after=status(gs(c.op,c.f.key));
   if(before!=='green'&&after==='green')G.greens.push({f:c.f,op:c.op});
   G.n++;G.tsum+=Math.min(t,curLimit());
-  var st=$('stage');
+  var st=$('stage'),tip=false;
+  /* Ring täidetakse tagasi ja tuuakse nähtavale: roheline või punane täisring on
+     osa tagasisidest ka siis, kui vastamise ajal polnud taimerit näha. */
+  st.classList.remove('late');$('ringFg').style.strokeDashoffset='0';
   if(ok){
     G.ok++;G.streak++;G.best=Math.max(G.best,G.streak);
     var pts=(t<=TARGET?10:5)+Math.min(G.streak-1,5);G.score+=pts;
@@ -741,13 +868,13 @@ function answer(val,t){
     $('aText').textContent='= '+c.ans;$('aText').classList.remove('empty');
     $('fbmsg').textContent=val===null?'Aeg sai otsa':'Õige on '+c.ans;
     G.hard[c.f.key]=(G.hard[c.f.key]||0)+2;G.hardOp[c.f.key]=c.op;
-    if(G.mode==='train')G.queue.push({key:c.f.key,op:c.op,due:G.qi+3+rnd(4)});
+    if(G.mode==='train'){G.queue.push({key:c.f.key,op:c.op,due:G.qi+3+rnd(4)});tip=showTip(c.f,c.op);}
     if(navigator.vibrate)try{navigator.vibrate(60);}catch(e){}
   }
   $('gScore').textContent=G.score;$('gStreak').textContent=G.streak;
   if(G.mode==='test')$('roundBar').style.width=((G.qi+1)/25*100)+'%';
   G.qi++;save();
-  G.advT=setTimeout(nextQuestion,ok?380:(isCalm()?2200:1600));
+  G.advT=setTimeout(nextQuestion,ok?380:(tip?3200:(isCalm()?2200:1600)));
 }
 $('pad').addEventListener('click',function(e){var b=e.target.closest('.key');if(!b||!b.dataset.k)return;typeKey(b.dataset.k);});
 document.addEventListener('keydown',function(e){
@@ -848,11 +975,12 @@ function renderDetail(){
   if(!heatSel){d.innerHTML='<span class="muted">Puuduta ruutu, et näha täpsemalt.</span>';return;}
   var f=FMAP[heatSel],st=gs(heatOp,heatSel),p=f.a*f.b;
   var title=heatOp==='mul'?(heatSelA+' × '+heatSelB+' = '+p):(p+' : '+heatSelA+' = '+heatSelB);
-  if(!st||st.n===0){d.innerHTML='<b>'+title+'</b><span class="muted">Pole veel küsitud.</span>';return;}
+  if(!st||st.n===0){var t0=tipFor(f,heatOp);d.innerHTML='<b>'+title+'</b><span class="muted">Pole veel küsitud.</span>'+(t0?'<br><span class="tiprow">Kuidas meelde jätta: '+esc(t0)+'</span>':'');return;}
   var ok=0,ts=[];for(var i=0;i<st.h.length;i++){if(st.h[i].ok){ok++;ts.push(st.h[i].t);}}
   var avg=ts.length?ts.reduce(function(x,y){return x+y;},0)/ts.length:0;
   var names={grey:'pole veel selge',red:'raske',amber:'peaaegu peas',green:'peas'};
-  d.innerHTML='<b>'+title+'</b>'+st.n+' vastust · viimased '+st.h.length+': '+Math.round(ok/st.h.length*100)+'% õiged · õige vastus keskmiselt '+fmt(avg)+' s<br><span class="muted">Seis: '+names[status(st)]+' – '+masteryHint(st)+'</span>';
+  var tip=tipFor(f,heatOp);
+  d.innerHTML='<b>'+title+'</b>'+st.n+' vastust · viimased '+st.h.length+': '+Math.round(ok/st.h.length*100)+'% õiged · õige vastus keskmiselt '+fmt(avg)+' s<br><span class="muted">Seis: '+names[status(st)]+' – '+masteryHint(st)+'</span>'+(tip?'<br><span class="tiprow">Kuidas meelde jätta: '+esc(tip)+'</span>':'');
 }
 $('hBack').onclick=function(){renderHome();show('s-home');};
 
