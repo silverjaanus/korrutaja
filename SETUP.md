@@ -4,7 +4,8 @@ Failid:
 
 - `index.html` – kogu mäng (üks fail).
 - `sw.js` – offline-tugi (service worker). Peab olema `index.html`-iga samas kaustas.
-- `supabase.sql` – andmebaasi skeem ja funktsioonid edetabeli jaoks.
+- `supabase.sql` – andmebaasi algskeem ja funktsioonid edetabeli jaoks.
+- `supabase-migration-2…4.sql` – hilisemad DB-muudatused; jooksuta järjekorras pärast `supabase.sql`-i.
 - `korrutaja.src.html` + `build.py` – lähtekood ja ehitusskript (`python3 build.py` teeb `index.html` ja `sw.js` uuesti; Supabase'i võtmed loeb `config.json`-ist). Vaja ainult siis, kui mängu muudetakse.
 
 Ilma Supabase'ita töötab `index.html` ka: üks laps, edenemine telefonis, klassi liitumise nuppu ei näidata.
@@ -12,10 +13,10 @@ Ilma Supabase'ita töötab `index.html` ka: üks laps, edenemine telefonis, klas
 ## 1. Supabase (andmebaas, tasuta) – u 5 min
 
 1. supabase.com → New project. Region: **Frankfurt (eu-central-1)**. Andmebaasi parool pane kuhugi kirja, mängus seda vaja ei lähe.
-2. Vasakul **SQL Editor** → New query → kleebi kogu `supabase.sql` sisu → **Run**. Peab lõppema "Success".
-3. **Project Settings → API**: kopeeri **Project URL** (`https://xxxx.supabase.co`) ja **anon public** võti (pikk `eyJ...` string).
+2. Vasakul **SQL Editor** → New query → kleebi kogu `supabase.sql` sisu → **Run**. Peab lõppema "Success". Seejärel jooksuta samamoodi järjekorras `supabase-migration-2.sql`, `-3.sql` ja `-4.sql` (kool/tiim, päevalukk, rekord serverist).
+3. **Project Settings → API Keys**: kopeeri **Project URL** (`https://xxxx.supabase.co`) ja **publishable** võti (`sb_publishable_...`).
 
-Anon-võti on mõeldud avalikuks – see on lehe koodis nähtav. Kaitse on andmebaasis: tabelitele otse ligi ei pääse, kõik käib funktsioonide kaudu, mis kontrollivad mängija salakoodi.
+Publishable-võti on mõeldud avalikuks – see on lehe koodis nähtav. Kaitse on andmebaasis: tabelitele otse ligi ei pääse, kõik käib funktsioonide kaudu, mis kontrollivad mängija salakoodi.
 
 ## 2. Võti mängu
 
@@ -35,13 +36,13 @@ HTTPS on mõlemal – seda on vaja, et "Lisa avakuvale" ja offline-režiim töö
 
 ## 4. Klassi loomine ja jagamine
 
-1. Ava aadress telefonis → **Liitu klassiga** → all **Loo uus klass** → nimi (nt `3B Kesklinna kool`) → saad 6-märgilise koodi.
-2. Kood + aadress klassile (õpetaja kaudu, klassi chat vms). Iga laps: ava aadress → Safari/Chrome "Jaga" → **Lisa avakuvale** → **Liitu klassiga** → kood + hüüdnimi.
+1. Ava aadress telefonis → **Liitu klassiga** → all **Loo uus** → vali **Kooliklass** (kooli nimi + klassiaste + täht, nt „Kesklinna Kool 3B“) või **Tiim** (vaba nimi, ei osale kooli- ega astmevõrdluses) → saad 6-märgilise koodi.
+2. Kood + aadress klassile (õpetaja kaudu, klassi chat vms). Iga laps: ava aadress → Safari/Chrome "Jaga" → **Lisa avakuvale** → **Liitu klassiga** → kood + hüüdnimi. Kiirem on „Kutsu sõber klassi“ nupp edetabelis – see saadab lingi täidetud koodiga.
 3. Mia liitub samamoodi sinu telefonist või enda omast.
 
-Edetabelisse läheb ainult hüüdnimi ja vastuste arv. Nime, e-posti ega parooli ei küsita – GDPR-i mõttes pole midagi hoida.
+Edetabelisse läheb ainult hüüdnimi ja võistlustulemused. Nime, e-posti ega parooli ei küsita – GDPR-i mõttes pole midagi hoida.
 
-Teine klass loob lihtsalt oma koodi samal aadressil. **Klassid**-tabel võrdleb klasse vastuste arvuga ühe aktiivse õpilase kohta sel nädalal.
+Teine klass loob lihtsalt oma koodi samal aadressil. **Kool**- ja **Eesti**-tabelid võrdlevad sama astme klasse võistluspunktidega ühe aktiivse võistleja kohta sel nädalal.
 
 ## Telefoni vahetus
 

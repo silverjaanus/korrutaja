@@ -7,7 +7,7 @@ Korrutaja on tehtud nii, et tal poleks midagi, mida lekitada.
 Brauseri kohalikus mälus (localStorage) sellel seadmel:
 
 - iga korrutus- ja jagamisfakti vastuste ajalugu (õige/vale, aeg), viimased 10;
-- päevade loendur, Kontrolli tulemused, seaded (nimi, taimer, režiim);
+- päevade loendur, võistlustulemused, seaded (nimi, taimer, režiim);
 - klassiga liitumisel: klassi kood, hüüdnimi ja mängija salakood (taastekood).
 
 Kustutamine: Seaded → „Kustuta kõik andmed“, või brauseri saidiandmete kustutamine.
@@ -16,8 +16,8 @@ Kustutamine: Seaded → „Kustuta kõik andmed“, või brauseri saidiandmete k
 
 Ainult siis, kui laps on liitunud klassiga. Server on Supabase, andmekeskus Euroopa Liidus (Frankfurt).
 
-- klass: nimi (nt „3B Kesklinna kool“), 6-märgiline kood;
-- mängija: hüüdnimi, salakood, roheliste faktide arv, parim Kontroll, vastuste summad, ja edenemise koopia (sama, mis telefonis) telefoni vahetuseks;
+- klass või tiim: nimi (nt „Kesklinna Kool 3B“), kooliklassil ka kooli nimi ja klassiaste, 6-märgiline kood;
+- mängija: hüüdnimi, salakood, roheliste faktide arv, rekord (parim võistlus), vastuste summad, ja edenemise koopia (sama, mis telefonis) telefoni vahetuseks;
 - iga ring: mitu küsimust, mitu õiget, punktid, keskmine aeg, aeg.
 
 **Ei hoita:** päris nime, e-posti, telefoninumbrit, asukohta, IP-aadressi püsivalt, seadme andmeid, küpsiseid.
@@ -29,7 +29,7 @@ Reklaami, analüütikat (Google Analytics vms), jälgimispiksleid, sotsiaalmeedi
 ## Kes näeb mida
 
 - Sama klassi liikmed näevad üksteise hüüdnime ja vastuste arve edetabelis.
-- Teised klassid näevad klassi nime ja nädala keskmist, mitte lapsi.
+- Sama astme teised klassid (Kool- ja Eesti-tabelis) näevad klassi nime ja nädala võistluspunkte võistleja kohta, mitte üksikuid lapsi.
 - Tegija (Silver Jaanus) näeb andmebaasi toorelt, et hoida asja töös.
 
 ## Kustutamine serverist
