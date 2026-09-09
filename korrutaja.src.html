@@ -82,8 +82,11 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:clamp(18px,5.8vw,26px);
 .stage.ok .ring-fg,.stage.bad .ring-fg{opacity:1}
 .stage.ok .ring-fg{stroke:var(--ok)}
 .stage.bad .ring-fg{stroke:var(--bad)}
-.tipmsg{position:absolute;left:-8px;right:-8px;bottom:0;text-align:center;font:700 14px var(--fb);line-height:1.4;color:var(--acc);background:var(--acc-soft);border-radius:12px;padding:9px 12px;opacity:0;transition:opacity .2s;pointer-events:none}
+.tipmsg{position:absolute;left:-8px;right:-8px;bottom:0;text-align:center;font:700 14px var(--fb);line-height:1.4;color:var(--acc);background:var(--acc-soft);border-radius:12px;padding:11px 12px;opacity:0;transition:opacity .2s;pointer-events:none}
 .tipmsg.on{opacity:1}
+.tipgo{display:block;margin-top:7px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;opacity:.7}
+/* Vihje ajal on klaviatuur tuhm: nii on näha, et praegu ei vastata, vaid loetakse. */
+.pad.wait{opacity:.3}
 .qbox{position:relative;text-align:center;width:220px}
 .q{font-family:var(--fd);font-weight:600;font-size:46px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
 .a{font-family:var(--fd);font-weight:600;font-size:46px;line-height:1;margin-top:10px;font-variant-numeric:tabular-nums;min-height:46px;color:var(--acc)}
@@ -314,7 +317,8 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
     <p>Ring ümber tehte ilmub alles siis, kui aeg hakkab otsa saama – enne seda saad rahulikult mõelda. Kui aeg saab otsa, näidatakse õiget vastust ja tehe tuleb varsti uuesti. See ei ole hinne, vaid tempo.</p>
 
     <h3>Vihjed</h3>
-    <p>Kui tehe läheb harjutamises valesti, näitab mäng väikest nippi, kuidas seda meelde jätta. Sama nipi leiad „Vaata tulemusi“ all: puuduta ruutu ja loe kaardilt.</p>
+    <p>Kui tehe läheb harjutamises valesti, näitab mäng väikest nippi, kuidas seda meelde jätta. Mäng ootab, kuni oled lugenud – puuduta ekraani ja järgmine tehe tuleb. Ringi aeg seni ei jookse, nii et lugemine ei võta harjutamisest midagi ära.</p>
+    <p>Sama nipi leiad „Vaata tulemusi“ all: puuduta ruutu ja loe kaardilt.</p>
 
     <button class="btn small" id="qLong" style="margin-top:18px">Pikem seletus</button>
   </div>
@@ -369,6 +373,7 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
 
     <h3>Vihjed ja mälutehnikad</h3>
     <p>Vale vastuse järel näitab mäng harjutamises ühe rea nippi: „Ütle järjest: 5, 6, 7, 8. Nii ongi 56 = 7 × 8.“ Raskematel tehetel on oma trikk, ülejäänutel üldreegel – üheksaga korrutades võta kümme korda ja üks kord maha, neljaga kahekordista kaks korda, ja nii edasi. Sama vihje on soojuskaardi kaardil, kui ruutu puudutada, nii et neid saab ka niisama lugeda.</p>
+    <p>Vihje ei kao ise ära. Mäng jääb ootama, kuni laps ekraani puudutab, ja harjutusringi kell seisab seni paigal – kolm sekundit oli lugemiseks liiga vähe ja iga teine number oleks samamoodi kellegi jaoks vale. Klaviatuur on vihje ajal tuhm, et oleks näha: praegu ei vastata, praegu loetakse. Esimesel poolel sekundil puudutus ei mõju, muidu lööks pooleli jäänud vastuse teine klõps vihje kohe kinni.</p>
     <p>Vihjeid näidatakse ainult harjutamises. Võistluses mõõdetakse, seal ei õpetata.</p>
 
     <h3>Klass ja edetabelid</h3>
@@ -423,7 +428,7 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
   <div class="stage" id="stage">
     <svg class="ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-bg" cx="60" cy="60" r="54"/><circle class="ring-fg" id="ringFg" cx="60" cy="60" r="54"/></svg>
     <div class="qbox"><div class="q" id="qText">7 × 8</div><div class="a empty" id="aText">= ?</div></div>
-    <div class="tipmsg" id="tipmsg"></div>
+    <div class="tipmsg" id="tipmsg"><span id="tiptext"></span><span class="tipgo">Puuduta, kui oled lugenud</span></div>
   </div>
   <div class="fbmsg" id="fbmsg"></div>
   <div class="pad" id="pad">
@@ -702,8 +707,8 @@ function tipFor(f,op){
   return (op==='div'?'Jagamine on korrutamine tagurpidi. ':'')+m;
 }
 function showTip(f,op){
-  var t=tipFor(f,op),el=$('tipmsg');
-  el.textContent=t;el.classList.toggle('on',!!t);
+  var t=tipFor(f,op);
+  $('tiptext').textContent=t;$('tipmsg').classList.toggle('on',!!t);
   return !!t;
 }
 
@@ -772,7 +777,8 @@ function isCalm(){return G&&G.mode==='train'&&D.settings.calm;}
 function sessionOp(){if(D.settings.op==='mix')return Math.random()<.5?'mul':'div';return D.settings.op;}
 
 function startGame(mode){
-  G={mode:mode,qi:0,score:0,streak:0,best:0,n:0,ok:0,tsum:0,queue:[],recent:[],greens:[],hard:{},hardOp:{},cur:null,lock:false,start:performance.now(),testList:null};
+  G={mode:mode,qi:0,score:0,streak:0,best:0,n:0,ok:0,tsum:0,queue:[],recent:[],greens:[],hard:{},hardOp:{},cur:null,lock:false,start:performance.now(),testList:null,pauseMs:0,waitTap:false,waitStart:0};
+  $('pad').classList.remove('wait');
   if(mode==='test'){
     var pool=FACTS.filter(function(f){return f.a>=2;});
     for(var i=pool.length-1;i>0;i--){var j=rnd(i+1);var t=pool[i];pool[i]=pool[j];pool[j]=t;}
@@ -797,14 +803,17 @@ function makeQuestion(f,op){
   }
   return {f:f,op:op,q:q,ans:ans,typed:'',t0:0};
 }
+/* Ringi kell seisab, kui vihjet loetakse: lugemine ei tohi harjutusaega ära süüa. */
+function roundElapsed(){return (performance.now()-G.start-G.pauseMs)/1000;}
 function nextQuestion(){
   if(!G)return;
+  G.waitTap=false;$('pad').classList.remove('wait');
   var f,op;
   if(G.mode==='test'){
     if(G.qi>=25){return endGame();}
     f=G.testList[G.qi];op='mul';
   }else{
-    if((performance.now()-G.start)/1000>=D.settings.round*60){return endGame();}
+    if(roundElapsed()>=D.settings.round*60){return endGame();}
     op=sessionOp();
     var due=null;
     for(var i=0;i<G.queue.length;i++){var it=G.queue[i];if(it.due<=G.qi&&G.recent.indexOf(it.key)<0){due=it;G.queue.splice(i,1);break;}}
@@ -834,7 +843,7 @@ function tick(){
     $('stage').classList.toggle('late',el>=lim-Math.min(5,lim/2));
     if(el>=lim){return answer(null,lim);}
   }
-  if(G.mode==='train'){$('roundBar').style.width=clamp((performance.now()-G.start)/1000/(D.settings.round*60)*100,0,100)+'%';}
+  if(G.mode==='train'){$('roundBar').style.width=clamp(roundElapsed()/(D.settings.round*60)*100,0,100)+'%';}
   raf=requestAnimationFrame(tick);
 }
 function typeKey(k){
@@ -874,11 +883,29 @@ function answer(val,t){
   $('gScore').textContent=G.score;$('gStreak').textContent=G.streak;
   if(G.mode==='test')$('roundBar').style.width=((G.qi+1)/25*100)+'%';
   G.qi++;save();
-  G.advT=setTimeout(nextQuestion,ok?380:(tip?3200:(isCalm()?2200:1600)));
+  if(tip){
+    /* Vihjega ei kiirustata: kell seisab ja mäng ootab puudutust, mitte taimerit.
+       Kolm sekundit oli lugemiseks liiga vähe ja iga muu number oleks samuti
+       kellegi jaoks vale. */
+    G.waitTap=true;G.waitStart=performance.now();
+    $('pad').classList.add('wait');
+  }else{
+    G.advT=setTimeout(nextQuestion,ok?380:(isCalm()?2200:1600));
+  }
 }
+/* Väike ooteaeg enne, kui puudutus mõjub: muidu lööb pooleli jäänud vastuse
+   teine klõps vihje kohe kinni, enne kui laps jõuab seda märgata. */
+function resumeFromTip(){
+  if(!G||!G.waitTap||performance.now()-G.waitStart<800)return false;
+  G.pauseMs+=performance.now()-G.waitStart;
+  nextQuestion();
+  return true;
+}
+$('s-game').addEventListener('click',function(){resumeFromTip();});
 $('pad').addEventListener('click',function(e){var b=e.target.closest('.key');if(!b||!b.dataset.k)return;typeKey(b.dataset.k);});
 document.addEventListener('keydown',function(e){
   if(!G||!$('s-game').classList.contains('on'))return;
+  if(G.waitTap){if(e.key!=='Escape')resumeFromTip();else quitGame();return;}
   if(e.key>='0'&&e.key<='9')typeKey(e.key);
   else if(e.key==='Backspace')typeKey('bs');
   else if(e.key==='Escape')quitGame();
