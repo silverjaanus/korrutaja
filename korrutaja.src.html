@@ -1281,25 +1281,27 @@ function celebrateGreen(label){
    peastarvutamist mitte segada. */
 function musicOn(){
   if(musicNodes||!D.settings.music)return;var c=ac();if(!c)return;
-  var master=c.createGain();master.gain.value=0.0001;master.connect(c.destination);
-  master.gain.linearRampToValueAtTime(0.05,c.currentTime+2.5);
-  var pad=c.createGain();pad.gain.value=0.5;pad.connect(master);
-  var o1=c.createOscillator();o1.type='sine';o1.frequency.value=196;      /* G3 */
-  var o2=c.createOscillator();o2.type='sine';o2.frequency.value=293.66;o2.detune.value=5; /* D4 */
+  var t0=c.currentTime;
+  var master=c.createGain();master.gain.setValueAtTime(0.0001,t0);master.connect(c.destination);
+  master.gain.linearRampToValueAtTime(0.22,t0+1.2);   /* kuuldav tase, mitte 0.05 */
+  /* Pad kesksageduses (E4+B4), et telefonikõlar seda üldse esitaks – 196 Hz oli liiga bass. */
+  var pad=c.createGain();pad.gain.value=0.3;pad.connect(master);
+  var o1=c.createOscillator();o1.type='sine';o1.frequency.value=330;      /* E4 */
+  var o2=c.createOscillator();o2.type='sine';o2.frequency.value=494;o2.detune.value=6; /* B4 */
   o1.connect(pad);o2.connect(pad);o1.start();o2.start();
-  var lfo=c.createOscillator();lfo.frequency.value=0.07;var lg=c.createGain();lg.gain.value=0.22;
+  var lfo=c.createOscillator();lfo.frequency.value=0.08;var lg=c.createGain();lg.gain.value=0.12;
   lfo.connect(lg);lg.connect(pad.gain);lfo.start();
   musicNodes={master:master,os:[o1,o2,lfo]};
-  var scale=[392,440,523.25,587.33,659.25,783.99]; /* G-duur pentatoonika */
+  var scale=[523.25,587.33,659.25,783.99,880]; /* C5 D5 E5 G5 A5 – heledad, kõlaris kuuldavad */
   function twinkle(){
     if(!musicNodes)return;var cc=ac();if(!cc){musicTimer=setTimeout(twinkle,3000);return;}
     var f=scale[Math.floor(Math.random()*scale.length)],t=cc.currentTime;
     var g=cc.createGain();g.connect(musicNodes.master);
-    g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.09,t+0.06);g.gain.exponentialRampToValueAtTime(0.0001,t+2.3);
-    var o=cc.createOscillator();o.type='sine';o.frequency.value=f;o.connect(g);o.start(t);o.stop(t+2.4);
-    musicTimer=setTimeout(twinkle,2400+Math.random()*2800);
+    g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.5,t+0.05);g.gain.exponentialRampToValueAtTime(0.0001,t+2.0);
+    var o=cc.createOscillator();o.type='triangle';o.frequency.value=f;o.connect(g);o.start(t);o.stop(t+2.1);
+    musicTimer=setTimeout(twinkle,1900+Math.random()*2300);
   }
-  musicTimer=setTimeout(twinkle,1600);
+  musicTimer=setTimeout(twinkle,700);
 }
 function musicOff(){
   if(musicTimer){clearTimeout(musicTimer);musicTimer=null;}
