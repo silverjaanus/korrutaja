@@ -220,6 +220,22 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
 .btn.share{margin-top:12px;justify-content:center;gap:8px}
 .btn.share svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
+/* päeva nipp (F1) */
+.warmup{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:8px 0}
+.wmHead{font-family:var(--fd);font-weight:600;font-size:clamp(20px,6vw,27px);margin:0;text-wrap:balance}
+.wmTech{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-weight:700;font-size:15.5px;line-height:1.5;color:var(--ink)}
+.wmTech p{margin:0 0 6px}
+.wmTech p:last-child{margin-bottom:0}
+.wmTry{background:var(--acc-soft);border-radius:14px;padding:14px 16px;text-align:center}
+.wmTryQ{margin:0 0 10px;font-weight:800;font-size:16px;color:var(--ink)}
+.wmTryQ b{font-family:var(--fd);font-size:21px;font-weight:600;color:var(--acc);font-variant-numeric:tabular-nums;margin-left:4px}
+.wmAns{margin:10px 0 0;font-family:var(--fd);font-size:24px;font-weight:600;color:var(--ok-ink)}
+/* õppimisjuhis soojuskaardi peal (F3) */
+.guide{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.guide summary{font:800 15px var(--fb);color:var(--acc);cursor:pointer}
+.guide ul{margin:10px 0 0 18px;padding:0;line-height:1.55;font-size:14px;font-weight:600;color:var(--ink)}
+.guide li{margin-bottom:6px}
+.guideNext{margin:10px 0 0;font-weight:800;font-size:14px;color:var(--acc)}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
 @media (max-height:640px){.ring{width:210px;height:210px}.q,.a{font-size:40px}.key{height:52px}.stage{min-height:220px}}
 </style>
@@ -429,7 +445,7 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
   <div class="stage" id="stage">
     <svg class="ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-bg" cx="60" cy="60" r="54"/><circle class="ring-fg" id="ringFg" cx="60" cy="60" r="54"/></svg>
     <div class="qbox"><div class="q" id="qText">7 × 8</div><div class="a empty" id="aText">= ?</div></div>
-    <div class="tipmsg" id="tipmsg"><span id="tiptext"></span><span class="tipgo">Puuduta, kui oled lugenud</span></div>
+    <div class="tipmsg" id="tipmsg"><span id="tiptext"></span><span class="tipgo" id="tipgoText">Puuduta, kui oled lugenud</span></div>
   </div>
   <div class="fbmsg" id="fbmsg"></div>
   <div class="pad" id="pad">
@@ -437,6 +453,21 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
     <button class="key" data-k="4">4</button><button class="key" data-k="5">5</button><button class="key" data-k="6">6</button>
     <button class="key" data-k="7">7</button><button class="key" data-k="8">8</button><button class="key" data-k="9">9</button>
     <button class="key mute" tabindex="-1" aria-hidden="true"></button><button class="key" data-k="0">0</button><button class="key" data-k="bs" aria-label="Kustuta"><svg viewBox="0 0 24 24"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="m18 9-6 6M12 9l6 6"/></svg></button>
+  </div>
+</section>
+
+<!-- WARMUP: päeva nipp (F1), näidatakse enne harjutuse algust -->
+<section class="screen" id="s-warmup">
+  <header class="top"><button class="back" id="wmBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Päeva nipp</h2><span style="width:60px"></span></header>
+  <div class="warmup">
+    <h2 class="wmHead" id="wmHead">Täna võtame ette</h2>
+    <div class="wmTech" id="wmTech"></div>
+    <div class="wmTry">
+      <p class="wmTryQ">Proovi ise: <b id="wmTryFact"></b></p>
+      <button class="btn small" id="wmReveal">Näita vastust</button>
+      <p class="wmAns" id="wmAns" hidden></p>
+    </div>
+    <button class="btn primary" id="wmGo">Lähen lahendama!</button>
   </div>
 </section>
 
@@ -535,6 +566,18 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
   </div>
   <div class="hmwrap"><div class="hm" id="hm"></div></div>
   <div class="legend"><span><i style="background:var(--grey)"></i>pole veel</span><span><i style="background:var(--bad)"></i>raske</span><span><i style="background:var(--warn)"></i>peaaegu</span><span><i style="background:var(--ok)"></i>peas</span></div>
+  <details class="guide" id="guide">
+    <summary>Kuidas targalt õppida</summary>
+    <ul>
+      <li>Natuke ja tihti. Viis minutit iga päev õpetab rohkem kui pool tundi korraga.</li>
+      <li>Ära vahi tabelit — küsi endalt. Vastuse meenutamine jätab selle pähe, vaatamine mitte.</li>
+      <li>Võta vähe korraga: vali 2–3 punast tehet ja harjuta neid.</li>
+      <li>Pööramise nipp: 7 × 8 ja 8 × 7 on sama tehe. Õppida on vaja ainult poolt tabelit.</li>
+      <li>Nipp on redel: alguses arvuta nipiga, varsti tuleb vastus ise pähe.</li>
+      <li>Hea järjekord: 2 → 10 → 5 → 4 → 3 → 9 → 6 → 7 → 8. Lihtsad enne!</li>
+    </ul>
+    <p class="guideNext" id="guideNext"></p>
+  </details>
   <div class="detail" id="hDetail"><span class="muted">Puuduta ruutu, et näha täpsemalt.</span></div>
 </section>
 
@@ -570,7 +613,7 @@ var SYM={mul:'×',div:':'};
 var DEF={name:'',op:'mul',limit:6,round:3,calm:false,tables:[]};
 
 var D=load();
-function fresh(){return {v:1,settings:clone(DEF),q:0,stats:{mul:{},div:{}},days:{},tests:[],total:{n:0,ok:0},cls:null,outbox:[],board:null,lastCompete:''};}
+function fresh(){return {v:1,settings:clone(DEF),q:0,stats:{mul:{},div:{}},days:{},tests:[],total:{n:0,ok:0},cls:null,outbox:[],board:null,lastCompete:'',warmup:{lastDay:'',rot:0},introduced:{mul:{},div:{}}};}
 function clone(o){return JSON.parse(JSON.stringify(o));}
 function load(){
   try{var r=localStorage.getItem(LS);if(r){var d=JSON.parse(r);
@@ -578,7 +621,10 @@ function load(){
     if(!Array.isArray(d.settings.tables))d.settings.tables=[];
     d.settings.tables=d.settings.tables.filter(function(n){return n>=2&&n<=10;});
     d.stats=d.stats||{mul:{},div:{}};d.stats.mul=d.stats.mul||{};d.stats.div=d.stats.div||{};
-    d.days=d.days||{};d.tests=d.tests||[];d.total=d.total||{n:0,ok:0};d.q=d.q||0;d.cls=d.cls||null;d.outbox=d.outbox||[];d.board=d.board||null;d.lastCompete=d.lastCompete||'';return d;}}catch(e){}
+    d.days=d.days||{};d.tests=d.tests||[];d.total=d.total||{n:0,ok:0};d.q=d.q||0;d.cls=d.cls||null;d.outbox=d.outbox||[];d.board=d.board||null;d.lastCompete=d.lastCompete||'';
+    d.warmup=d.warmup||{lastDay:'',rot:0};if(typeof d.warmup.rot!=='number')d.warmup.rot=0;d.warmup.lastDay=d.warmup.lastDay||'';
+    d.introduced=d.introduced||{mul:{},div:{}};d.introduced.mul=d.introduced.mul||{};d.introduced.div=d.introduced.div||{};
+    return d;}}catch(e){}
   return fresh();
 }
 function save(){try{localStorage.setItem(LS,JSON.stringify(D));}catch(e){}}
@@ -713,6 +759,152 @@ function showTip(f,op){
   return !!t;
 }
 
+/* ---------- tabeli tehnikate kogu (F2) ----------
+   Üks koht, kust nii päeva nipi kaart (F1) kui soojuskaardi "Rohkem nippe" (F3
+   laiendus) oma numbrid võtavad. Iga tehnika arvutab vastuse tabelist (n) ja
+   teisest tegurist (b) – tekstis pole kordagi kõvasti kirjutatud vastust.
+   Vale-vastuse vihje (tipFor/mnemRule ülalpool) on omaette juba toimiv süsteem
+   ja jääb siin puutumata, et vihje käitumine ei muutuks kübetki. */
+var ORDER=[2,10,5,4,3,9,6,7,8];
+var TECH={
+  2:[
+    {id:'2dbl',title:'Kahekordista',rule:'Kahekordista: liida arv iseendaga.',
+     ex:function(n,b){return n+' × '+b+' = '+b+' + '+b+' = '+(n*b);},defB:7},
+    {id:'2even',title:'Paarisarvud',rule:'Kõik 2 tabeli vastused on paarisarvud.',defB:7}
+  ],
+  10:[
+    {id:'10zero',title:'Null taha',rule:'Kirjuta arvu taha 0.',
+     ex:function(n,b){return n+' × '+b+' = '+(n*b);},defB:6}
+  ],
+  5:[
+    {id:'5half',title:'Pool kümnekordsest',rule:'Korruta 10-ga ja võta pool.',
+     ex:function(n,b){var o=(n===5)?b:n,big=o*10;return n+' × '+b+': 10 × '+o+' = '+big+', pool on '+(big/2);},defB:8},
+    {id:'5end',title:'Lõpp 0 või 5',rule:'Vastus lõpeb alati 0 või 5-ga.',defB:8},
+    {id:'5clock',title:'Kella minutid',rule:'Nagu kella minutid: 5, 10, 15, 20 …',defB:8}
+  ],
+  9:[
+    {id:'9ten',title:'Kümme miinus kord',rule:'Kümnekordne miinus üks kord.',
+     ex:function(n,b){var o=(n===9)?b:n;return 9+' × '+o+' = '+(o*10)+' − '+o+' = '+(9*o);},defB:7},
+    {id:'9fingers',title:'Sõrmetrikk',
+     rule:function(n,b){var o=(n===9)?b:n,left=o-1,right=10-o;return 'Sõrmetrikk: siruta 10 sõrme, painuta '+o+'. sõrm — vasakule jääb '+left+' sõrme (kümnelised), paremale '+right+' (ühelised): '+(9*o)+'.';},
+     defB:7,guard:function(b){return b>=1&&b<=10;}},
+    {id:'9digits',title:'Numbrid annavad 9',rule:'Vastuse numbrid annavad kokku 9.',
+     ex:function(n,b){var o=(n===9)?b:n,p=9*o,ds=String(p).split('');if(ds.length<2)return String(p);return p+' → '+ds.join(' + ')+' = '+ds.reduce(function(s,d){return s+ +d;},0);},defB:7}
+  ],
+  4:[
+    {id:'4dbl2',title:'Kahekordista kaks korda',rule:'Kahekordista kaks korda.',
+     ex:function(n,b){var o=(n===4)?b:n;return 4+' × '+o+': '+o+' → '+(o*2)+' → '+(o*4);},defB:6}
+  ],
+  3:[
+    {id:'3dblplus',title:'Kahekordne pluss kord',rule:'Kahekordne pluss veel üks kord.',
+     ex:function(n,b){var o=(n===3)?b:n;return 3+' × '+o+' = '+(o*2)+' + '+o+' = '+(3*o);},defB:7}
+  ],
+  6:[
+    {id:'6fiveplus',title:'Viiekordne pluss kord',rule:'Viiekordne pluss veel üks kord.',
+     ex:function(n,b){var o=(n===6)?b:n;return 6+' × '+o+' = '+(o*5)+' + '+o+' = '+(6*o);},defB:7},
+    {id:'6half',title:'Pool ette, arv taha',rule:'Paarisarvuga: pool arvust ette, arv ise taha.',
+     guard:function(b){return b%2===0&&b<10;},
+     ex:function(n,b){var o=(n===6)?b:n,half=o/2;return 6+' × '+o+': pool '+o+'-st on '+half+', taha '+o+' → '+(half*10+o);},defB:8}
+  ],
+  8:[
+    {id:'8dbl3',title:'Kahekordista kolm korda',rule:'Kahekordista kolm korda.',
+     ex:function(n,b){var o=(n===8)?b:n;return 8+' × '+o+': '+o+' → '+(o*2)+' → '+(o*4)+' → '+(8*o);},defB:6}
+  ],
+  7:[
+    {id:'7flip',title:'Pööra ümber',guard:function(b){return b!==7;},
+     rule:function(n,b){var o=(n===7)?b:n;return 'Pööra ümber: 7 × '+o+' on sama mis '+o+' × 7. Kasuta tabelit, mida paremini tead.';},defB:8},
+    {id:'7square',title:'Ruudu kaudu',guard:function(b){return b===6||b===8;},
+     rule:function(n,b){var o=(n===7)?b:n,sq=49;return o>7?'Ruudu kaudu: 7 × 7 = '+sq+', siis 7 × '+o+' = '+sq+' + 7 = '+(sq+7)+'.':'Ruudu kaudu: 7 × 7 = '+sq+', siis 7 × '+o+' = '+sq+' − 7 = '+(sq-7)+'.';},defB:8}
+  ]
+};
+function techEntry(t,n,b){
+  var lines=[typeof t.rule==='function'?t.rule(n,b):t.rule];
+  if(t.ex)lines.push('Näide: '+t.ex(n,b));
+  return {id:t.id,title:t.title,lines:lines};
+}
+/* Kumb tegur "kuulub" õpitava tabeli alla: hilisem HEA JÄRJEKORD arv (vt ORDER)
+   võidab, sest see ongi see, mida laps parajasti õpib. */
+function pickTechTable(a,b){if(a===b)return a;return ORDER.indexOf(a)>=ORDER.indexOf(b)?a:b;}
+function techForFact(f){
+  var n=pickTechTable(f.a,f.b),other=(n===f.a)?f.b:f.a,arr=TECH[n]||[];
+  for(var i=0;i<arr.length;i++){var t=arr[i];if(!t.guard||t.guard(other))return techEntry(t,n,other);}
+  return null;
+}
+function techsForFactCompact(f){
+  var n=pickTechTable(f.a,f.b),other=(n===f.a)?f.b:f.a,arr=TECH[n]||[],out=[];
+  for(var i=0;i<arr.length;i++){var t=arr[i];if(!t.guard||t.guard(other))out.push(techEntry(t,n,other));}
+  return {table:n,list:out};
+}
+function techForTable(n,rot){
+  var arr=TECH[n]||[];if(!arr.length)return null;
+  var t=arr[(rot||0)%arr.length];
+  return techEntry(t,n,t.defB);
+}
+function tableMastery(n,op){
+  op=op||'mul';var g=0,tot=0;
+  for(var i=0;i<FACTS.length;i++){var f=FACTS[i];if(f.a<2)continue;if(f.a===n||f.b===n){tot++;if(status(gs(op,f.key))==='green')g++;}}
+  return tot?g/tot:0;
+}
+function nextStepTable(op){
+  for(var i=0;i<ORDER.length;i++)if(tableMastery(ORDER[i],op)<1)return ORDER[i];
+  return null;
+}
+
+/* ---------- päeva nipp (F1) ----------
+   Täisekraani kaart enne harjutuse algust – näidatakse ainult päeva ESIMESEL
+   "Harjuta" vajutusel (vt shouldShowWarmup/btnTrain). See tuleb enne startGame()-i:
+   ringi kella pole veel olemas, seega pole ka pauseMs-i siin vaja. */
+function weakestFact(){
+  var pool=selFacts().filter(function(f){return f.a>=2;}),best=null,worst=2;
+  for(var i=0;i<pool.length;i++){
+    var f=pool[i],st=gs('mul',f.key);
+    if(status(st)!=='red')continue;
+    var acc=st?st.acc:0;
+    if(!best||acc<worst){worst=acc;best=f;}
+  }
+  return best;
+}
+function rotationTables(){
+  var s=selTables(),cand=(s&&s.length?s:[2,3,4,5,6,7,8,9,10]).filter(function(n){return TECH[n];});
+  if(!cand.length)cand=[2,3,4,5,6,7,8,9,10];
+  cand.sort(function(x,y){return tableMastery(x)-tableMastery(y);});
+  return cand;
+}
+function pickSelfTest(table,exclude){
+  var pool=selFacts().filter(function(f){return f.a>=2&&(f.a===table||f.b===table)&&f.key!==exclude;});
+  if(!pool.length)pool=FACTS.filter(function(f){return f.a>=2&&(f.a===table||f.b===table)&&f.key!==exclude;});
+  return pool.length?pool[rnd(pool.length)]:null;
+}
+function shouldShowWarmup(){return D.warmup.lastDay!==today();}
+var warmupIsRotation=false;
+function renderWarmup(){
+  var wf=weakestFact(),tech,headline,table;
+  if(wf){
+    table=pickTechTable(wf.a,wf.b);
+    tech=techForFact(wf);
+    headline='Täna võtame ette: '+wf.a+' × '+wf.b;
+  }else{
+    var cand=rotationTables();
+    table=cand[(D.warmup.rot||0)%cand.length];
+    tech=techForTable(table,D.warmup.rot||0);
+    headline='Täna harjutame '+table+' tabelit';
+  }
+  $('wmHead').textContent=headline;
+  var box=$('wmTech');box.innerHTML='';
+  (tech?tech.lines:['Harjuta täna oma tabeleid!']).forEach(function(l){var p=document.createElement('p');p.textContent=l;box.appendChild(p);});
+  /* Nõrga tehte päeval on "proovi ise" seesama tehe: loe nipp, proovi kohe. */
+  var g=wf||pickSelfTest(table,null);
+  if(g){
+    var flip=Math.random()<.5;
+    $('wmTryFact').textContent=(flip?g.b:g.a)+' × '+(flip?g.a:g.b);
+    $('wmAns').textContent='= '+(g.a*g.b);
+  }else{
+    $('wmTryFact').textContent='';$('wmAns').textContent='';
+  }
+  $('wmAns').hidden=true;
+  warmupIsRotation=!wf;
+}
+
 /* ---------- screens ---------- */
 var $=function(id){return document.getElementById(id);};
 function show(id){var s=document.querySelectorAll('.screen');for(var i=0;i<s.length;i++)s[i].classList.toggle('on',s[i].id===id);window.scrollTo(0,0);}
@@ -755,7 +947,18 @@ $('numChips').addEventListener('click',function(e){
 });
 $('btnSettings').onclick=function(){renderSettings();show('s-settings');};
 $('btnHeat').onclick=function(){heatOp=D.settings.op==='div'?'div':'mul';renderHeat();show('s-heat');};
-$('btnTrain').onclick=function(){startGame('train');};
+$('btnTrain').onclick=function(){
+  if(shouldShowWarmup()){renderWarmup();show('s-warmup');return;}
+  startGame('train');
+};
+$('wmBack').onclick=function(){renderHome();show('s-home');};
+$('wmReveal').onclick=function(){$('wmAns').hidden=false;};
+$('wmGo').onclick=function(){
+  D.warmup.lastDay=today();
+  if(warmupIsRotation)D.warmup.rot=(D.warmup.rot||0)+1;
+  save();
+  startGame('train');
+};
 function competedToday(){return D.lastCompete===today();}
 var testArmed=false;
 $('btnTest').onclick=function(){
@@ -806,6 +1009,8 @@ function makeQuestion(f,op){
 }
 /* Ringi kell seisab, kui vihjet loetakse: lugemine ei tohi harjutusaega ära süüa. */
 function roundElapsed(){return (performance.now()-G.start-G.pauseMs)/1000;}
+/* F4: kas seda fakti pole veel kordagi ÕIGESTI vastatud (viimase 10 vastuse aknas). */
+function neverCorrect(op,key){var st=gs(op,key);return !st||!st.h.some(function(h){return h.ok;});}
 function nextQuestion(){
   if(!G)return;
   G.waitTap=false;$('pad').classList.remove('wait');
@@ -818,7 +1023,14 @@ function nextQuestion(){
     op=sessionOp();
     var due=null;
     for(var i=0;i<G.queue.length;i++){var it=G.queue[i];if(it.due<=G.qi&&G.recent.indexOf(it.key)<0){due=it;G.queue.splice(i,1);break;}}
-    if(due){f=FMAP[due.key];op=due.op;}else{f=pickAdaptive(op);}
+    if(due){f=FMAP[due.key];op=due.op;}
+    else{
+      f=pickAdaptive(op);
+      /* F4: täiesti uut, veel kordagi õigesti vastamata fakti ei küsita otsemaid –
+         see näidatakse enne valmis kujul, laps loeb ja jätab meelde. */
+      /* Mitte kaks tutvustust järjest: vahepeal peab olema vähemalt üks päris küsimus. */
+      if(neverCorrect(op,f.key)&&!D.introduced[op][f.key]&&G.lastIntroQi!==G.qi)return showIntro(f,op);
+    }
   }
   G.cur=makeQuestion(f,op);
   G.recent.push(f.key);if(G.recent.length>2)G.recent.shift();
@@ -888,17 +1100,57 @@ function answer(val,t){
     /* Vihjega ei kiirustata: kell seisab ja mäng ootab puudutust, mitte taimerit.
        Kolm sekundit oli lugemiseks liiga vähe ja iga muu number oleks samuti
        kellegi jaoks vale. */
-    G.waitTap=true;G.waitStart=performance.now();
+    $('tipgoText').textContent='Puuduta, kui oled lugenud';
+    G.waitTap=true;G.waitKind='hint';G.waitStart=performance.now();
     $('pad').classList.add('wait');
   }else{
     G.advT=setTimeout(nextQuestion,ok?380:(isCalm()?2200:1600));
   }
+}
+/* F4: uue, veel kordagi õigesti vastamata fakti tutvustus – näidatakse valmis
+   kujul (fakt + vastus), mitte küsimusena. Kasutab sama waitTap/pauseMs
+   mehhanismi mis vale-vastuse vihje, nii et ringi kell seisab lugemise ajal. */
+function showIntro(f,op){
+  if(raf)cancelAnimationFrame(raf);
+  G.introFact=f;G.introOp=op;G.lastIntroQi=G.qi;
+  G.recent.push(f.key);if(G.recent.length>2)G.recent.shift();
+  if(quitArmed){quitArmed=false;$('gQuit').textContent='Lõpeta';}
+  var st=$('stage');st.classList.remove('ok','bad','late');
+  var ans;
+  if(op==='div'){
+    var p=f.a*f.b,s=selTables(),d;
+    if(s&&s.indexOf(f.a)>=0&&s.indexOf(f.b)<0)d=f.a;
+    else if(s&&s.indexOf(f.b)>=0&&s.indexOf(f.a)<0)d=f.b;
+    else d=Math.random()<.5?f.a:f.b;
+    ans=p/d;$('qText').textContent=p+' : '+d;
+  }else{
+    ans=f.a*f.b;$('qText').textContent=f.a+' × '+f.b;
+  }
+  $('aText').textContent='= '+ans;$('aText').classList.remove('empty');
+  $('fbmsg').textContent='';
+  $('tiptext').textContent='Uus tehe — jäta meelde';
+  $('tipgoText').textContent='Puuduta, kui oled valmis';
+  $('tipmsg').classList.add('on');
+  $('ringFg').style.strokeDashoffset='0';
+  $('pad').classList.add('wait');
+  G.lock=true;G.waitTap=true;G.waitKind='intro';G.waitStart=performance.now();
 }
 /* Väike ooteaeg enne, kui puudutus mõjub: muidu lööb pooleli jäänud vastuse
    teine klõps vihje kohe kinni, enne kui laps jõuab seda märgata. */
 function resumeFromTip(){
   if(!G||!G.waitTap||performance.now()-G.waitStart<800)return false;
   G.pauseMs+=performance.now()-G.waitStart;
+  if(G.waitKind==='intro'){
+    var f=G.introFact,op=G.introOp;
+    if(f&&op){
+      D.introduced[op][f.key]=1;
+      /* Sama fakt tuleb tavalise küsimusena tagasi 2-3 tehte pärast, nagu vale
+         vastuse puhulgi – korduse mehhanism on jagatud, mitte uuesti tehtud. */
+      G.queue.push({key:f.key,op:op,due:G.qi+2+rnd(2)});
+      save();
+    }
+  }
+  G.waitTap=false;G.waitKind=null;
   nextQuestion();
   return true;
 }
@@ -994,21 +1246,33 @@ function renderHeat(){
       hm.appendChild(c);
     }
   }
+  var ns=nextStepTable(heatOp);
+  $('guideNext').textContent=ns?('Sinu järgmine samm: harjuta '+ns+' tabelit.'):'Kõik tabelid on peas — võimas!';
   renderDetail();
 }
 $('hm').addEventListener('click',function(e){var c=e.target.closest('.hc');if(!c)return;heatSel=c.dataset.key;heatSelA=+c.dataset.a;heatSelB=+c.dataset.b;renderHeat();});
 var heatSelA=1,heatSelB=1;
+/* F2/F3: soojuskaardi kaardile lisatud tabeli tehnikate kompaktne loend. Sama
+   TECH allikas, mida kasutab ka päeva nipi kaart (F1) – numbrid arvutatud
+   tegelikest teguritest, mitte kirjas. */
+function techsHtml(f){
+  var r=techsForFactCompact(f);
+  if(!r.list.length)return '';
+  var items=r.list.map(function(e){return e.lines.map(esc).join(' ');}).join('<br>');
+  return '<br><span class="tiprow">Rohkem nippe '+r.table+' tabeli kohta:<br>'+items+'</span>';
+}
 function renderDetail(){
   var d=$('hDetail');
   if(!heatSel){d.innerHTML='<span class="muted">Puuduta ruutu, et näha täpsemalt.</span>';return;}
   var f=FMAP[heatSel],st=gs(heatOp,heatSel),p=f.a*f.b;
   var title=heatOp==='mul'?(heatSelA+' × '+heatSelB+' = '+p):(p+' : '+heatSelA+' = '+heatSelB);
-  if(!st||st.n===0){var t0=tipFor(f,heatOp);d.innerHTML='<b>'+title+'</b><span class="muted">Pole veel küsitud.</span>'+(t0?'<br><span class="tiprow">Kuidas meelde jätta: '+esc(t0)+'</span>':'');return;}
+  var extra=techsHtml(f);
+  if(!st||st.n===0){var t0=tipFor(f,heatOp);d.innerHTML='<b>'+title+'</b><span class="muted">Pole veel küsitud.</span>'+(t0?'<br><span class="tiprow">Kuidas meelde jätta: '+esc(t0)+'</span>':'')+extra;return;}
   var ok=0,ts=[];for(var i=0;i<st.h.length;i++){if(st.h[i].ok){ok++;ts.push(st.h[i].t);}}
   var avg=ts.length?ts.reduce(function(x,y){return x+y;},0)/ts.length:0;
   var names={grey:'pole veel selge',red:'raske',amber:'peaaegu peas',green:'peas'};
   var tip=tipFor(f,heatOp);
-  d.innerHTML='<b>'+title+'</b>'+st.n+' vastust · viimased '+st.h.length+': '+Math.round(ok/st.h.length*100)+'% õiged · õige vastus keskmiselt '+fmt(avg)+' s<br><span class="muted">Seis: '+names[status(st)]+' – '+masteryHint(st)+'</span>'+(tip?'<br><span class="tiprow">Kuidas meelde jätta: '+esc(tip)+'</span>':'');
+  d.innerHTML='<b>'+title+'</b>'+st.n+' vastust · viimased '+st.h.length+': '+Math.round(ok/st.h.length*100)+'% õiged · õige vastus keskmiselt '+fmt(avg)+' s<br><span class="muted">Seis: '+names[status(st)]+' – '+masteryHint(st)+'</span>'+(tip?'<br><span class="tiprow">Kuidas meelde jätta: '+esc(tip)+'</span>':'')+extra;
 }
 $('hBack').onclick=function(){renderHome();show('s-home');};
 
