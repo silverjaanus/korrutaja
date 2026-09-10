@@ -83,6 +83,8 @@ h2.title{font-family:var(--fd);font-weight:600;font-size:clamp(18px,5.8vw,26px);
 .stage.ok .ring-fg{stroke:var(--ok)}
 .stage.bad .ring-fg{stroke:var(--bad)}
 .tipmsg{position:absolute;left:-8px;right:-8px;bottom:0;text-align:center;font:700 14px var(--fb);line-height:1.4;color:var(--acc);background:var(--acc-soft);border-radius:12px;padding:11px 12px;opacity:0;transition:opacity .2s;pointer-events:none}
+@keyframes gpop{0%{transform:translate(-50%,-30%) scale(.4);opacity:0}18%{opacity:1}100%{transform:translate(-50%,-150%) scale(1);opacity:0}}
+.gcelebrate{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);font:800 20px var(--fd);color:var(--ok-ink);background:var(--ok-soft);border:2px solid var(--ok);border-radius:14px;padding:8px 15px;pointer-events:none;white-space:nowrap;animation:gpop 1.45s ease-out forwards;z-index:6;box-shadow:0 6px 20px rgba(46,158,91,.25)}
 .tipmsg.on{opacity:1}
 .tipgo{display:block;margin-top:7px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;opacity:.7}
 /* Vihje ajal on klaviatuur tuhm: nii on näha, et praegu ei vastata, vaid loetakse. */
@@ -566,6 +568,7 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
   </div>
   <div class="hmwrap"><div class="hm" id="hm"></div></div>
   <div class="legend"><span><i style="background:var(--grey)"></i>pole veel</span><span><i style="background:var(--bad)"></i>raske</span><span><i style="background:var(--warn)"></i>peaaegu</span><span><i style="background:var(--ok)"></i>peas</span></div>
+  <p class="muted" style="margin:-4px 0 12px;font-size:13px">Toon liigub sujuvalt: mida rohelisem ruut, seda paremini see tehe peas. Kahvatu ruut tähendab, et vastuseid on veel vähe.</p>
   <details class="guide" id="guide">
     <summary>Kuidas targalt õppida</summary>
     <ul>
@@ -588,6 +591,8 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
   <div class="field"><div><label>Aega küsimusele</label><small>sekundit; roheline = alla 3 s</small></div><div class="seg" id="segLimit"><button data-v="4">4</button><button data-v="6">6</button><button data-v="8">8</button><button data-v="10">10</button></div></div>
   <div class="field"><div><label>Ringi pikkus</label><small>minutit</small></div><div class="seg" id="segRound"><button data-v="2">2</button><button data-v="3">3</button><button data-v="5">5</button></div></div>
   <div class="field"><div><label>Rahulik režiim</label><small>ilma taimerita, aeg mõõdetakse siiski</small></div><div class="seg" id="segCalm"><button data-v="0">Väljas</button><button data-v="1">Sees</button></div></div>
+  <div class="field"><div><label>Heliefektid</label><small>õige vastuse ja „peas" heli</small></div><div class="seg" id="segSfx"><button data-v="0">Väljas</button><button data-v="1">Sees</button></div></div>
+  <div class="field"><div><label>Taustamuusika</label><small>vaikne, ainult harjutamise ajal</small></div><div class="seg" id="segMusic"><button data-v="0">Väljas</button><button data-v="1">Sees</button></div></div>
   <div class="field" id="setClass" hidden><div><label>Klass</label><small id="setClassInfo"></small></div><button class="link" id="btnLeave">Lahku</button></div>
   <button class="danger" id="btnReset">Kustuta edenemine</button>
   <p class="hint">„Kustuta edenemine“ nullib tulemused, soojuskaardi ja rekordi selles telefonis. Nimi ja klass jäävad alles. Kogu kustutamiseks (ka klass) kustuta brauseris selle saidi andmed.</p>
@@ -610,7 +615,7 @@ var FACTS=[];
 for(var a=1;a<=10;a++)for(var b=a;b<=10;b++)FACTS.push({a:a,b:b,key:a+'x'+b});
 var FMAP={}; FACTS.forEach(function(f){FMAP[f.key]=f;});
 var SYM={mul:'×',div:':'};
-var DEF={name:'',op:'mul',limit:6,round:3,calm:false,tables:[]};
+var DEF={name:'',op:'mul',limit:6,round:3,calm:false,tables:[],sfx:true,music:false};
 
 var D=load();
 function fresh(){return {v:1,settings:clone(DEF),q:0,stats:{mul:{},div:{}},days:{},tests:[],total:{n:0,ok:0},cls:null,outbox:[],board:null,lastCompete:'',warmup:{lastDay:'',rot:0},introduced:{mul:{},div:{}}};}
@@ -668,6 +673,42 @@ function masteryHint(st){
   return 'Roheliseks on vaja '+(miss.length?miss.join(', ')+' ja ':'')+last+'.';
 }
 function greenCount(op){var n=0;for(var i=0;i<FACTS.length;i++){if(FACTS[i].a>=2&&status(gs(op,FACTS[i].key))==='green')n++;}return n;}
+
+/* ---------- heatmapi pidev toon (ainult visuaal) ----------
+   status() jääb TEADLIKULT puutumata – sellest sõltuvad "peas" loendur, adaptiivne
+   valik ja tadaa-hetk. See skoor värvib ainult soojuskaardi ruudud, et edenemine
+   oleks astmete SEES näha (Mia tagasiside: kaart oli liiga ühtlaselt punane/kollane).
+   Täpsus domineerib; kiirus annab ainult kollaka varjundi. */
+function masteryScore(st){
+  if(!st||st.n===0)return null;
+  var h=st.h,ok=0,ts=[],i;
+  for(i=0;i<h.length;i++){if(h[i].ok){ok++;ts.push(h[i].t);}}
+  var acc=h.length?ok/h.length:0;
+  ts.sort(function(x,y){return x-y;});
+  var med=ts.length?ts[Math.floor(ts.length/2)]:99;
+  var speed=clamp((6-med)/(6-TARGET),0,1);                    /* 6 s+ = 0, 3 s või kiirem = 1 */
+  var score=acc*(0.72+0.28*speed);                            /* täpsus domineerib, kiirus tõstab lõpuni */
+  if(h.length&&!h[h.length-1].ok)score=Math.min(score,0.22); /* viimane viga = punane, nagu status() */
+  var conf=clamp(st.n/8,0.25,1);                              /* vähe vastuseid = kahvatu, mitte julge */
+  return {score:score,conf:conf};
+}
+/* Mitmeastmeline üleminek, ankrud äpi värvidega (--bad, --warn, kollakas-roheline, --ok);
+   madala kindluse korral kahvatub halli (--grey) poole. */
+var HEAT_STOPS=[[0,[228,87,46]],[0.45,[242,169,59]],[0.72,[150,190,90]],[1,[46,158,91]]]; /* --bad, --warn, hele roheline (peaaegu), --ok */
+var HEAT_GREY=[217,213,204];
+function lerp(a,b,t){return a+(b-a)*t;}
+function heatColor(sc){
+  var s=clamp(sc.score,0,1),i,rgb=null;
+  for(i=0;i<HEAT_STOPS.length-1;i++){
+    var p=HEAT_STOPS[i],q=HEAT_STOPS[i+1];
+    if(s<=q[0]){var t=(s-p[0])/(q[0]-p[0]);rgb=[lerp(p[1][0],q[1][0],t),lerp(p[1][1],q[1][1],t),lerp(p[1][2],q[1][2],t)];break;}
+  }
+  if(!rgb)rgb=HEAT_STOPS[HEAT_STOPS.length-1][1].slice();
+  var g=(1-sc.conf)*0.7;
+  rgb=[lerp(rgb[0],HEAT_GREY[0],g),lerp(rgb[1],HEAT_GREY[1],g),lerp(rgb[2],HEAT_GREY[2],g)];
+  var lum=(0.2126*rgb[0]+0.7152*rgb[1]+0.0722*rgb[2])/255;
+  return {bg:'rgb('+Math.round(rgb[0])+','+Math.round(rgb[1])+','+Math.round(rgb[2])+')',fg:lum>0.62?'rgba(30,33,64,.72)':'#fff'};
+}
 
 /* ---------- valitud tabelid ---------- */
 /* Tühi valik = kõik tabelid. Valik on filter adaptiivse valiku PEAL, mitte selle
@@ -992,6 +1033,7 @@ function startGame(mode){
   quitArmed=false;$('gQuit').textContent='Lõpeta';
   $('stage').classList.toggle('calm',isCalm());
   show('s-game');
+  if(mode==='train'&&D.settings.music)musicOn();
   nextQuestion();
 }
 function makeQuestion(f,op){
@@ -1073,7 +1115,8 @@ function answer(val,t){
   var c=G.cur,ok=val===c.ans,before=status(gs(c.op,c.f.key));
   record(c.op,c.f,ok,t);
   var after=status(gs(c.op,c.f.key));
-  if(before!=='green'&&after==='green')G.greens.push({f:c.f,op:c.op});
+  var justGreen=(before!=='green'&&after==='green');
+  if(justGreen)G.greens.push({f:c.f,op:c.op});
   G.n++;G.tsum+=Math.min(t,curLimit());
   var st=$('stage'),tip=false;
   /* Ring täidetakse tagasi ja tuuakse nähtavale: roheline või punane täisring on
@@ -1084,6 +1127,8 @@ function answer(val,t){
     var pts=(t<=TARGET?10:5)+Math.min(G.streak-1,5);G.score+=pts;
     st.classList.add('ok');
     $('fbmsg').textContent=t<=TARGET?'Kiire! +'+pts:'Õige +'+pts;
+    if(justGreen&&G.mode==='train'){sfxTada();celebrateGreen(factLabel(c.f,c.op));}
+    else sfxCorrect();
     if(G.mode==='train'&&t>4){G.hard[c.f.key]=(G.hard[c.f.key]||0)+1;G.hardOp[c.f.key]=c.op;G.queue.push({key:c.f.key,op:c.op,due:G.qi+3+rnd(4)});}
   }else{
     G.streak=0;st.classList.add('bad');
@@ -1173,12 +1218,13 @@ function quitGame(){
     return;
   }
   if(raf)cancelAnimationFrame(raf);
-  if(G.n>0){endGame();}else{G=null;renderHome();show('s-home');}
+  if(G.n>0){endGame();}else{musicOff();G=null;renderHome();show('s-home');}
 }
 $('gQuit').onclick=quitGame;
 document.addEventListener('visibilitychange',function(){
   if(!G||!$('s-game').classList.contains('on'))return;
   if(document.hidden){
+    if(musicNodes&&AC)try{AC.suspend();}catch(e){}
     if(raf)cancelAnimationFrame(raf);
     if(G.advT){clearTimeout(G.advT);G.advT=null;G.advPending=true;}
     if(G.mode==='test'){
@@ -1190,6 +1236,7 @@ document.addEventListener('visibilitychange',function(){
       G.paused=true;
     }
   }else{
+    if(musicNodes)ac();
     if(G.missOnReturn){G.missOnReturn=false;G.advPending=false;G.lock=false;answer(null,curLimit());}
     else if(G.advPending){G.advPending=false;nextQuestion();}
     else if(G.paused){G.paused=false;if(!G.lock)nextQuestion();}
@@ -1197,7 +1244,73 @@ document.addEventListener('visibilitychange',function(){
 });
 
 function factLabel(f,op){return op==='div'?(f.a*f.b)+' : '+f.a:f.a+' × '+f.b;}
+
+/* ---------- heli ----------
+   SFX ja taustamuusika on mõlemad WebAudioga genereeritud – ei ühtki helifaili,
+   töötab offline ja litsentsivabalt. SFX vaikimisi sees (Mia soov), muusika väljas.
+   AudioContext luuakse alles esimese puudutuse peale (brauseri autoplay reeglid). */
+var AC=null,musicNodes=null,musicTimer=null;
+function ac(){
+  if(AC===null){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){AC=false;}}
+  if(AC&&AC.state==='suspended'){try{AC.resume();}catch(e){}}
+  return AC||null;
+}
+function blip(freq,t0,dur,vol,type){
+  var c=ac();if(!c)return;
+  var g=c.createGain();g.connect(c.destination);
+  g.gain.setValueAtTime(0.0001,t0);
+  g.gain.linearRampToValueAtTime(vol,t0+0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  var o=c.createOscillator();o.type=type||'sine';o.frequency.value=freq;o.connect(g);o.start(t0);o.stop(t0+dur+0.02);
+}
+function sfxCorrect(){
+  if(!D.settings.sfx)return;var c=ac();if(!c)return;var t=c.currentTime;
+  blip(660,t,0.09,0.13,'sine');blip(990,t+0.05,0.10,0.10,'sine');   /* lühike tõusev "ding" */
+}
+function sfxTada(){
+  if(!D.settings.sfx)return;var c=ac();if(!c)return;var t=c.currentTime;
+  [523.25,659.25,783.99,1046.5].forEach(function(f,i){blip(f,t+i*0.10,0.30,0.15,'triangle');}); /* C-E-G-C arpedžo */
+}
+function celebrateGreen(label){
+  var st=$('stage');if(!st)return;
+  var e=document.createElement('div');e.className='gcelebrate';e.textContent='★ '+label+' on peas!';
+  st.appendChild(e);setTimeout(function(){if(e.parentNode)e.parentNode.removeChild(e);},1500);
+}
+/* Taustamuusika: pehme pad (kaks kergelt häälestamata sinusoidi + aeglane LFO) ja
+   aeg-ajalt üks vaikne pentatooniline noot. Tahtlikult tuhm ja aeglane, et
+   peastarvutamist mitte segada. */
+function musicOn(){
+  if(musicNodes||!D.settings.music)return;var c=ac();if(!c)return;
+  var master=c.createGain();master.gain.value=0.0001;master.connect(c.destination);
+  master.gain.linearRampToValueAtTime(0.05,c.currentTime+2.5);
+  var pad=c.createGain();pad.gain.value=0.5;pad.connect(master);
+  var o1=c.createOscillator();o1.type='sine';o1.frequency.value=196;      /* G3 */
+  var o2=c.createOscillator();o2.type='sine';o2.frequency.value=293.66;o2.detune.value=5; /* D4 */
+  o1.connect(pad);o2.connect(pad);o1.start();o2.start();
+  var lfo=c.createOscillator();lfo.frequency.value=0.07;var lg=c.createGain();lg.gain.value=0.22;
+  lfo.connect(lg);lg.connect(pad.gain);lfo.start();
+  musicNodes={master:master,os:[o1,o2,lfo]};
+  var scale=[392,440,523.25,587.33,659.25,783.99]; /* G-duur pentatoonika */
+  function twinkle(){
+    if(!musicNodes)return;var cc=ac();if(!cc){musicTimer=setTimeout(twinkle,3000);return;}
+    var f=scale[Math.floor(Math.random()*scale.length)],t=cc.currentTime;
+    var g=cc.createGain();g.connect(musicNodes.master);
+    g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.09,t+0.06);g.gain.exponentialRampToValueAtTime(0.0001,t+2.3);
+    var o=cc.createOscillator();o.type='sine';o.frequency.value=f;o.connect(g);o.start(t);o.stop(t+2.4);
+    musicTimer=setTimeout(twinkle,2400+Math.random()*2800);
+  }
+  musicTimer=setTimeout(twinkle,1600);
+}
+function musicOff(){
+  if(musicTimer){clearTimeout(musicTimer);musicTimer=null;}
+  if(!musicNodes)return;var c=ac(),m=musicNodes,os=m.os;
+  try{if(c)m.master.gain.linearRampToValueAtTime(0.0001,c.currentTime+0.7);}catch(e){}
+  setTimeout(function(){os.forEach(function(o){try{o.stop();}catch(e){}});},800);
+  musicNodes=null;
+}
+
 function endGame(){
+  musicOff();
   if(raf)cancelAnimationFrame(raf);
   var R=G;G=null;
   if(R.mode==='test'){D.tests.push({d:today(),ok:R.ok,n:R.n,avg:R.n?R.tsum/R.n:0});if(D.tests.length>50)D.tests.shift();D.lastCompete=today();}
@@ -1240,7 +1353,9 @@ function renderHeat(){
     var rl=document.createElement('div');rl.className='hl';rl.textContent=a;hm.appendChild(rl);
     for(b=1;b<=10;b++){
       var key=Math.min(a,b)+'x'+Math.max(a,b);
-      var c=document.createElement('button');c.className='hc '+status(gs(heatOp,key));c.dataset.key=key;c.dataset.a=a;c.dataset.b=b;
+      var sc=masteryScore(gs(heatOp,key));
+      var c=document.createElement('button');c.className='hc';c.dataset.key=key;c.dataset.a=a;c.dataset.b=b;
+      if(sc){var col=heatColor(sc);c.style.background=col.bg;c.style.color=col.fg;} /* muidu jääb .hc hall = pole veel küsitud */
       c.textContent=a*b;c.setAttribute('aria-label',a+' '+SYM[heatOp]+' '+b);
       if(heatSel===key)c.classList.add('sel');
       hm.appendChild(c);
@@ -1319,6 +1434,7 @@ function seg(id,val){var ch=$(id).children;for(var i=0;i<ch.length;i++)ch[i].cla
 function renderSettings(){
   $('inName').value=D.settings.name;
   seg('segLimit',D.settings.limit);seg('segRound',D.settings.round);seg('segCalm',D.settings.calm?1:0);
+  seg('segSfx',D.settings.sfx?1:0);seg('segMusic',D.settings.music?1:0);
   $('btnReset').textContent='Kustuta edenemine';resetArmed=false;
   $('setClass').hidden=!(sbOn()&&D.cls);
   if(D.cls)$('setClassInfo').textContent=D.cls.class_name+' · kood '+D.cls.code+' · '+D.cls.nick+' · taastekood '+D.cls.secret;
@@ -1333,6 +1449,8 @@ $('inName').addEventListener('input',function(){D.settings.name=this.value;save(
 $('segLimit').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;D.settings.limit=+b.dataset.v;save();seg('segLimit',D.settings.limit);});
 $('segRound').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;D.settings.round=+b.dataset.v;save();seg('segRound',D.settings.round);});
 $('segCalm').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;D.settings.calm=b.dataset.v==='1';save();seg('segCalm',D.settings.calm?1:0);});
+$('segSfx').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;D.settings.sfx=b.dataset.v==='1';save();seg('segSfx',D.settings.sfx?1:0);if(D.settings.sfx)sfxCorrect();});
+$('segMusic').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;D.settings.music=b.dataset.v==='1';save();seg('segMusic',D.settings.music?1:0);if(D.settings.music){if(G&&G.mode==='train')musicOn();else{var c=ac();if(c){musicOn();setTimeout(musicOff,4000);}}}else musicOff();});
 var resetArmed=false;
 $('btnReset').onclick=function(){
   if(!resetArmed){resetArmed=true;this.textContent='Kindel? Edenemine kustub, klass jääb';return;}
