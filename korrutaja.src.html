@@ -264,7 +264,7 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
     <button class="chip" data-op="div">Jagamine</button>
     <button class="chip" data-op="mix">Segamini</button>
   </div>
-  <p class="label">Milliseid tabeleid</p>
+  <p class="label">Milliste numbritega tehted</p>
   <div class="numchips" id="numChips">
     <button class="chip" data-n="all">Kõik</button>
     <button class="chip" data-n="2">2</button>
@@ -887,11 +887,11 @@ function renderWarmup(){
     var cand=rotationTables();
     table=cand[(D.warmup.rot||0)%cand.length];
     tech=techForTable(table,D.warmup.rot||0);
-    headline='Täna harjutame '+table+' tabelit';
+    headline='Täna harjutame tehteid numbriga '+table;
   }
   $('wmHead').textContent=headline;
   var box=$('wmTech');box.innerHTML='';
-  (tech?tech.lines:['Harjuta täna oma tabeleid!']).forEach(function(l){var p=document.createElement('p');p.textContent=l;box.appendChild(p);});
+  (tech?tech.lines:['Harjuta täna oma valitud numbreid!']).forEach(function(l){var p=document.createElement('p');p.textContent=l;box.appendChild(p);});
   /* Nõrga tehte päeval on "proovi ise" seesama tehe: loe nipp, proovi kohe. */
   var g=wf||pickSelfTest(table,null);
   if(g){
@@ -936,8 +936,8 @@ function renderNumChips(){
     ch[i].classList.toggle('on',v==='all'?!s:!!(s&&s.indexOf(+v)>=0));
   }
   $('numHint').textContent=s
-    ?'Harjutamises tulevad ainult tabelid '+selLabel()+'. Võistlus on alati kogu tabelist.'
-    :'Harjutamises tuleb kogu tabel. Vali üks või mitu arvu, kui tahad korraga vähem meelde jätta.';
+    ?'Harjuta ainult numbritega '+selLabel()+'. Võistlus on alati kogu tabelist.'
+    :'Harjuta kogu tabeli piires. Vali üks või mitu numbrit, kui tahad korraga vähem meelde jätta.';
 }
 $('numChips').addEventListener('click',function(e){
   var b=e.target.closest('.chip');if(!b)return;
@@ -1247,7 +1247,7 @@ function renderHeat(){
     }
   }
   var ns=nextStepTable(heatOp);
-  $('guideNext').textContent=ns?('Sinu järgmine samm: harjuta '+ns+' tabelit.'):'Kõik tabelid on peas — võimas!';
+  $('guideNext').textContent=ns?('Sinu järgmine samm: harjuta tehteid numbriga '+ns+'.'):'Kogu tabel on peas — võimas!';
   renderDetail();
 }
 $('hm').addEventListener('click',function(e){var c=e.target.closest('.hc');if(!c)return;heatSel=c.dataset.key;heatSelA=+c.dataset.a;heatSelB=+c.dataset.b;renderHeat();});
@@ -1259,7 +1259,7 @@ function techsHtml(f){
   var r=techsForFactCompact(f);
   if(!r.list.length)return '';
   var items=r.list.map(function(e){return e.lines.map(esc).join(' ');}).join('<br>');
-  return '<br><span class="tiprow">Rohkem nippe '+r.table+' tabeli kohta:<br>'+items+'</span>';
+  return '<br><span class="tiprow">Rohkem nippe numbri '+r.table+' kohta:<br>'+items+'</span>';
 }
 function renderDetail(){
   var d=$('hDetail');
