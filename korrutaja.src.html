@@ -238,6 +238,69 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
 .guide ul{margin:10px 0 0 18px;padding:0;line-height:1.55;font-size:14px;font-weight:600;color:var(--ink)}
 .guide li{margin-bottom:6px}
 .guideNext{margin:10px 0 0;font-weight:800;font-size:14px;color:var(--acc)}
+/* panda – Korrutaja tegelane (SVG koodis, vt panda()) */
+.panda{flex:none;display:block;line-height:0}
+.panda svg{width:100%;height:auto;display:block;overflow:visible}
+.panda .pe{transform-box:fill-box;transform-origin:center;animation:pblink 5s infinite}
+@keyframes pblink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.12)}}
+.panda .pwave,.panda .parmL,.panda .parmR{transform-box:view-box}
+.panda .pwave{animation:pwave 1.1s ease-in-out 2}
+@keyframes pwave{0%,100%{transform:rotate(0)}30%{transform:rotate(-16deg)}65%{transform:rotate(10deg)}}
+.panda.bob svg{animation:pbob 3.2s ease-in-out infinite}
+@keyframes pbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3%)}}
+.panda.jump svg{animation:pjump .6s cubic-bezier(.3,1.6,.5,1)}
+.panda.cheer svg{animation:pjump .7s cubic-bezier(.3,1.6,.5,1) 3}
+@keyframes pjump{0%,100%{transform:translateY(0)}40%{transform:translateY(-12%)}}
+.panda.cheer .parmL{animation:parmL .35s ease-in-out 6 alternate}
+.panda.cheer .parmR{animation:parmR .35s ease-in-out 6 alternate}
+@keyframes parmL{to{transform:rotate(-12deg)}}
+@keyframes parmR{to{transform:rotate(12deg)}}
+.panda .pstars{animation:ptwinkle 1.2s ease-in-out infinite alternate}
+@keyframes ptwinkle{from{opacity:.35}to{opacity:1}}
+.hi{display:flex;align-items:center;gap:12px;margin:2px 0 18px}
+.hi .panda{width:62px;cursor:pointer}
+.hi .hello{margin:0 0 4px}
+.hi .sub{margin:0}
+.wmTop{display:flex;align-items:flex-end;gap:12px}
+.wmTop .panda{width:80px}
+.wmTop .wmHead{padding-bottom:6px}
+.wmTech{position:relative}
+.wmTech::before{content:'';position:absolute;top:-8px;left:30px;width:14px;height:14px;background:var(--card);border-left:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg)}
+.tipmsg.withp{display:flex;align-items:center;gap:10px;text-align:left}
+.tipmsg .panda{width:44px}
+.tipbody{flex:1;min-width:0}
+
+/* tulemused lapsele: panda + saavutused */
+.rhero{display:flex;align-items:flex-end;gap:8px;margin:6px 0 14px}
+.rhero .panda{width:108px}
+.rbubble{position:relative;flex:1;min-width:0;background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:44px}
+.rbubble::before{content:'';position:absolute;left:-8px;bottom:20px;width:14px;height:14px;background:var(--card);border-left:1.5px solid var(--line);border-bottom:1.5px solid var(--line);transform:rotate(45deg)}
+.rtitle{font-family:var(--fd);font-weight:600;font-size:clamp(21px,6.2vw,27px);line-height:1.15;margin:0;text-wrap:balance}
+.rlead{margin:6px 0 0;font-weight:700;color:var(--ink2);font-size:14.5px;line-height:1.4}
+.rscore{margin:-4px 0 14px}
+.rscore .big{margin-top:0}
+.rscore .bigcap{margin-bottom:0}
+.wins{display:flex;flex-direction:column;gap:10px;margin:0 0 16px}
+.win{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;animation:winin .45s cubic-bezier(.2,1.3,.5,1) both}
+.win:nth-child(2){animation-delay:.18s}
+.win:nth-child(3){animation-delay:.36s}
+@keyframes winin{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+.win.gold{background:var(--warn-soft);border-color:var(--warn)}
+.wico{flex:none;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--acc-soft);color:var(--acc)}
+.wico svg{width:22px;height:22px}
+.wico.ok{background:var(--ok-soft);color:var(--ok)}
+.wico.gold{background:#fff;color:var(--warn)}
+.wico.hot{background:var(--bad-soft);color:var(--bad)}
+.win b{display:block;font-family:var(--fd);font-weight:600;font-size:18px;line-height:1.25;font-variant-numeric:tabular-nums}
+.win small{display:block;color:var(--ink2);font-weight:600;font-size:14px;line-height:1.35;margin-top:2px}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.mini div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 4px;text-align:center}
+.mini b{display:block;font-family:var(--fd);font-weight:600;font-size:18px;font-variant-numeric:tabular-nums}
+.mini small{display:block;color:var(--ink2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+.confetti i{position:absolute;top:-14px;width:8px;height:13px;border-radius:2px;animation:cfall 2.4s ease-in forwards}
+@keyframes cfall{to{transform:translate(var(--dx),105vh) rotate(var(--r))}}
+@media (prefers-reduced-motion:reduce){.panda *,.panda svg,.win{animation:none!important}.confetti{display:none}}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
 @media (max-height:640px){.ring{width:210px;height:210px}.q,.a{font-size:40px}.key{height:52px}.stage{min-height:220px}}
 </style>
@@ -253,8 +316,11 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
     <button class="icon" id="btnSettings" aria-label="Seaded"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     </div>
   </header>
-  <h1 class="hello" id="hello">Tere!</h1>
-  <p class="sub" id="subline">Täna 0 vastust</p>
+  <div class="hi">
+    <div class="panda" id="hPanda" role="img" aria-label="Panda"></div>
+    <div><h1 class="hello" id="hello">Tere!</h1>
+    <p class="sub" id="subline">Täna 0 vastust</p></div>
+  </div>
   <div class="tiles">
     <div class="tile"><b id="tGreenMul">0<em>/45 peas</em></b><small>Korrutamine</small></div>
     <div class="tile"><b id="tGreenDiv">0<em>/45 peas</em></b><small>Jagamine</small></div>
@@ -447,7 +513,7 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
   <div class="stage" id="stage">
     <svg class="ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-bg" cx="60" cy="60" r="54"/><circle class="ring-fg" id="ringFg" cx="60" cy="60" r="54"/></svg>
     <div class="qbox"><div class="q" id="qText">7 × 8</div><div class="a empty" id="aText">= ?</div></div>
-    <div class="tipmsg" id="tipmsg"><span id="tiptext"></span><span class="tipgo" id="tipgoText">Puuduta, kui oled lugenud</span></div>
+    <div class="tipmsg withp" id="tipmsg"><div class="panda" id="tipPanda"></div><div class="tipbody"><span id="tiptext"></span><span class="tipgo" id="tipgoText">Puuduta, kui oled lugenud</span></div></div>
   </div>
   <div class="fbmsg" id="fbmsg"></div>
   <div class="pad" id="pad">
@@ -462,7 +528,7 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
 <section class="screen" id="s-warmup">
   <header class="top"><button class="back" id="wmBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Koju</button><h2 class="title">Päeva nipp</h2><span style="width:60px"></span></header>
   <div class="warmup">
-    <h2 class="wmHead" id="wmHead">Täna võtame ette</h2>
+    <div class="wmTop"><div class="panda" id="wmPanda"></div><h2 class="wmHead" id="wmHead">Täna võtame ette</h2></div>
     <div class="wmTech" id="wmTech"></div>
     <div class="wmTry">
       <p class="wmTryQ">Proovi ise: <b id="wmTryFact"></b></p>
@@ -475,16 +541,18 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
 
 <!-- RESULTS -->
 <section class="screen" id="s-result">
-  <header class="top"><h2 class="title" id="rTitle">Ring läbi!</h2></header>
-  <div class="big" id="rBig">0</div>
-  <div class="bigcap" id="rCap">punkti</div>
-  <div class="rows">
-    <div class="row"><span>Õigeid vastuseid</span><b id="rOk">0 / 0</b></div>
-    <div class="row"><span>Keskmine aeg</span><b id="rAvg">0 s</b></div>
-    <div class="row"><span>Pikim seeria</span><b id="rBest">0</b></div>
+  <div class="rhero">
+    <div class="panda" id="rPanda"></div>
+    <div class="rbubble"><h2 class="rtitle" id="rTitle">Ring läbi!</h2><p class="rlead" id="rLead" hidden></p></div>
   </div>
-  <div class="sect" id="rGreensWrap"><p class="label">Uued rohelised</p><div class="tags" id="rGreens"></div></div>
-  <div class="sect" id="rHardWrap"><p class="label">Harjuta veel</p><div class="tags" id="rHard"></div></div>
+  <div class="rscore" id="rScore" hidden><div class="big" id="rBig">0</div><div class="bigcap" id="rCap"></div></div>
+  <div class="wins" id="rWins"></div>
+  <div class="sect" id="rHardWrap"><p class="label" id="rHardLabel">Järgmisel korral võtame ette</p><div class="tags" id="rHard"></div></div>
+  <div class="mini">
+    <div><b id="rOk">0 / 0</b><small>õiget</small></div>
+    <div><b id="rPts">0</b><small>punkti</small></div>
+    <div><b id="rAvg">0 s</b><small>keskmine aeg</small></div>
+  </div>
   <div class="menu">
     <button class="btn primary" id="rAgain">Veel üks ring</button>
     <button class="btn" id="rHome">Koju</button>
@@ -618,7 +686,7 @@ var SYM={mul:'×',div:':'};
 var DEF={name:'',op:'mul',limit:6,round:3,calm:false,tables:[],sfx:true,music:false};
 
 var D=load();
-function fresh(){return {v:1,settings:clone(DEF),q:0,stats:{mul:{},div:{}},days:{},tests:[],total:{n:0,ok:0},cls:null,outbox:[],board:null,lastCompete:'',warmup:{lastDay:'',rot:0},introduced:{mul:{},div:{}}};}
+function fresh(){return {v:1,settings:clone(DEF),q:0,stats:{mul:{},div:{}},days:{},tests:[],total:{n:0,ok:0},cls:null,outbox:[],board:null,lastCompete:'',warmup:{lastDay:'',rot:0},introduced:{mul:{},div:{}},rounds:[]};}
 function clone(o){return JSON.parse(JSON.stringify(o));}
 function load(){
   try{var r=localStorage.getItem(LS);if(r){var d=JSON.parse(r);
@@ -629,6 +697,7 @@ function load(){
     d.days=d.days||{};d.tests=d.tests||[];d.total=d.total||{n:0,ok:0};d.q=d.q||0;d.cls=d.cls||null;d.outbox=d.outbox||[];d.board=d.board||null;d.lastCompete=d.lastCompete||'';
     d.warmup=d.warmup||{lastDay:'',rot:0};if(typeof d.warmup.rot!=='number')d.warmup.rot=0;d.warmup.lastDay=d.warmup.lastDay||'';
     d.introduced=d.introduced||{mul:{},div:{}};d.introduced.mul=d.introduced.mul||{};d.introduced.div=d.introduced.div||{};
+    d.rounds=Array.isArray(d.rounds)?d.rounds:[];
     return d;}}catch(e){}
   return fresh();
 }
@@ -797,6 +866,7 @@ function tipFor(f,op){
 function showTip(f,op){
   var t=tipFor(f,op);
   $('tiptext').textContent=t;$('tipmsg').classList.toggle('on',!!t);
+  if(t)setPanda('tipPanda','kind','',true);
   return !!t;
 }
 
@@ -931,6 +1001,7 @@ function renderWarmup(){
     headline='Täna harjutame tehteid numbriga '+table;
   }
   $('wmHead').textContent=headline;
+  setPanda('wmPanda','teach');
   var box=$('wmTech');box.innerHTML='';
   (tech?tech.lines:['Harjuta täna oma valitud numbreid!']).forEach(function(l){var p=document.createElement('p');p.textContent=l;box.appendChild(p);});
   /* Nõrga tehte päeval on "proovi ise" seesama tehe: loe nipp, proovi kohe. */
@@ -944,6 +1015,71 @@ function renderWarmup(){
   }
   $('wmAns').hidden=true;
   warmupIsRotation=!wf;
+}
+/* Panda – Korrutaja tegelane. Joonistatud koodis (SVG), ilmed vahetatavad.
+   mood: happy | wave | cheer | kind | teach. head:true = ainult pea (vihjekasti jaoks). */
+function panda(mood,head){
+  var K='#1E2140',W='#fff',B='#2F49D1',P='#F4A3A0',Y='#F2A93B';
+  var tilt=mood==='kind'?' transform="rotate(-9 60 60)"':'',s='',eyes,mouth,armL,armR,extra='',brows='';
+  var up=function(x1,y1,x2,y2,cls,o){return '<path class="'+(cls||'')+'" '+(o?'style="transform-origin:'+o+'"':'')+' d="M'+x1+' '+y1+'L'+x2+' '+y2+'" stroke="'+K+'" stroke-width="15" stroke-linecap="round"/>';};
+  /* silmad */
+  var eye=function(x,dx,dy,r){return '<circle cx="'+x+'" cy="55" r="5.8" fill="'+W+'"/><circle cx="'+(x+dx)+'" cy="'+(55+dy)+'" r="'+(r||3.7)+'" fill="'+K+'"/><circle cx="'+(x+dx+1.6)+'" cy="'+(55+dy-1.8)+'" r="1.4" fill="'+W+'"/>';};
+  var shut=function(x){return '<path d="M'+(x-6)+' 57 Q'+x+' 50 '+(x+6)+' 57" stroke="'+W+'" stroke-width="2.6" fill="none" stroke-linecap="round"/>';};
+  eyes='<g class="pe">'+eye(43,.6,.6)+eye(77,-.6,.6)+'</g>';
+  mouth='<path d="M53 73 Q56.5 77.5 60 73.6 Q63.5 77.5 67 73" stroke="'+K+'" stroke-width="2.4" fill="none" stroke-linecap="round"/>';
+  armL=up(33,91,41,107);armR=up(87,91,79,107);
+  if(mood==='wave'||mood==='teach'){armR=up(87,91,103,68,mood==='wave'?'pwave':'','87px 91px');}
+  if(mood==='cheer'){
+    eyes=shut(43)+shut(77);
+    mouth='<path d="M51.5 72 Q60 86 68.5 72 Z" fill="'+K+'"/><path d="M55.5 78.2 Q60 82.6 64.5 78.2 Q60 76.4 55.5 78.2Z" fill="'+P+'"/>';
+    armL=up(33,91,15,67,'parmL','33px 91px');armR=up(87,91,105,67,'parmR','87px 91px');
+    extra='<g class="pstars" fill="'+Y+'"><path d="M12 30l2.2 5 5 2.2-5 2.2-2.2 5-2.2-5-5-2.2 5-2.2z"/><path d="M108 22l1.8 4 4 1.8-4 1.8-1.8 4-1.8-4-4-1.8 4-1.8z"/><path d="M104 104l1.5 3.4 3.4 1.5-3.4 1.5-1.5 3.4-1.5-3.4-3.4-1.5 3.4-1.5z"/></g>';
+  }
+  if(mood==='kind'){
+    eyes='<g class="pe">'+eye(43,.6,.8,4.1)+eye(77,-.6,.8,4.1)+'</g>';
+    mouth='<path d="M54 73.5 Q60 78.5 66 73.5" stroke="'+K+'" stroke-width="2.4" fill="none" stroke-linecap="round"/>';
+  }
+  var ears='<circle cx="27" cy="25" r="13.5" fill="'+K+'"/><circle cx="93" cy="25" r="13.5" fill="'+K+'"/>';
+  var face='<ellipse cx="60" cy="56" rx="42" ry="37" fill="'+W+'" stroke="'+K+'" stroke-width="3"/>'+
+    '<ellipse cx="42" cy="56" rx="11.5" ry="14.5" transform="rotate(32 42 56)" fill="'+K+'"/><ellipse cx="78" cy="56" rx="11.5" ry="14.5" transform="rotate(-32 78 56)" fill="'+K+'"/>'+
+    '<ellipse cx="29" cy="69" rx="6.5" ry="4" fill="'+P+'" opacity=".75"/><ellipse cx="91" cy="69" rx="6.5" ry="4" fill="'+P+'" opacity=".75"/>'+
+    eyes+brows+'<ellipse cx="60" cy="67.5" rx="5.4" ry="3.8" fill="'+K+'"/>'+mouth;
+  if(head){
+    return '<svg viewBox="12 9 96 88" aria-hidden="true">'+ears+'<g class="phead"'+tilt+'>'+face+'</g></svg>';
+  }
+  var body='<ellipse cx="42" cy="124" rx="13" ry="8.5" fill="'+K+'"/><ellipse cx="78" cy="124" rx="13" ry="8.5" fill="'+K+'"/>'+
+    '<ellipse cx="60" cy="105" rx="32" ry="24" fill="'+W+'" stroke="'+K+'" stroke-width="3"/>';
+  var scarf='<path d="M33 88 Q60 100 87 88 L87 95 Q60 107 33 95Z" fill="'+B+'"/><path d="M71 97 L83 96 L80 115 L72 112Z" fill="'+B+'"/>'+
+    '<path d="M74.5 102.5l4 4m0-4l-4 4" stroke="'+W+'" stroke-width="1.8" stroke-linecap="round"/>';
+  return '<svg viewBox="0 0 120 134" aria-hidden="true">'+extra+ears+'<g class="pbody">'+body+'</g>'+scarf+armL+'<g class="phead"'+tilt+'>'+face+'</g>'+armR+'</svg>';
+}
+/* Panda ilmub üleminekutes (avaekraan, päeva nipp, vihje, tutvustus, tulemused),
+   mitte küsimuse ajal – siis on tähelepanu tehtel. Vea peale pole ta kunagi kurb. */
+function setPanda(id,mood,cls,head){
+  var el=$(id);if(!el)return;
+  el.className='panda'+(cls?' '+cls:'');el.innerHTML=panda(mood,head);
+}
+var WICO={
+  star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9z"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  bolt:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 2L4 14h7l-1.5 8L19 10h-7z"/></svg>',
+  flame:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 4 5.5 5.6 5.5 11.2a5.5 5.5 0 0 1-11 0c0-2.6 1.3-4.3 2.7-5.3.2 2.1 1 3.2 2.1 3.7C10.8 8.8 10.9 5 12 2z"/></svg>',
+  spark:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>',
+  up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg>',
+  cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3v4M15.5 3v4M9 15l2 2 4-4"/></svg>',
+  heart:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.5s-7.6-4.6-9.4-9.3C1.3 8 3.4 4.6 6.9 4.6c2 0 3.6 1.1 5.1 3 1.5-1.9 3.1-3 5.1-3 3.5 0 5.6 3.4 4.3 6.6-1.8 4.7-9.4 9.3-9.4 9.3z"/></svg>'
+};
+function confetti(){
+  try{if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;}catch(e){}
+  var box=document.createElement('div'),cols=['#2F49D1','#2E9E5B','#F2A93B','#E4572E','#F4A3A0'];box.className='confetti';
+  for(var i=0;i<48;i++){
+    var p=document.createElement('i');
+    p.style.left=(Math.random()*100)+'%';p.style.background=cols[i%cols.length];
+    p.style.animationDelay=(Math.random()*.6)+'s';p.style.animationDuration=(1.9+Math.random()*1.5)+'s';
+    p.style.setProperty('--dx',(Math.random()*140-70)+'px');p.style.setProperty('--r',(Math.random()*720-360)+'deg');
+    box.appendChild(p);
+  }
+  document.body.appendChild(box);setTimeout(function(){if(box.parentNode)box.parentNode.removeChild(box);},4200);
 }
 
 /* ---------- screens ---------- */
@@ -1022,7 +1158,7 @@ function isCalm(){return G&&G.mode==='train'&&D.settings.calm;}
 function sessionOp(){if(D.settings.op==='mix')return Math.random()<.5?'mul':'div';return D.settings.op;}
 
 function startGame(mode){
-  G={mode:mode,qi:0,score:0,streak:0,best:0,n:0,ok:0,tsum:0,queue:[],recent:[],greens:[],hard:{},hardOp:{},cur:null,lock:false,start:performance.now(),testList:null,pauseMs:0,waitTap:false,waitStart:0};
+  G={mode:mode,qi:0,score:0,streak:0,best:0,n:0,ok:0,tsum:0,queue:[],recent:[],greens:[],hard:{},hardOp:{},cur:null,lock:false,start:performance.now(),testList:null,pauseMs:0,waitTap:false,waitStart:0,comeback:{},learned:{},introKeys:{},lastOk:{},st0:{},fast:null,dayBefore:D.days[today()]||0};
   $('pad').classList.remove('wait');
   if(mode==='test'){
     var pool=FACTS.filter(function(f){return f.a>=2;});
@@ -1113,9 +1249,20 @@ function answer(val,t){
   if(!G||!G.cur||G.lock)return;
   G.lock=true;if(raf)cancelAnimationFrame(raf);
   var c=G.cur,ok=val===c.ans,before=status(gs(c.op,c.f.key));
+  var st0=gs(c.op,c.f.key),prevWrong=!!(st0&&st0.h.length&&!st0.h[st0.h.length-1].ok),rk=c.op+':'+c.f.key;
+  if(!(rk in G.st0))G.st0[rk]=before;   /* seis ringi alguses */
   record(c.op,c.f,ok,t);
+  /* Tulemuste ekraani kiituse jaoks: mis läks täna paremini kui enne. */
+  G.lastOk[rk]=ok;
+  if(ok){
+    if(G.introKeys[rk])G.learned[rk]={f:c.f,op:c.op,q:c.q,ans:c.ans};
+    else if(prevWrong)G.comeback[rk]={f:c.f,op:c.op};
+    if(!G.fast||t<G.fast.t)G.fast={q:c.q,ans:c.ans,t:t};
+  }
   var after=status(gs(c.op,c.f.key));
-  var justGreen=(before!=='green'&&after==='green');
+  /* Uus roheline ainult siis, kui tehe polnud ringi alguses roheline – muidu
+     tähistaks mäng ühe vea järel tagasitulekut kui uut saavutust. */
+  var justGreen=(before!=='green'&&after==='green'&&G.st0[rk]!=='green');
   if(justGreen)G.greens.push({f:c.f,op:c.op});
   G.n++;G.tsum+=Math.min(t,curLimit());
   var st=$('stage'),tip=false;
@@ -1174,6 +1321,7 @@ function showIntro(f,op){
   $('aText').textContent='= '+ans;$('aText').classList.remove('empty');
   $('fbmsg').textContent='';
   $('tiptext').textContent='Uus tehe — jäta meelde';
+  setPanda('tipPanda','happy','',true);
   $('tipgoText').textContent='Puuduta, kui oled valmis';
   $('tipmsg').classList.add('on');
   $('ringFg').style.strokeDashoffset='0';
@@ -1188,7 +1336,7 @@ function resumeFromTip(){
   if(G.waitKind==='intro'){
     var f=G.introFact,op=G.introOp;
     if(f&&op){
-      D.introduced[op][f.key]=1;
+      D.introduced[op][f.key]=1;G.introKeys[op+':'+f.key]=1;
       /* Sama fakt tuleb tavalise küsimusena tagasi 2-3 tehte pärast, nagu vale
          vastuse puhulgi – korduse mehhanism on jagatud, mitte uuesti tehtud. */
       G.queue.push({key:f.key,op:op,due:G.qi+2+rnd(2)});
@@ -1318,35 +1466,123 @@ function endGame(){
   musicOff();
   if(raf)cancelAnimationFrame(raf);
   var R=G;G=null;
+  var prevBest=bestTest(),prevTest=D.tests.length?D.tests[D.tests.length-1]:null;
+  var prevRound=null;
+  for(var j=D.rounds.length-1;j>=0;j--){if(D.rounds[j].m===D.settings.round){prevRound=D.rounds[j];break;}}
   if(R.mode==='test'){D.tests.push({d:today(),ok:R.ok,n:R.n,avg:R.n?R.tsum/R.n:0});if(D.tests.length>50)D.tests.shift();D.lastCompete=today();}
+  else if(R.n>=5){D.rounds.push({d:today(),m:D.settings.round,n:R.n,ok:R.ok});if(D.rounds.length>20)D.rounds.shift();}
   save();
-  var best=0;for(var i=0;i<D.tests.length;i++)best=Math.max(best,D.tests[i].ok);
-  $('rTitle').textContent=R.mode==='test'?'Võistlus tehtud':'Ring läbi!';
-  $('rBig').textContent=R.mode==='test'?R.ok+' / '+R.n:R.score;
-  $('rCap').textContent=R.mode==='test'?('õiget · sinu rekord '+best+' / 25'):'punkti';
-  $('rOk').textContent=R.ok+' / '+R.n;
-  $('rAvg').textContent=(R.n?fmt(R.tsum/R.n):'0')+' s';
-  $('rBest').textContent=R.best;
-  var g=$('rGreens');g.innerHTML='';
-  if(R.greens.length){R.greens.forEach(function(x){var s=document.createElement('span');s.className='tag ok';s.textContent=factLabel(x.f,x.op);g.appendChild(s);});}
-  else{g.innerHTML='<span class="muted">Seekord uusi ei tulnud. Roheliseks saab tehe, mis läheb enamasti õigesti ja alla 3 sekundi.</span>';}
-  var hk=Object.keys(R.hard).sort(function(x,y){return R.hard[y]-R.hard[x];}).slice(0,4);
-  var h=$('rHard');h.innerHTML='';
-  if(hk.length){hk.forEach(function(k){var f=FMAP[k],op=R.hardOp[k]||'mul';var s=document.createElement('span');s.className='tag';s.textContent=op==='div'?((f.a*f.b)+' : '+f.a+' = '+f.b):(f.a+' × '+f.b+' = '+(f.a*f.b));h.appendChild(s);});}
-  else{h.innerHTML='<span class="muted">Kõik läks kiiresti ja õigesti. Tubli!</span>';}
-  $('rAgain').textContent=R.mode==='test'?'Harjuta veel':'Veel üks ring';
-  $('rAgain').onclick=function(){startGame(R.mode==='test'?'train':R.mode);};
-  $('rSync').textContent='';
-  show('s-result');
+  showResults(R,{prevBest:prevBest,prevTest:prevTest,prevRound:prevRound});
   if(sbOn()&&D.cls&&R.n>0){
     D.outbox.push({mode:R.mode,op:R.mode==='test'?'mul':D.settings.op,n:R.n,ok:R.ok,score:R.score,avg:Math.round((R.n?R.tsum/R.n:0)*100)/100});
     if(D.outbox.length>200)D.outbox.shift();
     save();flush();
   }
 }
+/* Tulemuste ekraan lapsele: panda ja 1–3 saavutust, mis on ringi andmetest
+   päriselt tõesed. Kiidetakse tegu ja edenemist ("7 × 8 läks nüüd õigesti"),
+   mitte omadust ("sa oled tark"), ja võrreldakse last iseendaga, mitte teistega.
+   Numbrid jäävad alles, aga väikselt allapoole. */
+function pick(a){return a[rnd(a.length)];}
+function eqLabel(f,op){return op==='div'?((f.a*f.b)+' : '+f.a+' = '+f.b):(f.a+' × '+f.b+' = '+(f.a*f.b));}
+function listLabels(arr){return arr.slice(0,3).map(function(x){return factLabel(x.f,x.op);}).join(', ')+(arr.length>3?' ja veel '+(arr.length-3):'');}
+function showResults(R,P){
+  var test=R.mode==='test',acc=R.n?R.ok/R.n:0,wins=[],i,k;
+  var nm=D.settings.name.trim(),who=nm?', '+nm:'';
+  function win(ic,tone,t,sub){wins.push({ic:ic,tone:tone,t:t,s:sub});}
+  function done(rk){return R.lastOk[rk]===true;}   /* ringi viimane vastus sellele tehtele oli õige */
+  var greens=R.greens.filter(function(g){return status(gs(g.op,g.f.key))==='green';});
+  var gk={};greens.forEach(function(g){gk[g.op+':'+g.f.key]=1;});
+  var learned=[],comeback=[];
+  for(k in R.learned)if(done(k))learned.push(R.learned[k]);
+  for(k in R.comeback)if(done(k)&&!R.learned[k]&&!gk[k])comeback.push(R.comeback[k]);
+  /* Terve tabel sai selles ringis roheliseks: sinna kuulub äsja roheliseks läinud tehe. */
+  var tablesDone=[];
+  greens.forEach(function(g){[g.f.a,g.f.b].forEach(function(n){if(n>=2&&!tablesDone.some(function(x){return x.n===n&&x.op===g.op;})&&tableMastery(n,g.op)===1)tablesDone.push({n:n,op:g.op});});});
+  var dayNow=D.days[today()]||0,dayCounted=R.dayBefore<20&&dayNow>=20;
+  var milestone=tablesDone.length>0||greens.length>0;
+  var record=false;
+
+  if(test){
+    record=P.prevBest>0&&R.ok>P.prevBest;
+    if(R.n===25&&R.ok===25)win('star','gold','Kõik 25 õigesti!','Mitte ühtegi viga.');
+    if(record)win('star','gold','Uus rekord: '+R.ok+' / 25!','Eelmine rekord oli '+P.prevBest+'.');
+    else if(!P.prevTest&&R.n===25)win('spark','acc','Esimene võistlus tehtud!','Nüüd on sul rekord, mida ületada.');
+    else if(P.prevTest&&R.ok>P.prevTest.ok)win('up','ok','Eelmisest võistlusest '+(R.ok-P.prevTest.ok)+' õiget rohkem!','Eelmisel korral '+P.prevTest.ok+', täna '+R.ok+'.');
+    if(comeback.length)win('check','ok',(comeback.length===1?'Nüüd läks õigesti: ':'Nüüd läksid õigesti: ')+listLabels(comeback),comeback.length===1?'Enne läks see valesti.':'Enne läksid need valesti.');
+    if(R.best>=5)win('flame','hot',R.best+' õiget järjest!','Sinu pikim seeria selles võistluses.');
+    if(R.fast&&R.fast.t<3)win('bolt','acc','Kõige kiirem vastus',R.fast.q+' = '+R.fast.ans+', ainult '+fmt(R.fast.t)+' sekundiga!');
+    if(!wins.length)win('heart','acc','Võistlus on kirjas','Homme saad uuesti proovida.');
+  }else{
+    tablesDone.forEach(function(x){var nx=nextStepTable(x.op);win('star','gold',(x.op==='div'?'Kõik jagamised numbriga ':'Kõik tehted numbriga ')+x.n+' on peas!',nx?'Järgmisena võid ette võtta numbri '+nx+'.':'Kogu tabel on peas!');});
+    if(greens.length===1)win('star','gold',factLabel(greens[0].f,greens[0].op)+' on nüüd peas!','See tehe läheb nüüd kiiresti ja õigesti.');
+    else if(greens.length>1)win('star','gold',greens.length+' uut tehet on nüüd peas!',listLabels(greens));
+    if(learned.length===1)win('spark','acc','Õppisid uue tehte!',eqLabel(learned[0].f,learned[0].op));
+    else if(learned.length>1)win('spark','acc','Õppisid '+learned.length+' uut tehet!',listLabels(learned));
+    if(comeback.length)win('check','ok',(comeback.length===1?'Nüüd läks õigesti: ':'Nüüd läksid õigesti: ')+listLabels(comeback),(comeback.length===1?'Enne läks see valesti.':'Enne läksid need valesti.')+' Nii õppimine käibki.');
+    if(R.n>=5&&R.ok===R.n)win('check','ok','Kõik '+R.n+' vastust olid õiged!','Mitte ühtegi viga.');
+    else if(R.n>=10&&acc>=.9)win('check','ok',R.n+' vastusest '+R.ok+' õiged!','Peaaegu kõik läks õigesti.');
+    if(P.prevRound&&R.n>=5&&R.ok>P.prevRound.ok)win('up','ok','Eelmisest korrast '+(R.ok-P.prevRound.ok)+' õiget rohkem!','Eelmisel korral '+P.prevRound.ok+', täna '+R.ok+'.');
+    if(R.best>=5)win('flame','hot',R.best+' õiget järjest!','Sinu pikim seeria selles ringis.');
+    if(dayCounted){var sd=streakDays();win('cal','acc','Tänane päev on kirjas!',sd>=2?'Harjutad juba '+sd+' päeva järjest.':'Iga päev, mil teed 20 tehet, läheb kirja.');}
+    if(R.fast&&R.fast.t<3)win('bolt','acc','Kõige kiirem vastus',R.fast.q+' = '+R.fast.ans+', ainult '+fmt(R.fast.t)+' sekundiga!');
+  }
+  wins=wins.slice(0,3);
+  if(!test&&wins.length<2){
+    if(R.n>=2)win('heart','acc','Tegid '+R.n+' tehet!','Iga tehe teeb mälu tugevamaks.');
+    else win('heart','acc','Iga tehe loeb!','Järgmisel korral proovi terve ring läbi teha.');
+  }
+
+  /* pealkiri pandalt */
+  var title,lead='',mood='happy',pcls='jump';
+  if(test){
+    title=(R.n===25&&R.ok===25)?'Kõik õigesti'+who+'!':record?'Uus rekord'+who+'!':'Võistlus tehtud'+who+'!';
+    if(record||R.ok===25){mood='cheer';pcls='cheer';}
+    else if(acc<.7){mood='kind';pcls='';}
+  }else if(R.n<5){title='Hea algus'+who+'!';}
+  else if(milestone){title=pick(['Vau','Super','Äge'])+who+'!';mood='cheer';pcls='cheer';}
+  else if(acc>=.9){title=pick(['Suurepärane','Väga tubli'])+who+'!';}
+  else if(acc>=.7){title=pick(['Hästi tehtud','Tubli töö'])+who+'!';}
+  else{title=pick(['Hea harjutamine','Hästi pingutatud'])+who+'!';lead='Vead näitavad, mida veel harjutada – nii see pähe jääbki.';mood='kind';pcls='';}
+  $('rTitle').textContent=title;
+  $('rLead').textContent=lead;$('rLead').hidden=!lead;
+  setPanda('rPanda',mood,pcls);
+
+  $('rScore').hidden=!test;
+  if(test){$('rBig').textContent=R.ok+' / '+R.n;$('rCap').textContent='õiget · sinu rekord '+Math.max(P.prevBest,R.ok)+' / 25';}
+
+  var box=$('rWins');box.innerHTML='';
+  wins.forEach(function(w){
+    var d=document.createElement('div');d.className='win'+(w.tone==='gold'?' gold':'');
+    var ic=document.createElement('span');ic.className='wico'+(w.tone==='acc'?'':' '+w.tone);ic.innerHTML=WICO[w.ic];
+    var tx=document.createElement('div'),b=document.createElement('b'),sm=document.createElement('small');
+    /* tehe ei murdu rea lõpus pooleks: 4 ×|7 */
+    b.textContent=w.t.replace(/ ([×:=\/]) /g,'\u00a0$1\u00a0');sm.textContent=(w.s||'').replace(/ ([×:=\/]) /g,'\u00a0$1\u00a0');tx.appendChild(b);if(w.s)tx.appendChild(sm);
+    d.appendChild(ic);d.appendChild(tx);box.appendChild(d);
+  });
+
+  /* Mida järgmisel korral harjutada – plaan, mitte süüdistus. Tehe, mis ringi
+     lõpuks juba õigesti läks ja sai kiidetud, siia ei tule. */
+  var hk=Object.keys(R.hard).filter(function(key){var rk=(R.hardOp[key]||'mul')+':'+key;return !(R.comeback[rk]&&done(rk))&&!(R.learned[rk]&&done(rk));})
+    .sort(function(x,y){return R.hard[y]-R.hard[x];}).slice(0,4);
+  var h=$('rHard');h.innerHTML='';
+  hk.forEach(function(key){var s2=document.createElement('span');s2.className='tag';s2.textContent=eqLabel(FMAP[key],R.hardOp[key]||'mul');h.appendChild(s2);});
+  $('rHardWrap').hidden=!hk.length;
+  $('rHardLabel').textContent=test?'Neid tasub harjutada':'Järgmisel korral võtame ette';
+
+  $('rOk').textContent=R.ok+' / '+R.n;
+  $('rPts').textContent=R.score;
+  $('rAvg').textContent=(R.n?fmt(R.tsum/R.n):'0')+' s';
+  $('rAgain').textContent=test?'Harjuta veel':'Veel üks ring';
+  $('rAgain').onclick=function(){startGame(test?'train':R.mode);};
+  $('rSync').textContent='';
+  show('s-result');
+  if((milestone&&!test)||record||(test&&R.ok===25)){confetti();sfxTada();}
+}
 $('rHome').onclick=function(){renderHome();show('s-home');};
 
 /* ---------- heatmap ---------- */
+
 var heatOp='mul',heatSel=null;
 $('heatChips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;heatOp=b.dataset.op;heatSel=null;renderHeat();});
 function renderHeat(){
@@ -1703,6 +1939,12 @@ function renderBoard(){
   if(meIdx>=TOP){var g=document.createElement('div');g.className='lrow gap';g.textContent='···';list.appendChild(g);list.appendChild(lrow(meIdx+1,ps[meIdx].nick,subFor(ps[meIdx]),num(ps[meIdx][key]),true));}
 }
 
+setPanda('hPanda','wave','bob');
+$('hPanda').onclick=function(){
+  var el=$('hPanda');el.classList.remove('jump','bob');void el.offsetWidth;el.classList.add('jump');
+  if(D.settings.sfx){var c=ac();if(c){var t=c.currentTime;blip(520,t,0.08,0.12,'triangle');blip(780,t+0.07,0.12,0.11,'triangle');}}
+  setTimeout(function(){el.classList.remove('jump');el.classList.add('bob');},650);
+};
 var invite=readInvite();
 if(invite){try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}
 renderHome();
