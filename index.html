@@ -42,6 +42,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 /* top bar */
 .top{display:flex;align-items:center;justify-content:space-between;padding:4px 0 12px;min-height:44px}
 .brand{font-family:var(--fd);font-weight:700;font-size:22px;color:var(--acc);letter-spacing:.2px}
+.backlink{display:inline-flex;align-items:center;gap:4px;font-weight:800;font-size:14px;color:var(--ink2);text-decoration:none;padding:6px 0}
+.backlink:hover{text-decoration:underline}
+.backlink:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:6px}
 .icon{width:44px;height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center}
 .icon svg{width:22px;height:22px;stroke:var(--ink2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .back{background:none;border:0;padding:8px 0;font:800 15px var(--fb);color:var(--acc);display:flex;align-items:center;gap:6px}
@@ -320,6 +323,7 @@ select.in{appearance:none;-webkit-appearance:none;background-image:url("data:ima
 
 <!-- HOME -->
 <section class="screen on" id="s-home">
+  <a class="backlink" href="https://harjutaja.silverjaanus.com/">‹ Harjutaja</a>
   <header class="top">
     <div class="brand">Korrutaja</div>
     <div class="hbtns">
