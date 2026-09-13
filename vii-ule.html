@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="et">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vii edenemine Harjutajasse</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--paper:#fdfdfa;--ink:#1d2f4f;--ink2:#5a6a82;--edge:#c3d4ea;--card:#fff;
+  --sun:#f3c445;--sun-edge:#e9b93f;--sun-ink:#3a2c00;--ok:#1d7f53;--ok-bg:#e3f5ec;--bad:#b8432d;--bad-bg:#fbe9e4;
+  --fb:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.5;
+  padding:28px 16px 60px}
+main{max-width:460px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.mark{width:64px;height:64px;border-radius:22.5%;display:block;margin:0 auto}
+h1{font-size:26px;line-height:1.15;margin:0;text-align:center;font-weight:800}
+p{margin:0}
+.lead{color:var(--ink2);text-align:center}
+.card{background:var(--card);border:1.5px solid var(--edge);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.card h2{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin:0;font-weight:800}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px}
+dt{color:var(--ink2)}
+dd{margin:0;font-weight:700;text-align:right}
+button,a.btn{font:inherit;font-weight:800;border-radius:12px;padding:13px 18px;cursor:pointer;border:1.5px solid var(--edge);
+  background:var(--card);color:var(--ink);text-align:center;text-decoration:none;display:block;width:100%}
+a.btn.go,button.go{background:var(--sun);border-color:var(--sun-edge);color:var(--sun-ink);font-size:18px}
+button:focus-visible,a:focus-visible,textarea:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+textarea{font:13px ui-monospace,Consolas,monospace;width:100%;min-height:96px;border:1.5px solid var(--edge);border-radius:12px;padding:10px;background:var(--paper);color:var(--ink);resize:vertical}
+.note{font-size:14px;color:var(--ink2)}
+.msg{border-radius:12px;padding:12px 14px;font-weight:700}
+.msg.ok{background:var(--ok-bg);color:var(--ok)}
+.msg.bad{background:var(--bad-bg);color:var(--bad)}
+details summary{cursor:pointer;font-weight:800;color:var(--ink2);font-size:14px}
+details[open] summary{margin-bottom:10px}
+.back{text-align:center;font-size:14px}
+.back a{color:var(--ink2)}
+</style>
+</head>
+<body>
+<main>
+  <svg class="mark" viewBox="0 0 100 100" role="img" aria-label="Harjutaja">
+    <rect width="100" height="100" rx="22.5" fill="#f3c445"/>
+    <path d="M28 24V76M38 24V76M62 24V76M72 24V76" fill="none" stroke="#16284a" stroke-width="8.6" stroke-linecap="round"/>
+    <path d="M38 56L62 44" fill="none" stroke="#16284a" stroke-width="8.6" stroke-linecap="round"/>
+  </svg>
+
+  <h1>Vii oma edenemine Harjutajasse</h1>
+  <p class="lead">Korrutaja kolib Harjutaja alla. Sinu harjutamine ja klass ei tule automaatselt kaasa — see nupp viib need üle.</p>
+
+  <div id="app"></div>
+
+  <p class="back"><a href="./">‹ Tagasi Korrutajasse</a></p>
+</main>
+
+<script>
+(function () {
+  var KEY = 'korrutaja_v1';
+  var TARGET = 'https://harjutaja.silverjaanus.com/korrutaja/vii-sisse.html';
+  var app = document.getElementById('app');
+
+  function el(html) { var d = document.createElement('div'); d.innerHTML = html.trim(); return d.firstChild; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+
+  function b64url(u8) {
+    var s = '';
+    for (var i = 0; i < u8.length; i++) s += String.fromCharCode(u8[i]);
+    return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  // Voog loetakse kasitsi. Response(stream) ei tooda koigis brauserites.
+  function streamThrough(u8, stream) {
+    var w = stream.writable.getWriter();
+    w.write(u8); w.close();
+    var r = stream.readable.getReader(), chunks = [], total = 0;
+    return (function pump() {
+      return r.read().then(function (res) {
+        if (res.done) {
+          var out = new Uint8Array(total), o = 0;
+          for (var i = 0; i < chunks.length; i++) { out.set(chunks[i], o); o += chunks[i].length; }
+          return out;
+        }
+        chunks.push(res.value); total += res.value.length;
+        return pump();
+      });
+    })();
+  }
+
+  function pack(str) {
+    var bytes = new TextEncoder().encode(str);
+    if (typeof CompressionStream === 'undefined') return Promise.resolve('k0.' + b64url(bytes));
+    return streamThrough(bytes, new CompressionStream('gzip'))
+      .then(function (u8) { return 'k1.' + b64url(u8); })
+      .catch(function () { return 'k0.' + b64url(bytes); });
+  }
+
+  var raw = null;
+  try { raw = localStorage.getItem(KEY); } catch (e) { raw = null; }
+
+  if (!raw) {
+    app.append(el('<div class="msg bad">Selles brauseris ei ole Korrutaja edenemist. Kas oled kindel, et harjutasid siin, samas brauseris ja samas aadressil?</div>'));
+    return;
+  }
+
+  var D;
+  try { D = JSON.parse(raw); } catch (e) { D = null; }
+  if (!D) {
+    app.append(el('<div class="msg bad">Salvestatud andmeid ei õnnestunud lugeda. Ära kustuta neid — anna täiskasvanule teada.</div>'));
+    return;
+  }
+
+  var paevi = D.days ? Object.keys(D.days).length : 0;
+  var vastuseid = (D.total && D.total.n) || 0;
+  var voistlusi = (D.tests && D.tests.length) || 0;
+  var cls = D.cls;
+
+  var rows = '<dl>'
+    + '<dt>Harjutatud päevi</dt><dd>' + paevi + '</dd>'
+    + '<dt>Vastuseid kokku</dt><dd>' + vastuseid + '</dd>'
+    + '<dt>Võistlusi</dt><dd>' + voistlusi + '</dd>'
+    + (cls ? '<dt>Klass</dt><dd>' + esc(cls.class_name || cls.code || '—') + '</dd><dt>Hüüdnimi</dt><dd>' + esc(cls.nick || '—') + '</dd>' : '')
+    + '</dl>';
+
+  app.append(el('<div class="card"><h2>Mis üle läheb</h2>' + rows
+    + (cls ? '<p class="note">Klassi liikmesus ja edetabeli koht tulevad kaasa.</p>'
+           : '<p class="note">Sa ei ole ühegi klassiga liitunud, seega läheb üle ainult harjutamine.</p>')
+    + '</div>'));
+
+  var box = el('<div class="card"><h2>Üleviimine</h2><div id="go"></div></div>');
+  app.append(box);
+  var go = box.querySelector('#go');
+  go.append(el('<p class="note">Valmistan linki ette…</p>'));
+
+  pack(raw).then(function (payload) {
+    var url = TARGET + '#vii=' + payload;
+    go.innerHTML = '';
+    if (url.length < 30000) {
+      go.append(el('<a class="btn go" href="' + esc(url) + '">Vii edenemine üle</a>'));
+      go.append(el('<p class="note">Nupp avab Harjutaja ja võtab andmed kaasa. Andmed liiguvad ainult sinu brauseris — need ei käi ühestki serverist läbi.</p>'));
+    } else {
+      go.append(el('<div class="msg bad">Andmeid on lingi jaoks liiga palju. Kasuta koodi, mis on allpool.</div>'));
+    }
+
+    var det = el('<details><summary>Kui nupp ei tööta</summary></details>');
+    det.append(el('<p class="note">Kopeeri see kood ja kleebi see Harjutajas samasse kohta: <b>harjutaja.silverjaanus.com/korrutaja/vii-sisse.html</b></p>'));
+    var ta = document.createElement('textarea');
+    ta.readOnly = true; ta.value = payload; ta.setAttribute('aria-label', 'Üleviimise kood');
+    det.append(ta);
+    var cp = el('<button type="button">Kopeeri kood</button>');
+    cp.onclick = function () {
+      ta.select();
+      var done = function () { cp.textContent = 'Kopeeritud!'; setTimeout(function () { cp.textContent = 'Kopeeri kood'; }, 1800); };
+      if (navigator.clipboard) navigator.clipboard.writeText(payload).then(done, function () { document.execCommand('copy'); done(); });
+      else { document.execCommand('copy'); done(); }
+    };
+    det.append(cp);
+    go.append(det);
+  });
+})();
+</script>
+</body>
+</html>
