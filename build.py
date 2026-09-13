@@ -1,3 +1,11 @@
+# SEE BUILD ON PENSIONIL. Korrutaja kolis 2026-09 Harjutaja alla.
+# Elav lahtekood ja build on nuud:  harjutaja/korrutaja/korrutaja.src.html + harjutaja/korrutaja/build.py
+# Siinne index.html on kolimise teade, mitte rakendus. Kui selle build'i kaivitada,
+# kirjutaks ta teate vana rakendusega ule ja registreeriks uuesti vana service workeri.
+import sys
+sys.exit('build.py on pensionil: Korrutaja elab nuud harjutaja repos, kaustas korrutaja/. '
+         'Siinne index.html on kolimise teade - ara kirjuta seda ule.')
+
 # Ehitab korrutaja.src.html -> index.html (iseseisev PWA) + sw.js. Käivita: python3 build.py (vajab Pillow: pip install pillow)
 from PIL import Image, ImageDraw
 import base64, io, json, os

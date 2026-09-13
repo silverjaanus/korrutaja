@@ -1,8 +1,13 @@
 # Korrutaja
 
+> **Korrutaja kolis 2026. aasta septembris Harjutaja alla.**
+> Elav rakendus ja lähtekood on nüüd [silverjaanus/harjutaja](https://github.com/silverjaanus/harjutaja), kaustas `korrutaja/`.
+> Siin repos on alles ainult kolimise teade (`index.html`), edenemise üleviimise leht (`vii-ule.html`)
+> ja vana lähtekood arhiivina. `build.py` on pensionil ega käivitu.
+
 Korrutustabeli ja jagamise harjutamise mäng telefonile. Adaptiivne, ajastatud, klassi edetabeliga. Tasuta, ilma reklaami, kontode ja jälgimiseta.
 
-**Mängi:** https://korrutaja.silverjaanus.com (või https://korrutaja.vercel.app)
+**Mängi:** https://harjutaja.silverjaanus.com/korrutaja/ — vana aadress https://korrutaja.silverjaanus.com näitab kolimise teadet ja pakub edenemise kaasa võtmist.
 
 *English summary at the bottom.*
 

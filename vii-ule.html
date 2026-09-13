@@ -46,11 +46,11 @@ details[open] summary{margin-bottom:10px}
   </svg>
 
   <h1>Vii oma edenemine Harjutajasse</h1>
-  <p class="lead">Korrutaja kolib Harjutaja alla. Sinu harjutamine ja klass ei tule automaatselt kaasa — see nupp viib need üle.</p>
+  <p class="lead">Korrutaja kolis Harjutaja alla. Sinu harjutamine ja klass ei tule automaatselt kaasa — see nupp viib need üle.</p>
 
   <div id="app"></div>
 
-  <p class="back"><a href="./">‹ Tagasi Korrutajasse</a></p>
+  <p class="back"><a href="./">‹ Tagasi</a></p>
 </main>
 
 <script>
@@ -135,7 +135,10 @@ details[open] summary{margin-bottom:10px}
     var url = TARGET + '#vii=' + payload;
     go.innerHTML = '';
     if (url.length < 30000) {
-      go.append(el('<a class="btn go" href="' + esc(url) + '">Vii edenemine üle</a>'));
+      var b = el('<a class="btn go" href="' + esc(url) + '">Vii edenemine üle</a>');
+      // Margime, et nupule on vajutatud, et avaleht ei kaesiks sama asja uuesti.
+      b.addEventListener('click', function () { try { localStorage.setItem('korrutaja_viidud', '1'); } catch (e) {} });
+      go.append(b);
       go.append(el('<p class="note">Nupp avab Harjutaja ja võtab andmed kaasa. Andmed liiguvad ainult sinu brauseris — need ei käi ühestki serverist läbi.</p>'));
     } else {
       go.append(el('<div class="msg bad">Andmeid on lingi jaoks liiga palju. Kasuta koodi, mis on allpool.</div>'));

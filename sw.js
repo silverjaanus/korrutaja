@@ -1,10 +1,20 @@
-const C='korrutaja-v14';
-self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['./','./index.html'])).then(()=>self.skipWaiting()));});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
-self.addEventListener('fetch',e=>{
-  if(e.request.method!=='GET')return;
-  const u=new URL(e.request.url);
-  if(u.pathname.indexOf('/rest/')>=0)return;
-  if(u.origin===location.origin){e.respondWith(fetch(e.request).then(r=>{if(r.ok){const cp=r.clone();caches.open(C).then(c=>c.put(e.request,cp));}return r;}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))));}
-  else{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(x=>{if(x.ok||x.type==='opaque'){const cp=x.clone();caches.open(C).then(c=>c.put(e.request,cp));}return x;})));}
+// Korrutaja kolis Harjutaja alla (harjutaja.silverjaanus.com/korrutaja/).
+// See service worker ei teeninda enam midagi - ta ainult koristab enda jarel:
+// kustutab vana rakenduse vahemalud ja votab ennast maha, et vanad seadmed
+// ei saaks enam vahemalust vana Korrutajat katte, vaid naeksid kolimise teadet.
+// localStorage jaab puutumata - seal on kasutaja edenemine, mida vii-ule.html vajab.
+self.addEventListener('install', function () {
+  self.skipWaiting();
 });
+self.addEventListener('activate', function (e) {
+  e.waitUntil(
+    caches.keys()
+      .then(function (ks) {
+        return Promise.all(ks.map(function (k) { return caches.delete(k); }));
+      })
+      .then(function () { return self.registration.unregister(); })
+      .then(function () { return self.clients.claim(); })
+      .catch(function () {})
+  );
+});
+// fetch-kaitlejat teadlikult ei ole: koik paringud lahevad otse vorku.
