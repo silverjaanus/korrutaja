@@ -1,6 +1,7 @@
 # Hoiab Supabase'i tasuta projekti ärkvel: tasuta projekt pausitakse, kui 7 päeva pole päringuid
 # (nt suvevaheaeg). Üks kahjutu päring päevas hoiab selle ära.
 # Asukoht repos: .github/workflows/keepalive.yml
+# NB: sama Supabase'i projekti kasutab ka Harjutaja (harjutaja repo core/config.js), millel oma keepalive'i pole - ära kustuta.
 name: keepalive
 on:
   schedule:
